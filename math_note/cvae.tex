@@ -1,0 +1,66 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{ctex}
+
+\begin{document}
+
+\section*{CVAE 公式推导}
+
+\subsection*{1. 问题定义}
+CVAE 的目标是学习一个条件生成模型 \( p_\theta(x|y) \)，其中：
+\begin{itemize}
+  \item \( x \) 是生成的数据。
+  \item \( y \) 是条件信息（如类别标签）。
+  \item \( z \) 是隐变量，通常假设服从标准正态分布 \( z \sim \mathcal{N}(0, I) \)。
+\end{itemize}
+
+我们希望最大化条件对数似然 \( \log p_\theta(x|y) \)。
+
+\subsection*{2. 引入变分下界（ELBO）}
+由于直接最大化 \( \log p_\theta(x|y) \) 是困难的，我们引入变分推断来近似后验分布 \( p(z|x, y) \)。
+
+\subsubsection*{(1) 条件对数似然的分解}
+首先，将条件对数似然分解为：
+\[
+  \log p_\theta(x|y) = \log \int p_\theta(x|y, z) p(z) \, dz
+\]
+
+\subsubsection*{(2) 引入变分分布 \( q_\phi(z|x, y) \)}
+为了近似后验分布 \( p(z|x, y) \)，我们引入变分分布 \( q_\phi(z|x, y) \)，并利用 Jensen 不等式得到下界：
+\[
+  \log p_\theta(x|y) = \log \int p_\theta(x|y, z) p(z) \, dz
+\]
+\[
+  = \log \int \frac{p_\theta(x|y, z) p(z)}{q_\phi(z|x, y)} q_\phi(z|x, y) \, dz
+\]
+\[
+  \geq \int q_\phi(z|x, y) \log \frac{p_\theta(x|y, z) p(z)}{q_\phi(z|x, y)} \, dz
+\]
+\[
+  = \mathbb{E}_{q_\phi(z|x, y)} \left[ \log p_\theta(x|y, z) \right] - D_{KL}(q_\phi(z|x, y) \| p(z))
+\]
+
+\subsubsection*{(3) 变分下界（ELBO）}
+最终，我们得到变分下界（ELBO）：
+\[
+  \log p_\theta(x|y) \geq \mathbb{E}_{q_\phi(z|x, y)} \left[ \log p_\theta(x|y, z) \right] - D_{KL}(q_\phi(z|x, y) \| p(z))
+\]
+
+\subsection*{3. 损失函数}
+CVAE 的损失函数是负 ELBO：
+\[
+  \mathcal{L}(\theta, \phi) = -\mathbb{E}_{q_\phi(z|x, y)} \left[ \log p_\theta(x|y, z) \right] + D_{KL}(q_\phi(z|x, y) \| p(z))
+\]
+
+\section*{CVAE 公式推导}
+
+以下是所有公式的对齐和编号：
+
+\begin{align}
+  \log p_\theta(x|y) & = \log \int p_\theta(x|y, z) p(z) \, dz \tag{1}                                                             \\
+                     & = \log \int \frac{p_\theta(x|y, z) p(z)}{q_\phi(z|x, y)} q_\phi(z|x, y) \, dz \tag{2}                       \\
+                     & \geq \int q_\phi(z|x, y) \log \frac{p_\theta(x|y, z) p(z)}{q_\phi(z|x, y)} \, dz \tag{3}                    \\
+                     & = \mathbb{E}_{q_\phi(z|x, y)} \left[ \log p_\theta(x|y, z) \right] - D_{KL}(q_\phi(z|x, y) \| p(z)) \tag{4}
+\end{align}
+\end{document}
