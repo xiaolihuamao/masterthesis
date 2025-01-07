@@ -3,6 +3,8 @@
 \usepackage{array,longtable,graphicx} 
 \usepackage{anyfontsize} %消除字体警告
 \usepackage{enumitem}
+\usepackage{makecell}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%——by MCH
 %编译范围
 % \includeonly{chapter/chapter04}
@@ -83,7 +85,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%页眉页脚设置 ——by MCH 
 \fancypagestyle{plain}{
-	\pagestyle{fancy}
+  \pagestyle{fancy}
 }	% 每章的第一页会默认使用plain，没有页眉。通过重定义plain为fancy解决
 \pagestyle{fancy}	%设置页眉页脚为fancy
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%分章节，结合导言区的\includeonly命令可仅编译部分章节，编译时不用切换界面，直接在相应章节编译即可。

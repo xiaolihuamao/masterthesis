@@ -51,7 +51,7 @@
 \RequirePackage[dvipsnames]{xcolor}
 \RequirePackage{indentfirst}
 \RequirePackage{makeidx} % 索引
-\RequirePackage{amsmath} 
+\RequirePackage{amsmath}
 \RequirePackage{mathrsfs}
 \RequirePackage{amssymb} %this package conflicts with xeCJK, place it before xeCJK to avoid the coflict.
 \RequirePackage[final]{pdfpages}
@@ -62,8 +62,8 @@
 %% 设置页面布局
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage[left=2.5cm,right=2.5cm,bottom=2.5cm,top=2.5cm,%设置页面上下左右各为25mm
- headheight=1.5cm,%页眉所占高度
- footskip=1cm %页脚所占高度
+  headheight=1.5cm,%页眉所占高度
+  footskip=1cm %页脚所占高度
 ]{geometry}
 
 %% 字体设置
@@ -139,8 +139,8 @@
 \def\CJK@spaceChar{\hskip \f@size \p@}
 %%\def\CJK@spaceChar{\Unicode{48}{7}} %delete
 \def\CJKindent{%
-    \settowidth\CJK@twochars{\CJK@spaceChar\CJK@spaceChar}%
-    \parindent\CJK@twochars}
+  \settowidth\CJK@twochars{\CJK@spaceChar\CJK@spaceChar}%
+  \parindent\CJK@twochars}
 \newcommand{\cndash}{\rule{0.0em}{0pt}\rule[0.35em]{1.4em}{0.05em}\rule{0.2em}{0pt}} % 中文破折号,added by Quansheng
 
 % 报警处理
@@ -218,33 +218,33 @@
 
 %%%%%%%%%%定义双标题命令
 % 注释掉双语标题 ——by mch
-%\newcommand{\FigureBicaption}[2]{
-%  \renewcommand{\figurename}{图}
-%  \vspace{8pt}
-%  \caption{#1}
-%  \addtocounter{figure}{-1}
-%  \renewcommand{\figurename}{Fig.}
-%  \captionsetup{list=false}
-%  \vspace{6pt}
-%  \caption{#2}
-%  \captionsetup{list=true}
-%  \renewcommand{\figurename}{图}
-%}
-%\newcommand{\SubfloatCaption}[4]  % Two Parameters, the first one is the width of the subfigure,
-%{
-%  \subfloat[#2]{
-%    \label{#3}
-%    \addtocounter{subfigure}{-1}
-%    \subfloat[\vspace{-5pt}#1]{#4}
-%  }%
-%}
+\newcommand{\FigureBicaption}[2]{
+  \renewcommand{\figurename}{图}
+  \vspace{8pt}
+  \caption{#1}
+  \addtocounter{figure}{-1}
+  \renewcommand{\figurename}{Figure}
+  \captionsetup{list=false}
+  \vspace{6pt}
+  \caption{#2}
+  \captionsetup{list=true}
+  \renewcommand{\figurename}{图}
+}
+\newcommand{\SubfloatCaption}[4]  % Two Parameters, the first one is the width of the subfigure,
+{
+  \subfloat[#2]{
+    \label{#3}
+    \addtocounter{subfigure}{-1}
+    \subfloat[\vspace{-5pt}#1]{#4}
+  }
+}
 
 %% 表格
 \RequirePackage{array} % 扩展了 array 和 tabular 环境功能
 \RequirePackage{booktabs} % 增加对三线表格的支持 % \toprule，\midrule，\bottomrule
 \RequirePackage{longtable} % 长表格支持，截断跨页
 %\RequirePackage{ctable, threeparttable} % 支持表格注释,复杂表格，一般用不上
-%\RequirePackage{tabularx}
+\RequirePackage{tabularx}
 \captionsetup[table]{position=top}
 %定义双标题命令
 \newcommand{\TableBicaption}[2]{
@@ -355,7 +355,7 @@
   captionpos=t,
   framextopmargin=1pt,framexbottommargin=1pt,abovecaptionskip=-1pt,belowcaptionskip=1pt,
   %xleftmargin=4em,xrightmargin=4em, % 设定listing左右的空白
- extendedchars=false,columns=flexible,mathescape=false
+  extendedchars=false,columns=flexible,mathescape=false
   breakautoindent=true
 }
 \renewcommand{\lstlistingname}{代码} %% 重命名Listings标题头 added by Guan
@@ -378,17 +378,17 @@
 \renewcommand{\contentsname}{目\texorpdfstring{\quad}{}录}	%中文目录
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \titlecontents{chapter}[0ex]{\tocchapterfont}{%
-    第\xCJKnumber{\thecontentslabel}章\quad{}}{}{%
-    \hspace{.5em}\titlerule*[5pt]{$\cdot$}\contentspage}%
+  第\xCJKnumber{\thecontentslabel}章\quad{}}{}{%
+  \hspace{.5em}\titlerule*[5pt]{$\cdot$}\contentspage}%
 \titlecontents{section}[1em]{\tocsectionfont}{%
-    \thecontentslabel\quad{}}{}{%
-    \hspace{.5em}\titlerule*[5pt]{$\cdot$}\contentspage}%
+  \thecontentslabel\quad{}}{}{%
+  \hspace{.5em}\titlerule*[5pt]{$\cdot$}\contentspage}%
 \titlecontents{subsection}[2em]{\tocsubsectionfont}{%
-    \thecontentslabel\quad{}}{}{%
-    \hspace{.5em}\titlerule*[5pt]{$\cdot$}\contentspage}%
+  \thecontentslabel\quad{}}{}{%
+  \hspace{.5em}\titlerule*[5pt]{$\cdot$}\contentspage}%
 \titlecontents{subsubsection}[3em]{\tocsubsubsectionfont}{%
-    \thecontentslabel\quad{}}{}{%
-    \hspace{.5em}\titlerule*[5pt]{$\cdot$}\contentspage}%
+  \thecontentslabel\quad{}}{}{%
+  \hspace{.5em}\titlerule*[5pt]{$\cdot$}\contentspage}%
 
 % 设定章节深度和目录深度
 \setcounter{secnumdepth}{4}
@@ -418,44 +418,44 @@
 %}
 %==========
 \AtBeginDocument{\CJKindent{}%
-    \makeindex%
-    \normalsize%正文字体格式
-    \linespacing{1.682}% 主行距～1.5倍  % 手调参数，利用1比1的打印效果看行距是否和word的1.5倍行距一样。latex行距控制水太深了。见109行ToDo。--by mch
-  }
+  \makeindex%
+  \normalsize%正文字体格式
+  \linespacing{1.682}% 主行距～1.5倍  % 手调参数，利用1比1的打印效果看行距是否和word的1.5倍行距一样。latex行距控制水太深了。见109行ToDo。--by mch
+}
 \AtEndDocument{}
 
 %------------------
 \renewcommand{\maketitle}{% called outside
   \ifpdfcover
-%%coverpage from pdf file
-       %% \includepdf[pages=-]{thesis_cover.pdf}%pdf文件路径为主文件tex或lyx的当前目录
-          \includepdf[pages={1-5,{},7-8}]{cover_file/thesis_cover.pdf}
-   \else
-%%buildin coverpage
-\begin{titlepage}
-\raggedleft
-\null
-\vskip 4em
+    %%coverpage from pdf file
+    %% \includepdf[pages=-]{thesis_cover.pdf}%pdf文件路径为主文件tex或lyx的当前目录
+    \includepdf[pages={1-5,{},7-8}]{cover_file/thesis_cover.pdf}
+  \else
+    %%buildin coverpage
+    \begin{titlepage}
+      \raggedleft
+      \null
+      \vskip 4em
 
-\bigskip
-\centerline{\songti\erhao  {\thesissubject} }
-\vskip 4em
+      \bigskip
+      \centerline{\songti\erhao  {\thesissubject} }
+      \vskip 4em
 
-\bigskip
-\centerline{\heiti\yihao  {\@title} }
-\vskip 2em
+      \bigskip
+      \centerline{\heiti\yihao  {\@title} }
+      \vskip 2em
 
-\bigskip
-\centerline{\songti\erhao   {\@author} }
-\bigskip
-\centerline{\songti\erhao   {\@supervisor} }
+      \bigskip
+      \centerline{\songti\erhao   {\@author} }
+      \bigskip
+      \centerline{\songti\erhao   {\@supervisor} }
 
-\vfill
-\centerline{\songti\normalsize{\@institute}}
-\centerline{\songti\normalsize{\@date}}
-\end{titlepage}
+      \vfill
+      \centerline{\songti\normalsize{\@institute}}
+      \centerline{\songti\normalsize{\@date}}
+    \end{titlepage}
 
-\fi
+  \fi
 }
 %%摘要分中英文页，而且有两者排版方式：
 %一种是采用\abstractCN和\abstractEN方式以“摘要”和“Abstract”为页标题
@@ -474,21 +474,21 @@
 
 \newcommand{\keywordsCN}[1]{
   \par
- \vspace{1em}
+  \vspace{1em}
   \newcommand{\@keywords}{#1}
   {\noindent\abskeycn 关键词：} {\abskeyscn \@keywords} % \noindent去掉缩进
 }
 \newcommand{\keywordsEN}[1]{
   \par
- \vspace{1em}
+  \vspace{1em}
   {\noindent\abskeyen Keywords:} {\abskeysen #1} % \noindent去掉缩进
 }
 %
 \newcommand{\abstractx}[1]
 {
- \begin{center}
-  #1
- \par\end{center}
+  \begin{center}
+    #1
+    \par\end{center}
   \addcontentsline{toc}{chapter}{#1}
 }
 
@@ -563,10 +563,10 @@
 %}
 
 \renewcommand\frontmatter{ %标题之后，开始中英文摘要，目录
-	\clearpage	
-    \pagestyle{plain} % plain
-    \pagenumbering{Roman}% Roman style page number
-    \@mainmatterfalse
+  \clearpage
+  \pagestyle{plain} % plain
+  \pagenumbering{Roman}% Roman style page number
+  \@mainmatterfalse
 }
 
 %%\renewcommand\mainmatter{%
@@ -606,14 +606,14 @@
 
 
 \newtheoremstyle{definition}% name
-  {0pt}%      Space above, empty = `usual value'
-  {0pt}%      Space below
-  {}% Body font \itshape
-  {\parindent}%         Indent amount (empty = no indent, \parindent = para indent)
-  {\bfseries}% Thm head font
-  {:}%        Punctuation after thm head
-  {0.5em}% Space after thm head: \newline = linebreak
-  {}%         Thm head spec
+{0pt}%      Space above, empty = `usual value'
+{0pt}%      Space below
+{}% Body font \itshape
+{\parindent}%         Indent amount (empty = no indent, \parindent = para indent)
+{\bfseries}% Thm head font
+{:}%        Punctuation after thm head
+{0.5em}% Space after thm head: \newline = linebreak
+{}%         Thm head spec
 \theoremstyle{definition}
 \newtheorem{definition}{定义~}[chapter]
 \newtheorem{example}{例~}[chapter]
@@ -633,14 +633,14 @@
 %% 可继续用\newtheorem命令添加需要的环境
 
 \newtheoremstyle{plain}% name
-  {0pt}%      Space above, empty = `usual value'
-  {0pt}%      Space below
-  {\itshape}% Body font \itshape
-  {\parindent}%         Indent amount (empty = no indent, \parindent = para indent)
-  {\bfseries}% Thm head font
-  {:}%        Punctuation after thm head
-  {0.5em}% Space after thm head: \newline = linebreak
-  {}%         Thm head spec
+{0pt}%      Space above, empty = `usual value'
+{0pt}%      Space below
+{\itshape}% Body font \itshape
+{\parindent}%         Indent amount (empty = no indent, \parindent = para indent)
+{\bfseries}% Thm head font
+{:}%        Punctuation after thm head
+{0.5em}% Space after thm head: \newline = linebreak
+{}%         Thm head spec
 \theoremstyle{plain}
 % -------------------根据2022年博士论文送审反馈意见，下面部分改为正体，故移到definition--------by mch
 % \newtheorem{proposition}{命题~}[chapter]
