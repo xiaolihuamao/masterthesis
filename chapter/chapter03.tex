@@ -169,14 +169,14 @@
 	\centering
 	\small
 	\begin{tabularx}{\textwidth}{XXXX}  % 使用 tabularx 环境，均匀分布列宽
-		\Xhline{2pt}
+		\Xhline{1.5pt}
 		参数符号       & 数值                 & 参数符号  & 数值                 \tabularnewline
-		\Xhline{1pt}  % 表头下方线
+		\Xhline{0.5pt}  % 表头下方线
 		$I_x$      & $054593$           & $I_y$ & $0.017045         $ \tabularnewline
 		$l_1$      & $0.0808\,\text{m}$ & $l_2$ & $0.175\,\text{m}  $ \tabularnewline
 		$l_4$      & $0.2415\,\text{m}$ & $l_5$ & $0.1085\,\text{m} $ \tabularnewline
 		$l_\sigma$ & $xdf$              & $df$  & 扫描电镜 \tabularnewline
-		\Xhline{2pt}
+		\Xhline{1.5pt}
 	\end{tabularx}
 \end{table}
 
@@ -185,14 +185,14 @@
 	\centering
 	\small
 	\begin{tabularx}{\textwidth}{XXXX}  % 使用 tabularx 环境，均匀分布列宽
-		\Xhline{2pt}
+		\Xhline{1.5pt}
 		参数符号       & 数值                 & 参数符号  & 数值                 \tabularnewline
-		\Xhline{1pt}  % 表头下方线
+		\Xhline{0.5pt}  % 表头下方线
 		$I_x$      & $054593$           & $I_y$ & $0.017045         $ \tabularnewline
 		$l_1$      & $0.0808\,\text{m}$ & $l_2$ & $0.175\,\text{m}  $ \tabularnewline
 		$l_4$      & $0.2415\,\text{m}$ & $l_5$ & $0.1085\,\text{m} $ \tabularnewline
 		$l_\sigma$ & $xdf$              & $df$  & 扫描电镜 \tabularnewline
-		\Xhline{2pt}
+		\Xhline{1.5pt}
 	\end{tabularx}
 \end{table}
 
@@ -393,9 +393,6 @@ proof的大更多用法见参考文献\cite{_g}。scutthesis.cls文件的最后�
 
 参考文献引用和著录是基于ZOTERO这个软件进行的。视频教程见\parencite{_k}。此外，为了符合毕业论文撰写规范，需设置参数。按照视频教程安装完必要的插件（如Better BibTeX）后，在编辑->首选项进行设置。图\ref{op1}到图\ref{op11}所示的是我的zotero软件设置。其中最重要的是\ref{op10}的设置要排除的选项，多余的显示会让审稿人反感，按照论文撰写规范进行即可。在毕业论文撰写时，在编辑->首选项->Better BibLTeX->Fields中，Fields to omit from export填month,abstract,note,extra,file,keywords,type,url,doi，就是在参考文献著录中排除这些多余的项，避免过于复杂。而在写本模板使用说明时，没有排除url，因为很多参考资料是网页。
 
-\begin{lstlisting}
-    使用zotero，有时候科学上网很重要。
-\end{lstlisting}
 
 在zotero软件点击文件->导出文献库，如图\ref{output}所示，再在导出对话框图\ref{output_format}选择导出格式为Better BibLaTeX，同时勾选Keep updated选项保持自动更新，再点击ok，在弹出的对话框图\ref{output_name}确定保存路径和文件名，例如我的是MyLibrary.bib，这也是我整个读书生涯的文献库bib文件。如果写小论文的话通常导出格式是BibTeX或者Better BibTeX（这里按照期刊的要求来即可，文献管理软件的好处就是快速自动生成一个文件库）。关于BibTeX和BibLaTeX的区别这里不做展开。
 
@@ -404,7 +401,7 @@ proof的大更多用法见参考文献\cite{_g}。scutthesis.cls文件的最后�
 ---------------------------------------------------------------------------------
 
 2020年12月2日测试：
-下载最新zotero，从知网和谷歌捕获文献（刚打开网页最好稍等一会再点击插件，谷歌可能需要现人机验证），对文献\parencite{Renduchintala_2019}、\parencite{milz2020design}进行引用。
+下载最新zotero，从知网和谷歌捕获文献（刚打开网页最好稍等一会再点击插件，谷歌可能需要现人机验证），对文献\cite{Renduchintala_2019}、\parencite{milz2020design}进行引用。
 
 ---------------------------------------------------------------------------------
 
@@ -428,76 +425,11 @@ proof的大更多用法见参考文献\cite{_g}。scutthesis.cls文件的最后�
 	\includegraphics[scale=0.8]{Fig/zotero1.png}
 	\caption{\label{op1}常规}
 \end{figure}
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.8]{Fig/zotero2.png}
-	\caption{\label{op2}同步1}
-\end{figure}
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.8]{Fig/zotero3.png}
-	\caption{\label{op3}同步2}
-\end{figure}
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.8]{Fig/zotero4.png}
-	\caption{\label{op4}搜索}
-\end{figure}
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.8]{Fig/zotero5.png}
-	\caption{\label{op5}导出}
-\end{figure}
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.8]{Fig/zotero6.png}
-	\caption{\label{op6}引用}
-\end{figure}
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.8]{Fig/zotero7.png}
-	\caption{\label{op7}高级1}
-\end{figure}
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.8]{Fig/zotero8.png}
-	\caption{\label{op8}高级2}
-\end{figure}
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.8]{Fig/zotero9.png}
-	\caption{\label{op9}Better BibTeX1}
-\end{figure}
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.8]{Fig/zotero10.png}
-	\caption{\label{op10}Better BibTeX2}
-\end{figure}
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.8]{Fig/zotero11.png}
-	\caption{\label{op11}Better BibTeX3}
-\end{figure}
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.42]{Fig/zotero12.png}
-	\caption{\label{output}导出文献库}
-\end{figure}
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.42]{Fig/zotero13.png}
-	\caption{\label{output_format}导出格式}
-\end{figure}
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.42]{Fig/zotero14.png}
-	\caption{\label{output_name}导出文件名}
-\end{figure}
-
-
+\clearpage
+接下来我们引用几篇文献来说明问题，首先是期刊论文[J],正如lennon所说的那样
+\cite{lennonScientificMachineLearning2023}
+现在引用一篇中文作者的英文期刊试一下\cite{zhaoVersatileHydrogelDressing2023},
+接下来引用一篇会议论文\cite{choLearningPhraseRepresentations2014}
 
 
 

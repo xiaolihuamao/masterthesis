@@ -10,8 +10,8 @@
 % \includeonly{chapter/chapter04}
 %参考文献设置
 \usepackage[backend=biber,style=gb7714-2015,gbalign=gb7714-2015,gbpub=false,gbnamefmt = lowercase]{biblatex}% 可试着设style=gb7714-1987
-\addbibresource[location=local]{dependencies/MyLibrary.bib} % 如果在其他盘，改为相对路径。比如F盘，改为：F/MyLibrary.bib
-\addbibresource[location=local]{dependencies/mybibfile2.bib} % 无论什么来源的bib文件，只要由参考文献的BibTeX组成，都可以使用此模板。参考文献的BibTeX获取方法可百度
+\addbibresource[location=local]{biblibrary/MyLibrary.bib} % 如果在其他盘，改为相对路径。比如F盘，改为：F/MyLibrary.bib
+\addbibresource[location=local]{biblibrary/mybibfile2.bib} % 无论什么来源的bib文件，只要由参考文献的BibTeX组成，都可以使用此模板。参考文献的BibTeX获取方法可百度
 %页眉页脚设置
 \usepackage{fancyhdr}
 \usepackage{listings}
@@ -85,7 +85,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%页眉页脚设置 ——by MCH 
 \fancypagestyle{plain}{
-  \pagestyle{fancy}
+	\pagestyle{fancy}
 }	% 每章的第一页会默认使用plain，没有页眉。通过重定义plain为fancy解决
 \pagestyle{fancy}	%设置页眉页脚为fancy
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%分章节，结合导言区的\includeonly命令可仅编译部分章节，编译时不用切换界面，直接在相应章节编译即可。
