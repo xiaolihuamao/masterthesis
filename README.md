@@ -114,3 +114,6 @@ latex和office在写论文、写slides时只是不同的工具，就像是两把
   * [PlexusChen](https://github.com/PlexusChen)
 
 欢迎大家加入维护团队！！！
+
+## redfu 增加部分
+scutthesis.cls文件涵盖几乎所有格式代码，如果需要配置，字体间距微调，需要改这个文件
