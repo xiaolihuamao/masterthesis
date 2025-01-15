@@ -38,55 +38,22 @@
 	\FigureBicaption{\label{CVAE}（a）CVAE示意图；（b）VAE示意图}{(a) CVAE option}
 \end{figure}
 
+下面看一下图片的字体
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.8\textwidth]{Fig/Maxwell_sin_.pdf}
+	\FigureBicaption{\label{CVAE2}（a）CVAE示意图；（b）VAE示意图}{(a) CVAE option}
+\end{figure}
 
-使用如下代码划分页面并排放置图\ref{Hawk}、图\ref{GTSpy}
-\begin{lstlisting}
 \begin{figure}[htbp]
 	\centering
-	\begin{minipage}[c]{0.5\textwidth} % minipage将页面划分为0.5\textwidth
-		\centering
-		\includegraphics[width=6cm,height=6cm]{Fig/honeywell_t-hawk.jpg}
-		\caption{\label{Hawk}T-Hawk}
-	\end{minipage}%
-	\begin{minipage}[c]{0.5\textwidth}
-		\centering
-		\includegraphics[width=6cm,height=6cm]{Fig/GTSpy.jpg}
-		\caption{\label{GTSpy}GTSpy}
-	\end{minipage}
+	\includegraphics[width=0.8\textwidth]{Fig/Maxwell_sin_metric.pdf}
+	\FigureBicaption{\label{CVAE3}（a）CVAE示意图；（b）VAE示意图}{(a) CVAE option}
 \end{figure}
-\end{lstlisting}
-其中[c]表示行居中对齐。当图片大小不一但又需要1:1导入时，图标题可能行不对齐，因此可以改为如下指令：
-\begin{lstlisting}
 \begin{figure}[htbp]
 	\centering
-	\begin{minipage}[c]{0.5\textwidth}
-		\centering
-		\includegraphics[scale=1]{Fig/honeywell_t-hawk.jpg} %1:1导入
-	\end{minipage}%
-	\begin{minipage}[c]{0.5\textwidth}
-		\centering
-		\includegraphics[scale=1]{Fig/GTSpy.jpg}
-	\end{minipage}\\[1pt]
-	\begin{minipage}[t]{0.5\textwidth}	% 以下为新添加页面划分，[t]表示行顶部对齐
-		\caption{\label{Hawk}T-Hawk}
-	\end{minipage}%
-	\begin{minipage}[t]{0.5\textwidth}
-		\caption{\label{GTSpy}GTSpy}
-	\end{minipage}%
-\end{figure}
-\end{lstlisting}
-\begin{figure}[htbp]
-	\centering
-	\begin{minipage}[c]{0.5\textwidth}
-		\centering
-		\includegraphics[width=6cm,height=6cm]{Fig/honeywell_t-hawk.jpg}
-		\caption{\label{Hawk}T-Hawk}
-	\end{minipage}%
-	\begin{minipage}[c]{0.5\textwidth}
-		\centering
-		\includegraphics[width=6cm,height=6cm]{Fig/GTSpy.jpg}
-		\caption{\label{GTSpy}GTSpy}
-	\end{minipage}
+	\includegraphics[width=0.8\textwidth]{Fig/Maxwell_timesteps_metrics.pdf}
+	\FigureBicaption{\label{CVAE4}（a）CVAE示意图；（b）VAE示意图}{(a) CVAE option}
 \end{figure}
 
 

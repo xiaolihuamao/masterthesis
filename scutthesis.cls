@@ -173,7 +173,7 @@
 \newcommand{\textsubsectionfont}{\heiti\sihao}     % 正文上X.Y.Z小节的字体
 \newcommand{\textsubsubsectionfont}{\heiti\xiaosihao}     % 正文上X.Y.Z.K小节的字体
 \newcommand{\footnotefont}{\songti\xiaowuhao\normalfont}     % 脚注字体
-\newcommand{\ftcaptionfont}{\songti\wuhao\normalfont}         % 图表标题的字体
+\newcommand{\ftcaptionfont}{\songti\xiaosihao\normalfont}         % 图表标题的字体
 
 \newcommand{\reftitlefont}{\heiti\xiaoerhao}      % “参考文献”字样的字体
 \newcommand{\refbodyfont}{\songti\wuhao\normalfont}          % 参考文献字体
