@@ -67,7 +67,7 @@
 	\FigureBicaption{\label{CVAE5}（a）CVAE示意图；（b）VAE示意图}{(a) CVAE option}
 \end{figure}
 
-
+\cite{1985}
 通常一个figure内含有其他小的figure,可以使用一些宏包，但最初本着简单的原则，本模板并没有使用这些子图包。后来应同学们要求在，把子图的功能加上，主要是修改了模板文件（scutthesis.cls文件）的功能包参数。注意，很多网上拿到的代码不一定可以精确的调子图标题字体字号，因为此模板的子图标题字体字号是利用subfig宏包的选项进行设置的（在scutthesis.cls文件的“图表环境”中），而有些教程使用subcaption进行同样的设置，还需进一步验证可行性。另外图的排版方法很多，有些宏包已经被弃用，所以尽量使用本文给出的案例的格式进行排版图片。
 
 常见的子图包有subfigure和subfig。subfigure是比较老的了，这里使用subfig包。两个包在使用的时候用法不同，千万不要混淆了，不然可能会报错。subfig包的命令是\textbackslash{}subfloat。这里给出一种使用subfig包的常用排版，如图\ref{Fig:1}的子图\subref{Fig:1:b}，其中\subref*{Fig:1:a}的试验并不好（这里测试了交叉引用\textbackslash{}subref\{xxx\}和\textbackslash{}subref*\{xxx\}）。必要时也可以排版多行多列的图、调整图之间的间距，具体可百度。
@@ -408,6 +408,7 @@ proof的大更多用法见参考文献\cite{_g}。scutthesis.cls文件的最后�
 \cite{lennonScientificMachineLearning2023}
 现在引用一篇中文作者的英文期刊试一下\cite{zhaoVersatileHydrogelDressing2023},
 接下来引用一篇会议论文\cite{choLearningPhraseRepresentations2014}
+
 
 
 
