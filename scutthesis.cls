@@ -221,6 +221,7 @@
 \newcommand{\FigureBicaption}[2]{
 	\renewcommand{\figurename}{图}
 	\vspace{8pt}
+	\captionsetup{justification=centering} % 设置标题居中
 	\caption{#1}
 	\addtocounter{figure}{-1}
 	\renewcommand{\figurename}{Figure}
@@ -228,6 +229,7 @@
 	\vspace{6pt}
 	\caption{#2}
 	\captionsetup{list=true}
+	\captionsetup{justification=centering} % 设置标题居中
 	\renewcommand{\figurename}{图}
 }
 \newcommand{\SubfloatCaption}[4]  % Two Parameters, the first one is the width of the subfigure,

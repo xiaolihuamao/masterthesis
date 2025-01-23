@@ -4,39 +4,6 @@
 
 \section{图}
 图的导入需要提前准备好图片文件，最好是.png、.eps、.pdf或.jpg文件。另外，如果是从matlab导出图片文件，可使用print函数或手动导出，print函数的使用可参考ICGNC2020plot.m以及PlotToFileColorPDF.m文件等。手动导出（matlab的figure界面的“文件”->“导出设置”设置好大小、分辨率和线宽等然后点击“应用于图窗”）主要用于观察效果，可设置某种样式名称后保存该样式，下次使用时加载，具体可百度“matlab导出高清图片”。需要特别注意的是一定要1:1导入matlab生成的图片，并且图中文字设置好字体字号。否则缩放之后，图片的字号就变了，盲审老师一眼就能看出来字号不对，就很麻烦。这就是为什么要在matlab点击“应用于图窗“进行预览，观测效果后再1:1使用图片。
-
-使用如下代码放置独立成行的图片，效果如图\ref{one_DFUAV}所示
-\begin{lstlisting}
-\begin{figure}[htbp]
-	% 图片居中（列居中对齐）
-	\centering	
-	% 包含当前路径下的Fig文件夹的图片文件DFUAV_f31.png
-	\includegraphics[width=0.8\textwidth]{Fig/DFUAV_f31.png} 
-	% 添加标签one_DFUAV以及图标题“涵道风扇式无人机”，引用某图时使用\ref{xxx}，其中xxx就是标签，图编号是自动生成的。
-	\caption{\label{one_DFUAV}涵道风扇式无人机} 
-\end{figure}
-\end{lstlisting}
-其中figure为环境名，[htbp]表示将图片设置为浮动体，实际上这在.cls文件已经设置过，因而可以省略。[scale=1]表示安装1:1的比例导入图片，还可以按其他方式导入，需要时可自行百度。
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=0.8\textwidth]{Fig/DFUAV_f31.png}
-	\caption{\label{one_DFUAV}涵道风扇式无人机}
-\end{figure}
-
-下一章图是这样的
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=0.8\textwidth]{Fig/honeywell_t-hawk.jpg}
-	\caption{\label{pic3}}
-\end{figure}
-
-下面插入一下我自己的图
-下一章图是这样的如图\ref{CVAE}所示，CVAE是非常好看的
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=\textwidth]{Fig/CVAE示意图.drawio.pdf}
-	\FigureBicaption{\label{CVAE}（a）CVAE示意图；（b）VAE示意图}{(a) CVAE option}
-\end{figure}
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{Fig/LF_lossF.pdf}
@@ -55,6 +22,7 @@
 	\includegraphics[width=0.8\textwidth]{Fig/Maxwell_sin_metric.pdf}
 	\FigureBicaption{\label{CVAE3}（a）CVAE示意图；（b）VAE示意图}{(a) CVAE option}
 \end{figure}
+
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.8\textwidth]{Fig/Maxwell_timesteps_metrics.pdf}
@@ -67,56 +35,7 @@
 	\FigureBicaption{\label{CVAE5}（a）CVAE示意图；（b）VAE示意图}{(a) CVAE option}
 \end{figure}
 
-\cite{1985}
 通常一个figure内含有其他小的figure,可以使用一些宏包，但最初本着简单的原则，本模板并没有使用这些子图包。后来应同学们要求在，把子图的功能加上，主要是修改了模板文件（scutthesis.cls文件）的功能包参数。注意，很多网上拿到的代码不一定可以精确的调子图标题字体字号，因为此模板的子图标题字体字号是利用subfig宏包的选项进行设置的（在scutthesis.cls文件的“图表环境”中），而有些教程使用subcaption进行同样的设置，还需进一步验证可行性。另外图的排版方法很多，有些宏包已经被弃用，所以尽量使用本文给出的案例的格式进行排版图片。
-
-常见的子图包有subfigure和subfig。subfigure是比较老的了，这里使用subfig包。两个包在使用的时候用法不同，千万不要混淆了，不然可能会报错。subfig包的命令是\textbackslash{}subfloat。这里给出一种使用subfig包的常用排版，如图\ref{Fig:1}的子图\subref{Fig:1:b}，其中\subref*{Fig:1:a}的试验并不好（这里测试了交叉引用\textbackslash{}subref\{xxx\}和\textbackslash{}subref*\{xxx\}）。必要时也可以排版多行多列的图、调整图之间的间距，具体可百度。
-
-\begin{lstlisting}
-\begin{figure}[!h]
-	\centering
-	\subfloat[不合理的轨迹]{\includegraphics[width=6cm,height=6cm]{Fig/Figure_1.png}%
-		\label{Fig:1:a}}
-	\subfloat[优化的轨迹]{\includegraphics[width=6cm,height=6cm]{Fig/Figure_2.png}
-		\label{Fig:1:b}}
-	\\ % 用 \\ 换行，也可以此处空一行进行换行，只有两个图的话下面就不需要了。
-	\subfloat[不合理的轨迹]{\includegraphics[width=6cm,height=6cm]{Fig/Figure_1.png}%
-		\label{Fig:1:c}}
-	\subfloat[优化的轨迹]{\includegraphics[width=6cm,height=6cm]{Fig/Figure_2.png}%
-		\label{Fig:1:d}}
-	\caption{子图包使用测试}\label{Fig:1}
-\end{figure}
-----------------------------------------------------------
-% 引用某子图时使用\subref{xxx}，其中xxx就是标签Fig:1:a
-子图的引用比较特殊，命令有：\subref{xxx}和\subref*{xxx}
-注：在subfig包使用说明中，\subref{xxx}和\subref*{xxx}分别由参数listofformat和subrefformat控制，
-并由如下定义，根据撰写规范需要定义为：
-\DeclareSubrefFormat{empty}{}
-\DeclareSubrefFormat{simple}{#1#2}
-\DeclareSubrefFormat{parens}{#1 #2)}
-\DeclareSubrefFormat{subsimple}{#2}
-\DeclareSubrefFormat{subparens}{ #2)}
-和
-\DeclareCaptionListOfFormat{empty}{}
-\DeclareCaptionListOfFormat{simple}{#1#2}
-\DeclareCaptionListOfFormat{parens}{#1 #2)}
-\DeclareCaptionListOfFormat{subsimple}{#2}
-\DeclareCaptionListOfFormat{subparens}{ #2)}
-\end{lstlisting}
-\begin{figure}[!h]
-	\centering
-	\subfloat[不合理的轨迹]{\includegraphics[width=6cm,height=6cm]{Fig/Figure_1.png}%
-		\label{Fig:1:a}}
-	\subfloat[优化的轨迹]{\includegraphics[width=6cm,height=6cm]{Fig/Figure_2.png}
-		\label{Fig:1:b}}
-	\\ % 用 \\ 换行，也可以此处空一行进行换行
-	\subfloat[不合理的轨迹]{\includegraphics[width=6cm,height=6cm]{Fig/Figure_1.png}%
-		\label{Fig:1:c}}
-	\subfloat[优化的轨迹]{\includegraphics[width=6cm,height=6cm]{Fig/Figure_2.png}%
-		\label{Fig:1:d}}
-	\caption{子图包使用测试}\label{Fig:1}
-\end{figure}
-
 % 3.2表================================================
 \section{表}
 本节仅展示使用常见的三线表
