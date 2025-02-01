@@ -13,7 +13,40 @@
 \addbibresource[location=local]{biblibrary/jichuliubian.bib} 
 \addbibresource[location=local]{biblibrary/shuzhimoni.bib} 
 \addbibresource[location=local]{biblibrary/deepbengou.bib}
-\addbibresource[location=local]{biblibrary/deeplearning.bib}  
+\addbibresource[location=local]{biblibrary/deeplearning.bib}
+% 自定义相关引用格式，去掉 “In: Springer US.”
+\renewbibmacro{in:}{%
+  \printtext{\bibstring{}}%
+  \clearfield{institution}%
+  \clearname{editor}%
+  \clearfield{series}%
+  \clearfield{publisher}%
+  \clearfield{location}%
+  \newunit}
+
+% 自定义 inproceedings 和 inbook 的相关引用格式
+\renewbibmacro*{related:inproceedings}{%
+  \entrydata*{\relatedentry}{%
+    \usedriver{}{\thefield{entrytype}}%
+    \newunit}}
+
+\renewbibmacro*{related:inbook}{%
+  \entrydata*{\relatedentry}{%
+    \usedriver{}{\thefield{entrytype}}%
+    \newunit}}
+
+% 自定义 relatedstring 格式
+\DeclareFieldFormat{relatedstring:inproceedings}{}
+\DeclareFieldFormat{relatedstring:inbook}{}
+
+% 移除析出文献中的 “In: Springer US.”
+\renewbibmacro{cite:inproceedings}{%
+  \usebibmacro{cite:author}%
+  \setunit{\addcomma\space}%
+  \usebibmacro{cite:title}%
+  \setunit{\addcomma\space}%
+  \usebibmacro{cite:journal+issuetitle}%
+  \newunit}
 %页眉页脚设置
 \usepackage{fancyhdr}
 \usepackage{listings}
@@ -32,14 +65,15 @@
 \renewcommand{\headrulewidth}{1.5pt}
 \renewcommand{\footrulewidth}{0pt}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage[unicode=true,bookmarks=true,bookmarksnumbered=true,bookmarksopen=false,breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=true]{hyperref}
+% \usepackage[unicode=true,bookmarks=true,bookmarksnumbered=true,bookmarksopen=false,breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=true]{hyperref}
+\usepackage[unicode=true, bookmarks=true, bookmarksnumbered=true, pdfborder={0 0 1}, colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black]{hyperref}
 \hypersetup{pdftitle={LaTeX模板使用说明},
 	pdfauthor={姓名},
 	pdfsubject={华南理工大学硕士学位论文},
 %%	pdfsubject={华南理工大学博士学位论文},
 	pdfkeywords={PDF关键字1;PDF关键字2},
-%%		linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, urlcolor=black, pdfstartview=FitH}% 黑白，提交版
-	linkcolor=blue, anchorcolor=black, citecolor=red, filecolor=magenta, menucolor=red, urlcolor=magenta, pdfstartview=FitH}% 彩色
+		linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black, menucolor=black, urlcolor=black, pdfstartview=FitH}% 黑白，提交版
+	% linkcolor=blue, anchorcolor=black, citecolor=red, filecolor=magenta, menucolor=red, urlcolor=magenta, pdfstartview=FitH}% 彩色
 
 \makeatletter
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
@@ -87,7 +121,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%页眉页脚设置 ——by MCH 
 \fancypagestyle{plain}{
-	\pagestyle{fancy}
+  \pagestyle{fancy}
 }	% 每章的第一页会默认使用plain，没有页眉。通过重定义plain为fancy解决
 \pagestyle{fancy}	%设置页眉页脚为fancy
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%分章节，结合导言区的\includeonly命令可仅编译部分章节，编译时不用切换界面，直接在相应章节编译即可。

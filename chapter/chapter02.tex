@@ -1,26 +1,102 @@
-\chapter{模板简介}
-%
-与很多外文杂志社不同，大部分中文期刊都不提供\LaTeX{}模板给投稿者使用，也很少有学校给学生提供官方的毕业论文模板。目前github上的大部分模板都是由学生发起的非官方模板。在此感谢Shun Xu以及yecfly等人的工作，他们的无私贡献使得华南理工大学硕博士毕业论文也可以使用\LaTeX{}撰写。
+\chapter{算法介绍}
+\section{引言}
+本文基本的研究思路是使用数值模拟算法和深度学习算法来研究流变学本构方程建模的问题。本文第一部分使用可处理序列时间序列数据的循环神经网络门控循环单元（GRU）来建模数值方法生成的时间依赖性本构方程数据，主要涉及的算法有GRU算法，本章同时综述了时间序列数据的其他深度学习算法。第二部分使用物理信息神经网络来对真实的流变学实验数据进行建模，涉及物理信息神经网络算法（PINN），注意力特征融合方法，以及条件变分自编码器（CVAE）等生成式模型算法。
 
-本模板是直接修改前人的模板得到的，更详细的介绍可到下载。本章仅从用户的角度简要介绍模板的使用，而尽量避免涉及\LaTeX{}的模板制作细节（实际上是因为本人也不会）。正如我们使用手机并不需要了解麦克斯韦方程组，使用\LaTeX{}写作也无需了解模板是如何制作的。
+本章将在此基础上，对研究中所涉及的关键算法进行理论概述，并阐述算法选型的依据，以系统性地综述相关领域的研究进展，为后续研究奠定理论基础。
+\section{时间序列深度学习算法}
+\subsection{时间序列数据介绍}
+时间序列数据是指在一系列时间点上按时间顺序排列的数据点集合。这些数据点通常是连续或定期记录的，反映了某个变量随时间的变化情况。时间序列数据在许多领域中都有广泛的应用，例如金融、气象学、经济学、工程学等。
 
-\LaTeX{}的源代码保存在后缀名为.tex的文件中。当编写长篇文档时，例如当编写书籍、毕业论文时，单个源文件会使修改、校对变得十分困
-难。将源文件分割成若干个文件，例如将每章内容单独写在一个文件中，会大大简化修改和校对
-的工作。为方便，本文将scutthesis.tex文件称为主文件，而将abstract.tex、chapter0x.tex、conclusion.tex等文件称为章节文件。
+在流变学研究中，时间域的应力应变数据作为一种典型的时间序列数据，时间依赖性突出，每个数据点均与特定时间时刻紧密关联，其顺序关系对于揭示材料的流变特性至关重要。应力应变数据常表现出趋势特征，如在长期加载过程中，应力可能随时间逐渐增加或减少，反映材料的黏弹性行为。在周期性加载或卸载条件下，数据可能呈现出与加载周期相一致的季节性波动。此外，数据中还可能存在与材料微观结构变化或外部环境因素相关的更长期周期性特征。
+同时时间序列数据的一大特征是不同时间点的数据点之间存在依赖关系，这导致时间序列数据具有高度的时序相关性，并且需要考虑时序相关的特征提取和建模。时间域的应力应变数据在小应变时满足玻尔兹曼叠加原理，即当前应力状态为之前所有应变历史的线性和。大应变时不满足玻尔兹曼的线性叠加，但是依旧可以表示为过去应变历史的某种非线性关系叠加。综上所述，所以时间域的应力应变数据可以归为时间序列数据。
+\subsection{循环神经网络}
+\subsubsection{简单RNN}
+循环神经网络（RNN）是一种专门处理序列数据的神经网络结构，其核心在于利用循环结构捕捉时间或顺序上的依赖关系。RNN的基本结构由输入层、隐藏层和输出层组成。隐藏层中的神经元不仅接收来自输入层的信号，还接收来自前一时刻隐藏层的信号。这种循环连接使得RNN 能够捕获序列中的时间依赖关系。
+RNN的数学模型可以通过以下公式\eqref{eq:rnnht}描述：
+\begin{align}
+   & \mathbf{h}_t = \sigma(\mathbf{W}_{xh} \mathbf{x}_t + \mathbf{W}_{hh} \mathbf{h}_{t-1} + \mathbf{b}_h) \label{eq:rnnht} \\
+   & {\mathbf{o}_t = \mathbf{W}_{ho} \mathbf{h}_t + \mathbf{b}_o} \label{eq:rnnot}
+\end{align}
+其中$\mathbf{h}_t$ 是时刻 $t$ 的隐藏状态，$\mathbf{x}_t$ 是时刻 $t$ 的输入，$\mathbf{o}_t$ 是时刻 $t$ 的输出，$\mathbf{W}_{xh}$ 是输入到隐藏层的权重矩阵，$\mathbf{W}_{hh}$ 是隐藏层到隐藏层的权重矩阵，$\mathbf{W}_{ho}$ 是隐藏层到输出层的权重矩阵，$\mathbf{b}_h$ 和 $\mathbf{b}_o$ 是偏置。$\sigma$是激活函数，通常使用 $\tanh$ 或 $\text{ReLU}$。RNN 的训练过程通常使用反向传播算法。通过计算梯度来更新权重矩阵，从而最小化损失函数。
 
-。
+在简单的RNN中，存在梯度消失问题，这主要源于反向传播过程中梯度的连乘效应。损失函数 $L$ 对 $\mathbf{W}_{hh}$ 的梯度可以表示为公式\eqref{eq:rnngradient}：
+\begin{align}
+  \frac{\partial L}{\partial \mathbf{W}_{hh}} = \sum_{t=1}^{T} \frac{\partial L}{\partial \mathbf{h}_t} \cdot \frac{\partial \mathbf{h}_t}{\partial \mathbf{W}_{hh}} \label{eq:rnngradient}
+\end{align}
+展开后，隐藏状态关于$\mathbf{W}_{hh}$ 的导数为公式\eqref{eq:rnngradient2}：
+\begin{align}
+  \frac{\partial \mathbf{h}_t}{\partial \mathbf{W}_{hh}} = \sigma'(\mathbf{W}_{hh} \mathbf{h}_{t-1} + \mathbf{W}_{xh} \mathbf{x}_t + \mathbf{b}_h) \cdot \mathbf{h}_{t-1}^T \label{eq:rnngradient2}
+\end{align}
+注意到，$\frac{\partial L}{\partial \mathbf{h}_t}$依赖于前一个时间步的梯度，如公式\eqref{eq:rnngradient3}：
+\begin{align}
+  \frac{\partial L}{\partial \mathbf{h}_t} = \frac{\partial L}{\partial \mathbf{h}_{t+1}} \cdot \frac{\partial \mathbf{h}_{t+1}}{\partial \mathbf{h}_t} = \frac{\partial L}{\partial \mathbf{h}_{t+1}} \cdot \mathbf{W}_{hh} \cdot \sigma'(\mathbf{h}_t) \label{eq:rnngradient3}
+\end{align}
+这表明梯度在通过时间反向传播时会乘以$\mathbf{W}_{hh}$。
+从时间$t$到时间$T$的梯度可以表示为公式\eqref{eq:rnngradient4}：
+\begin{align}
+  \frac{\partial L}{\partial \mathbf{h}_t} = \left( \prod_{k=t+1}^{T} \mathbf{W}_{hh} \cdot \sigma'(\mathbf{h}_{k-1}) \right) \cdot \frac{\partial L}{\partial \mathbf{h}_T} \label{eq:rnngradient4}
+\end{align}
+其中乘积 $\prod_{k=t+1}^{T} \mathbf{W}_{hh} \cdot \sigma'(\mathbf{h}_{k-1})$在某些情况下可能会非常小，例如如果 $\mathbf{W}_{hh}$的特征值小于1，那么随着$(T - t)$的增加，$\mathbf{W}_{hh}^{T-t}$将呈指数级减小并趋近于零。
+如果反向传播过程中每一项都小于1，那么整个乘积将随着 $(T - t)$的增加呈指数级减小。
+这意味着对于远离输出端的时间步$t$，梯度$\frac{\partial L}{\partial \mathbf{h}_t}$将非常小，导致权重更新几乎停止，这就是RNN的梯度消失问题。由于RNN为了捕捉时间依赖性，我们不可避免地设置长时间步，这导致RNN梯度消失问题几乎难以避免。
 
-\section{主文件}
-scutthesis.tex文件相当于主函数，调用各章的内容。\LaTeX{}源代码以一个\textbackslash{}documentclass 命令作为开头，它指定了文档使用的文档类。文档类规定了\LaTeX{}源代码所要生成的文档的性质——普通文章、书籍、演示文稿、个人简
-历等等。
-其中class-name为文档类的名称，如\LaTeX{}提供的article, book, report，可在其基础上派
-生的一些文档类或者有其它功能的一些文档类。\LaTeX{}提供的基础文档类见文
+\subsubsection{LSTM}
+为了解决简单RNN的梯度消失问题，为了解决简单RNN的梯度消失问题，研究者们提出了长短期记忆网络（LSTM）。LSTM通过引入门控机制来控制信息的流动，从而有效地缓解梯度消失问题。LSTM的核心结构包括输入门、遗忘门和输出门，这些门控机制能够有效地控制信息的流动，从而捕获长期依赖关系。
+LSTM 的状态更新公式如下：
+\begin{align}
+  \mathbf{i}_t         & = \sigma(\mathbf{W}_{xi} \mathbf{x}_t + \mathbf{W}_{hi} \mathbf{h}_{t-1} + \mathbf{b}_i) \\
+  \mathbf{f}_t         & = \sigma(\mathbf{W}_{xf} \mathbf{x}_t + \mathbf{W}_{hf} \mathbf{h}_{t-1} + \mathbf{b}_f) \\
+  \mathbf{o}_t         & = \sigma(\mathbf{W}_{xo} \mathbf{x}_t + \mathbf{W}_{ho} \mathbf{h}_{t-1} + \mathbf{b}_o) \\
+  \tilde{\mathbf{c}}_t & = \tanh(\mathbf{W}_c \mathbf{x}_t + \mathbf{W}_c \mathbf{h}_{t-1} + \mathbf{b}_c)        \\
+  \mathbf{c}_t         & = \mathbf{f}_t \odot \mathbf{c}_{t-1} + \mathbf{i}_t \odot  \tilde{\mathbf{c}}_t         \\
+  \mathbf{h}_t         & = \mathbf{o}_t \odot \tanh(\mathbf{c}_t)
+\end{align}
+在LSTM中，$\mathbf{i}_t$、$\mathbf{f}_t$和$\mathbf{o}_t$分别是输入门、遗忘门和输出门，$\tilde{\mathbf{c}}_t$是候选单元状态，$\mathbf{c}_t$是单元状态，$\odot$表示哈达乘法，即逐元素乘法。遗忘门的输出控制着单元状态中旧信息的保留程度。当$\mathbf{f}_t$接近1时，表示大部分旧信息将被保留，梯度能够稳定地传播下去；而当$\mathbf{f}_t$接近0时，表示大部分旧信息将被丢弃。然而，只要隐藏状态单元不为0，梯度依然可以传播。
 
+输入门的输出决定了新信息存储到单元状态的程度。当输入门的输出接近1时，大量新信息将被存储到单元状态中，梯度可以通过新信息的路径传递，从而避免梯度消失。相反，当输入门的输出接近0时，新信息的存储受到限制，梯度主要依赖于旧信息的路径，但遗忘门仍然可以调节旧信息的保留程度。
 
+输出门的输出决定了单元状态信息的输出量。当输出门的输出接近1时，单元状态的信息会大量输出，梯度能够通过隐藏状态路径传递，确保信息的流动；而当输出门的输出接近0时，单元状态的信息输出受到限制，梯度主要依赖于单元状态路径，但遗忘门和输入门可以调节单元状态的更新。
 
+这些梯度计算确保了信息流动受到控制，从而避免了梯度的急剧变化。LSTM的单元状态$\mathbf{c}_t$的公式中不包含激活函数，因此其梯度不会受到非线性激活函数的抑制，从而避免了梯度的急剧变化。通过这些门控机制，LSTM能够有效地控制信息的流动，捕获长期依赖关系，解决简单RNN中的梯度消失问题。
 
+\subsubsection{GRU}
+LSTM虽然通过引入门控机制有效地解决了简单RNN中的梯度消失问题，但在实际应用中仍然存在一些问题。LSTM包含三个门（输入门、遗忘门、输出门），导致其参数数量较多，增加了模型的复杂度和计算成本。由于LSTM的复杂结构，其训练和推理速度相对较慢，尤其是在处理大规模数据时。为了解决LSTM的上述问题，研究者们提出了GRU（门控循环单元）作为LSTM的简化版本。GRU的设计初衷是为了简化LSTM的结构，同时保持其捕获长期依赖关系的能力。GRU只有重置门（Reset Gate）和更新门（Update Gate）两种门控单元，与LSTM相比，GRU的参数数量较少，训练和推理速度更快。重置门的计算公式为公式\eqref{eq:grureset}，
+\begin{align}
+  \mathbf{r}_t = \sigma(\mathbf{W}_r \mathbf{x}_t + \mathbf{U}_r \mathbf{h}_{t-1} + \mathbf{b}_r) \label{eq:grureset}
+\end{align}
+更新门的计算公式为公式\eqref{eq:gruupdate}，重置门决定了前一时间步的隐藏状态在多大程度上被忽略。当重置门的输出接近0时，网络倾向于“忘记”前一时间步的信息，仅依赖于当前输入；而当输出接近1时，前一时间步的信息将被更多地保留。
+更新门决定了多少过去的信息将被保留，而新信息将占据多少比例。当更新门的输出接近1时，新的隐藏状态几乎等同于旧的隐藏状态，从而实现了长期依赖的捕捉；当更新门的输出接近0时，新的隐藏状态将主要由当前输入决定。
+\begin{align}
+  \mathbf{z}_t = \sigma(\mathbf{W}_z \mathbf{x}_t + \mathbf{U}_z \mathbf{h}_{t-1} + \mathbf{b}_z) \label{eq:gruupdate}
+\end{align}
+候选隐藏状态决定了当前时间步的新信息，如公式\eqref{eq:gruhih}所示。
+\begin{align}
+  \tilde{\mathbf{h}}_t = \tanh(\mathbf{W}_h \mathbf{x}_t + \mathbf{U}_h (\mathbf{r}_t \odot \mathbf{h}_{t-1}) + \mathbf{b}_h) \label{eq:gruhih}
+\end{align}
+当前隐藏状态如公式\eqref{eq:gruhi}所示，这里的当前隐藏状态与上文LSTM的隐藏状态含义是一样的。
+\begin{align}
+  \mathbf{h}_t = (1 - \mathbf{z}_t) \odot \mathbf{h}_{t-1} + \mathbf{z}_t \odot \tilde{\mathbf{h}}_t \label{eq:gruhi}
+\end{align}
 
+GRU移除了单元状态的概念，直接从门控单元来计算隐藏状态，GRU 通过重置门和更新门的协同工作，实现了对信息流动的有效控制，使得网络能够在需要时记住长期依赖关系，同时减少梯度消失/爆炸的问题。GRU的结构比LSTM更简单，计算效率更高，因此在实践应用中广受欢迎。
+\subsection{其他时间序列算法}
+在深度学习领域，针对时间序列数据的处理方法已呈现出多样化的趋势。除了传统的循环神经网络（RNN）及其变体，近年来研究人员提出多种新型网络架构，包括卷积神经网络（CNN）、Transformer以及Mamba网络等，这些方法在时间序列分析中展现出显著的优势。
 
+卷积神经网络（CNN）最初是为图像处理任务设计的，但其在时间序列分析中的应用也取得了显著成效。通过引入一维卷积操作，CNN能够有效地从时间序列数据中提取局部特征。由于卷积操作具有权值共享的特性，CNN在处理长序列数据时表现出较高的计算效率，并且能够有效规避传统RNN中常见的梯度消失或梯度爆炸问题。通过多层卷积结构的堆叠，CNN能够捕获更为复杂的时间依赖性，进而在语音识别、金融预测等实际应用中表现出优异的性能。
 
-综上，论文撰写只需要将自己的文本（包含行内公式）放到相应的章节处，并添加行间公式、图表环境并填写图表即可。行间公式、图表将在下一章介绍。
+Transformer模型是近年来在自然语言处理（NLP）领域取得突破性进展的架构，其核心在于自注意力机制（Self-Attention）。与传统的RNN类模型不同，Transformer摒弃了序列顺序处理的限制，转而通过全局上下文信息建模序列中各元素之间的依赖关系。这种机制使得Transformer能够并行处理长序列数据，并捕获全局时序特征。在时间序列分析任务中，Transformer通过自注意力机制能够聚焦于序列中的关键时间点，从而有效建模时序依赖性和非线性关系。这一特性使其在机器翻译、语音识别等任务中超越了传统模型的表现。
 
+Mamba网络是近年来提出的一种新型时间序列处理架构，专门针对复杂时间序列数据的高效建模而设计。与传统的RNN或CNN模型相比，Mamba网络通过引入多尺度时序建模策略，能够同时捕获时间序列中不同时间尺度的特征。这种多尺度建模方法不仅增强了模型的表达能力，还提升了其在处理多变且复杂时序数据时的鲁棒性。Mamba网络的独特之处在于其能够整合多层次时序信息进行联合建模，从而为不同时间粒度的变化提供更为精确的预测。这一特性使其在金融市场分析、气象预测等领域展现出广阔的应用前景。
+
+这些方法不仅拓展了时间序列建模的理论边界，也为实际应用提供了更为强大的工具。本文的研究工作是选择一种可以处理时间序列的算法来对数值模拟的流变学数据进行建模预测，样本量在万级，属于中小规模数据集，综合考虑算法时空间复杂度和训练成本，选择RNN中的GRU作为算法模型。，未来针对更多流变学数据和复杂场景，可以进一步研究其他前沿模型的应用。
+\section{物理信息神经网络}
+\subsection{理论基础}
+\subsection{损失函数构建}
+\subsection{未来技术优化}
+\section{特征融合方法}
+\subsection{简单特征融合}
+\subsection{注意力特征融合}
+\section{生成式模型}
+\subsection{生成对抗网络}
+\subsection{变分自编码器}
+\subsection{扩散模型}
