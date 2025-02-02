@@ -1,4 +1,4 @@
-@inproceedings{10.5555/2969442.2969628,
+@inproceedings{SohnLee2015ConditionalVAE,
   title      = {Learning Structured Output Representation Using Deep Conditional Generative Models},
   booktitle  = {Proceedings of the 29th International Conference on Neural Information Processing Systems - Volume 2},
   author     = {Sohn, Kihyuk and Yan, Xinchen and Lee, Honglak},
@@ -8,11 +8,10 @@
   publisher  = {MIT Press},
   location   = {Cambridge, MA, USA},
   pagetotal  = {9},
-  annotation = {titleTranslation: 利用深度条件生成模型学习结构化输出表示\\
-                abstractTranslation:  有监督的深度学习已经成功应用于许多识别问题。虽然当提供大量的训练数据时，它可以很好地近似复杂的多对一函数，但对复杂的结构化输出表示进行建模，从而有效地进行概率推理并做出多样化的预测仍然具有挑战性。在这项工作中，我们开发了一个使用高斯潜变量的结构化输出预测的深度条件生成模型。该模型在随机梯度变分贝叶斯框架下进行高效训练，并允许使用随机前馈推断进行快速预测。此外，我们提供了新的策略来构建鲁棒的结构化预测算法，例如输入噪声注入和多尺度预测目标化}
+  annotation = {titleTranslation: CVAE原始文献}
 }
 
-@inproceedings{10.5555/3295222.3295349,
+@inproceedings{Vaswanietal2017Attention,
   title      = {Attention Is All You Need},
   booktitle  = {Proceedings of the 31st International Conference on Neural Information Processing Systems},
   author     = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, Łukasz and Polosukhin, Illia},
@@ -23,8 +22,8 @@
   location   = {Red Hook, NY, USA},
   isbn       = {978-1-5108-6096-4},
   pagetotal  = {11},
-  annotation = {titleTranslation: 注意力是你所需要的一切\\
-                abstractTranslation:  占主导地位的序列转导模型是基于复杂的循环或卷积神经网络，包括编码器和解码器。表现最好的模型还通过注意力机制将编码器和解码器连接起来。我们提出了一种新的简单的网络结构，Transformer，它完全基于注意力机制，不需要递归和卷积。在两个机器翻译任务上的实验表明，这些模型在质量上更胜一筹，同时具有更高的可并行性，需要的训练时间也显著减少。我们的模型在WMT 2014英德翻译任务上达到了28.4 BLEU，比现有的最好结果(包括集成)提高了2 BLEU以上。在WMT 2014英法翻译任务上，我们的模型建立了一个}
+  annotation = {titleTranslation: Attention Is All You Need\\
+                abstractTranslation: 在2017年，Google团队在自然语言处理领域中提出Attention Is All You Need，并paper被引用了超过1000次。本文是Attention Is All You Need的论文全文，并paper被引用了超过2000次。}
 }
 
 @inproceedings{agarwalComprehensiveReviewLinear2024,
@@ -36,9 +35,11 @@
   publisher  = {Springer Nature Singapore},
   location   = {Singapore},
   isbn       = {978-981-9709-75-5},
-  annotation = {titleTranslation: 全面回顾了线性回归、随机森林、Xgboost和Svr：整合机器学习和精算学进行健康险定价\\
-                abstractTranslation:  精算科学和数据科学正在被研究作为使用物联网、人工智能、大数据和机器学习( ML )算法等工业4.0技术的融合。当分析精算学的早期成分时，本来可以更加准确和快速，但当AI和ML的后期阶段被整合时，算法并没有达到标准，精算师也经历了一些准确性的担忧。公司要求精算师在分析中做到精确，以获得可靠的结果。由于这些公司收集了大量的数据，手动做出的选择可能是错误的。因此，我们将在本文中检验替代模型，作为决策过程的一部分。一旦我们选择了最佳的行动路径，}
+  annotation = {titleTranslation: 利用线性回归、随机森林、XGBoost和SVR进行机器学习和保险科学集成\\
+                abstractTranslation:  机器学习和保险科学是机器学习领域中Two Sigma Insights Insights
+                }
 }
+
 
 @inproceedings{choLearningPhraseRepresentations2014,
   title      = {Learning {{Phrase Representations}} Using {{RNN Encoder}}–{{Decoder}} for {{Statistical Machine Translation}}},
@@ -66,7 +67,40 @@
   annotation   = {titleTranslation: 及时寻找结构，RNN原始文献\\
                   }
 }
-
+@article{schmidhuber1997long,
+  title      = {Long short-term memory},
+  author     = {Schmidhuber, J{\"u}rgen and Hochreiter, Sepp and others},
+  journal    = {Neural Comput},
+  volume     = {9},
+  number     = {8},
+  pages      = {1735--1780},
+  year       = {1997},
+  annotation = {titleTranslation: 长短期记忆\\
+                abstractTranslation:  长短期记忆（LSTM）
+                }
+}
+@article{lecun1998gradient,
+  title     = {Gradient-based learning applied to document recognition},
+  author    = {LeCun, Yann and Bottou, L{\'e}on and Bengio, Yoshua and Haffner, Patrick},
+  journal   = {Proceedings of the IEEE},
+  volume    = {86},
+  number    = {11},
+  pages     = {2278--2324},
+  year      = {1998},
+  publisher = {Ieee},
+  note      = {annotation: 卷积神经网络原始文献}
+}
+@article{li2021survey,
+  title      = {A survey of convolutional neural networks: analysis, applications, and prospects},
+  author     = {Li, Zewen and Liu, Fan and Yang, Wenjie and Peng, Shouheng and Zhou, Jun},
+  journal    = {IEEE transactions on neural networks and learning systems},
+  volume     = {33},
+  number     = {12},
+  pages      = {6999--7019},
+  year       = {2021},
+  publisher  = {IEEE},
+  annotation = {卷积神经网络的概况}
+}
 @article{galtonRegressionMediocrityHereditary1886,
   title        = {Regression towards Mediocrity in Hereditary Stature.},
   author       = {Galton, Francis},
@@ -79,12 +113,12 @@
   annotation   = {titleTranslation: 在遗传性身材上向平庸回归。}
 }
 
-@book{Goodfellow-et-al-2016,
-  title      = {Deep Learning},
-  author     = {Goodfellow, Ian and Bengio, Yoshua and Courville, Aaron},
-  date       = {2016},
-  publisher  = {MIT Press},
-  annotation = {titleTranslation: 深度学习}
+@article{gu2023mamba,
+  title      = {Mamba: Linear-time sequence modeling with selective state spaces},
+  author     = {Gu, Albert and Dao, Tri},
+  journal    = {arXiv preprint arXiv:2312.00752},
+  year       = {2023},
+  annotation = {titleTranslation: Mamba: 线性时间序列建模与选择性状态空间}
 }
 
 @article{karlMultiObjectiveHyperparameterOptimization2023,
@@ -254,4 +288,128 @@
   volume    = {60},
   year      = {2023},
   publisher = {Springer Nature}
+}
+
+@article{raissiPhysicsinformedNeuralNetworks2019a,
+  title        = {Physics-Informed Neural Networks: {{A}} Deep Learning Framework for Solving Forward and Inverse Problems Involving Nonlinear Partial Differential Equations},
+  author       = {Raissi, M. and Perdikaris, P. and Karniadakis, G.E.},
+  date         = {2019-02-01},
+  journaltitle = {Journal of Computational Physics},
+  shortjournal = {Journal of Computational Physics},
+  volume       = {378},
+  pages        = {686--707},
+  keywords     = {Data-driven scientific computing,Machine learning,Nonlinear dynamics,Predictive modeling,Runge–Kutta methods},
+  annotation   = {titleTranslation: 物理知识的神经网络：一个深度学习框架，用于解决涉及非线性偏微分方程的前进和反问题}
+}
+
+@article{luDeepXDEDeepLearning2021,
+  title        = {{{DeepXDE}}: {{A Deep Learning Library}} for {{Solving Differential Equations}}},
+  shorttitle   = {{{DeepXDE}}},
+  author       = {Lu, Lu and Meng, Xuhui and Mao, Zhiping and Karniadakis, George Em},
+  date         = {2021-01-01},
+  journaltitle = {SIAM Review},
+  shortjournal = {SIAM Rev.},
+  volume       = {63},
+  number       = {1},
+  pages        = {208--228},
+  urldate      = {2025-02-02},
+  annotation   = {titleTranslation: DEEPXDE：一个用于求解微分方程的深度学习库}
+}
+@article{farmerEmpiricalLossWeight2024,
+  title        = {Empirical Loss Weight Optimization for {{PINN}} Modeling Laser Bio-Effects on Human Skin for the {{1D}} Heat Equation},
+  author       = {Farmer, Jenny and Oian, Chad A. and Bowman, Brett A. and Khan, Taufiquar},
+  date         = {2024-06-01},
+  journaltitle = {Machine Learning with Applications},
+  shortjournal = {Machine Learning with Applications},
+  volume       = {16},
+  pages        = {100563},
+  keywords     = {Heat diffusion equation,Loss weights,Machine learning,PINN,Uncertainty quantification},
+  annotation   = {titleTranslation: 针对人类皮肤上的1D热方程的Pinn建模激光生物效应的经验减肥优化}
+}
+
+@article{songLossattentionalPhysicsinformedNeural2024,
+  title        = {Loss-Attentional Physics-Informed Neural Networks},
+  author       = {Song, Yanjie and Wang, He and Yang, He and Taccari, Maria Luisa and Chen, Xiaohui},
+  date         = {2024-03-15},
+  journaltitle = {Journal of Computational Physics},
+  shortjournal = {Journal of Computational Physics},
+  volume       = {501},
+  pages        = {112781},
+  keywords     = {Loss attention,Neural network,Novel architecture,Physics-informed neural network,Point error-based weighting method}
+}
+
+@article{xiangSelfadaptiveLossBalanced2022,
+  title        = {Self-Adaptive Loss Balanced {{Physics-informed}} Neural Networks},
+  author       = {Xiang, Zixue and Peng, Wei and Liu, Xu and Yao, Wen},
+  date         = {2022-07-28},
+  journaltitle = {Neurocomputing},
+  shortjournal = {Neurocomputing},
+  volume       = {496},
+  pages        = {11--34},
+  keywords     = {Loss balancing,Partial differential equations,Physics-informed neural networks}
+}
+@inproceedings{Shah2024BenchmarkingQA-PINN,
+  author    = {Shah, Jay and Lineswala, Rut and Chopra, Abhishek},
+  booktitle = {2024 IEEE International Conference on Quantum Computing and Engineering (QCE)},
+  title     = {Benchmarking Quantum-Assisted PINN (QA-PINN) for Computational Fluid Dynamics},
+  year      = {2024},
+  volume    = {01},
+  number    = {},
+  pages     = {1707-1712}
+}
+@inproceedings{Hillebrecht2022Certified,
+  author    = {Hillebrecht, Birgit and Unger, Benjamin},
+  booktitle = {2022 International Joint Conference on Neural Networks (IJCNN)},
+  title     = {Certified machine learning: A posteriori error estimation for physics-informed neural networks},
+  year      = {2022},
+  volume    = {},
+  number    = {},
+  pages     = {1-8}
+}
+@inproceedings{Haitsiukevich2023Improved,
+  author    = {Haitsiukevich, Katsiaryna and Ilin, Alexander},
+  booktitle = {2023 International Joint Conference on Neural Networks (IJCNN)},
+  title     = {Improved Training of Physics-Informed Neural Networks with Model Ensembles},
+  year      = {2023},
+  volume    = {},
+  number    = {},
+  pages     = {1-8}
+}
+
+@inproceedings{dai2021attentional,
+  title     = {Attentional feature fusion},
+  author    = {Dai, Yimian and Gieseke, Fabian and Oehmcke, Stefan and Wu, Yiquan and Barnard, Kobus},
+  booktitle = {Proceedings of the IEEE/CVF winter conference on applications of computer vision},
+  pages     = {3560--3569},
+  year      = {2021}
+}
+
+@article{liu2024cm,
+  title   = {CM-UNet: Hybrid CNN-Mamba UNet for Remote Sensing Image Semantic Segmentation},
+  author  = {Liu, Mushui and Dan, Jun and Lu, Ziqian and Yu, Yunlong and Li, Yingming and Li, Xi},
+  journal = {arXiv preprint arXiv:2405.10530},
+  year    = {2024}
+}
+
+@inproceedings{rong2023dynstatf,
+  title     = {DynStatF: an efficient feature fusion strategy for LiDAR 3D object detection},
+  author    = {Rong, Yao and Wei, Xiangyu and Lin, Tianwei and Wang, Yueyu and Kasneci, Enkelejda},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages     = {3237--3246},
+  year      = {2023}
+}
+@article{nagrani2021attention,
+  title   = {Attention bottlenecks for multimodal fusion},
+  author  = {Nagrani, Arsha and Yang, Shan and Arnab, Anurag and Jansen, Aren and Schmid, Cordelia and Sun, Chen},
+  journal = {Advances in neural information processing systems},
+  volume  = {34},
+  pages   = {14200--14213},
+  year    = {2021}
+}
+
+@article{kingma2013auto,
+  title   = {Auto-encoding variational bayes},
+  author  = {Kingma, Diederik P},
+  journal = {arXiv preprint arXiv:1312.6114},
+  year    = {2013}
 }
