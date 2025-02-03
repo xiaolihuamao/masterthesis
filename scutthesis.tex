@@ -14,39 +14,39 @@
 \addbibresource[location=local]{biblibrary/shuzhimoni.bib} 
 \addbibresource[location=local]{biblibrary/deepbengou.bib}
 \addbibresource[location=local]{biblibrary/deeplearning.bib}
-% 自定义相关引用格式，去掉 “In: Springer US.”
-\renewbibmacro{in:}{%
-  \printtext{\bibstring{}}%
-  \clearfield{institution}%
-  \clearname{editor}%
-  \clearfield{series}%
-  \clearfield{publisher}%
-  \clearfield{location}%
-  \newunit}
+% % 自定义相关引用格式，去掉 “In: Springer US.”
+% \renewbibmacro{in:}{%
+%   \printtext{\bibstring{}}%
+%   \clearfield{institution}%
+%   \clearname{editor}%
+%   \clearfield{series}%
+%   \clearfield{publisher}%
+%   \clearfield{location}%
+%   \newunit}
 
-% 自定义 inproceedings 和 inbook 的相关引用格式
-\renewbibmacro*{related:inproceedings}{%
-  \entrydata*{\relatedentry}{%
-    \usedriver{}{\thefield{entrytype}}%
-    \newunit}}
+% % 自定义 inproceedings 和 inbook 的相关引用格式
+% \renewbibmacro*{related:inproceedings}{%
+%   \entrydata*{\relatedentry}{%
+%     \usedriver{}{\thefield{entrytype}}%
+%     \newunit}}
 
-\renewbibmacro*{related:inbook}{%
-  \entrydata*{\relatedentry}{%
-    \usedriver{}{\thefield{entrytype}}%
-    \newunit}}
+% \renewbibmacro*{related:inbook}{%
+%   \entrydata*{\relatedentry}{%
+%     \usedriver{}{\thefield{entrytype}}%
+%     \newunit}}
 
-% 自定义 relatedstring 格式
-\DeclareFieldFormat{relatedstring:inproceedings}{}
-\DeclareFieldFormat{relatedstring:inbook}{}
+% % 自定义 relatedstring 格式
+% \DeclareFieldFormat{relatedstring:inproceedings}{}
+% \DeclareFieldFormat{relatedstring:inbook}{}
 
-% 移除析出文献中的 “In: Springer US.”
-\renewbibmacro{cite:inproceedings}{%
-  \usebibmacro{cite:author}%
-  \setunit{\addcomma\space}%
-  \usebibmacro{cite:title}%
-  \setunit{\addcomma\space}%
-  \usebibmacro{cite:journal+issuetitle}%
-  \newunit}
+% % 移除析出文献中的 “In: Springer US.”
+% \renewbibmacro{cite:inproceedings}{%
+%   \usebibmacro{cite:author}%
+%   \setunit{\addcomma\space}%
+%   \usebibmacro{cite:title}%
+%   \setunit{\addcomma\space}%
+%   \usebibmacro{cite:journal+issuetitle}%
+%   \newunit}
 %页眉页脚设置
 \usepackage{fancyhdr}
 \usepackage{listings}
