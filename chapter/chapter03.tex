@@ -1,6 +1,4 @@
-\chapter{GRU应用于数值模拟本构建模}
-强烈建议在使用公式、表格、定理环境时进行百度，没必要研究各种用法，只需要知道自己需要什么。因本人的论文所用表格较少，因而对表格不是很熟悉，本章对表格的介绍相应的较少。本章仅介绍本人在论文撰写过程中常用的环境以及参考文献设置。
-\section{数值模拟}
+\chapter{GRU应用于模拟数据本构建模研究}
 % 3.2表================================================
 % 本节仅展示使用常见的三线表
 % \begin{table}
@@ -18,11 +16,43 @@
 % 		\Xhline{1.5pt}
 % 	\end{tabularx}
 % \end{table}
-\section{本构建模}
-。
+\section{引言}
+近年来在深度学习对于流变学的本构建模中研究中，例如Lennon、Mahmoudabadbozchelou等人的研究工作，虽然细节方法各有不同，但是基本在模型选择上都选择普通多层感知机模型（MLP）\cite{lennonScientificMachineLearning2023a,mahmoudabadbozchelouDatadrivenPhysicsinformedConstitutive2021}。MLP是一种经典的前馈人工神经网络，由全连接层堆叠而成，包含输入层、多个隐藏层（≥1）及输出层，通过非线性激活函数实现复杂函数逼近。当MLP的隐藏层数到达一定值，MLP被视为深度神经网络（DNN）。传统的前馈性质的DNN模型（后简称DNN）具备一定的非线性行为捕捉能力，但是在处理时间序列数据或具有时间依赖性的数据时，其性能可能受到限制。Lennon和Mahmoudabadbozchelou的工作使用DNN模型，很难捕捉到黏弹性材料中的长程应变历史依赖性。本章的研究工作在前人的基础之上尝试使用GRU模型来构建本构建模，期待解决在处理时间序列数据时，DNN模型性能受限的问题。GRU的门控机制允许处理流变学数据，如应力应变数据时，控制历史信息的网络间流动。
 
-
-
+本章的研究工作首先采用数值模拟方法构建了经典本构方程的应力应变模拟数据，所涉及的经典本构方程包括Bingham模型、Maxwell模型、Doi-Edwards模型和Giesekus模型。这些模型在流变学领域具有重要的理论和应用价值，能够描述不同类型的流变行为。首先本章研究通过数值模拟方法，生成这些模型的应力应变数据，然后对GRU模型进行了详细的构建，包括模型的结构设计、参数初始化以及训练过程中的优化策略，之后，使用数值模拟生成的应力应变数据GRU模型进行训练，通过调整模型参数和优化算法，使模型能够准确地拟合训练数据。最终本章的研究通过与DNN的训练模型对比，验证了GRU模型在处理时间序列数据时的优势。
+\section{实验设计}
+\subsection{数值模拟}
+\subsubsection{Binham模型模拟}
+Binham模型的
+\subsubsection{Maxwell模型模拟}
+\subsubsection{Doi-Edwards模型模拟}
+\subsubsection{Giesekus模型模拟}
+\subsection{模型训练}
+\subsubsection{训练数据预处理}
+\subsubsection{训练细节}
+\subsection{模型测试}
+\subsubsection{测试指标细节}
+\subsubsection{不同模型的测试实验划分}
+\section{结果与讨论}
+\subsection{Binham模型建模}
+\subsubsection{数值模拟数据}
+\subsubsection{GRU/DNN模型预测效果对比}
+\subsection{Maxwell模型建模}
+\subsubsection{数值模拟数据}
+\subsubsection{交变协议预测交变协议效果验证}
+\subsubsection{交变协议预测线性协议效果验证}
+\subsubsection{不同时间步的预测效果对比}
+\subsection{Doi-Edwards模型建模}
+\subsubsection{数值模拟数据}
+\subsubsection{交变协议预测交变协议效果验证}
+\subsubsection{交变协议预测线性协议效果验证}
+\subsubsection{不同时间步的预测效果对比}
+\subsection{Giesekus模型建模}
+\subsubsection{数值模拟数据}
+\subsubsection{交变协议预测交变协议效果验证}
+\subsubsection{交变协议预测线性协议效果验证}
+\subsubsection{不同时间步的预测效果对比}
+\section{本章小结}
 
 
 
