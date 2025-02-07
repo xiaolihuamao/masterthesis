@@ -32,10 +32,10 @@
 图\ref{differ_fluid_intro}概述了两种不同类型的粘弹性材料的简单剪切行为。对于粘弹性固体和液体，阶跃应变会引起瞬时弹性响应，从而产生$\sigma$峰值。然而，应力不是保持不变或立即降至零，而是逐渐降低。它在很长一段时间内接近粘弹性固体的有限平台值，而粘弹性液体则完全衰减到零\cite{ricarteTutorialReviewLinear2024}。
 
 线性本构理论中最经典的是Maxwell模型\cite{maxwell1867iv}，如图\ref{maxwell_intro}所示，Maxwell模型将材料的弹性行为和粘性行为结合起来，它用一个弹簧（弹性元件）和一个粘壶（粘性元件）串联表示黏弹性关系。Maxwell模型的微分形式如公式\eqref{eq:maxwell_model_dt}所示，其中$\tau$表示松弛时间，等于$eta/G$。将两边积分得到Maxwell模型的积分形式如公式\eqref{eq:maxwell_model_int}所示。
-\begin{align}
-   & \frac{d\sigma}{dt} + \frac{\sigma}{\tau}  = G \frac{d\gamma}{dt} \label{eq:maxwell_model_dt}                                                   \\
-   & \sigma(t)                                = \int_{-\infty}^{t} G e^{-\frac{t-t'}{\tau}} \frac{d\gamma(t')}{dt'} dt'\label{eq:maxwell_model_int}
-\end{align}
+\begin{gather}
+  \frac{d\sigma}{dt} + \frac{\sigma}{\tau}  = G \frac{d\gamma}{dt} \label{eq:maxwell_model_dt}                                                   \\
+  \sigma(t)                                = \int_{-\infty}^{t} G e^{-\frac{t-t'}{\tau}} \frac{d\gamma(t')}{dt'} dt'\label{eq:maxwell_model_int}
+\end{gather}
 积分形式的方程显示了任何时刻的应力是松弛模量乘以应变速率的积分，该时刻之前材料的整个历史。由于被积函数中的衰减指数，模型具有衰落的记忆，因此最近的应变历史比过去的应变历史更重要。
 \begin{figure}[htbp]
   \centering
@@ -102,8 +102,8 @@ K-BKZ模型如公式\eqref{eq:k_bkz_model}所示。在 K-BKZ 模型中，$h$ 称
 \end{align}
 Doi和Edwards尝试从分子角度构建本构方程，在管子模型的基础上提出了Doi-Edwards模型（公式\eqref{eq:doi_edwards}）。Doi-Edwards 模型的核心思想是将高分子链的缠结效应简化为一条光滑管道对链的限制作用，链在管道中的运动通过松弛和扩散来描述\cite{doi1978dynamics1,doi1978dynamics2,doi1978dynamics3,doi1979dynamics4}。其中$G_0$表示松弛时间，而$Q$表示为公式\eqref{eq:doi_edwards_q}，反映了高分子链在形变历史下的方向分布变化，即链的取向如何随形变而变化。
 \begin{align}
-   & \boldsymbol{\sigma}(t)  = G_0 \int_{-\infty}^t \frac{\partial Q(\mathbf{E}(t,t'))}{\partial t'} \, dt'    \label{eq:doi_edwards}                                                                  \\
-   & Q(\mathbf{E}(t,t'))     = \frac{5}{2} \left\langle \frac{\mathbf{E}(t,t') \cdot \mathbf{u} \mathbf{u}}{|\mathbf{E}(t,t') \cdot \mathbf{u}|^2} \right\rangle_{\mathbf{u}} \label{eq:doi_edwards_q}
+   & \boldsymbol{\sigma}(t)  = G_0 \int_{-\infty}^t \frac{\partial Q(\mathbf{F}(t,t'))}{\partial t'} \, dt'    \label{eq:doi_edwards}                                                                  \\
+   & Q(\mathbf{F}(t,t'))     = \frac{5}{2} \left\langle \frac{\mathbf{F}(t,t') \cdot \mathbf{u} \mathbf{u}}{|\mathbf{F}(t,t') \cdot \mathbf{u}|^2} \right\rangle_{\mathbf{u}} \label{eq:doi_edwards_q}
 \end{align}
 传统的Doi-Edwards模型基于单链平均场近似，将缠结效应简化为一条光滑的“管子”对高分子链的限制作用。然而，这种简化忽略了链-链间的直接相互作用，难以解释快速大形变条件下的非线性流变现象（如应力过冲、缠结点破损和重组等）。近年来，研究者通过引入多链相互作用，提出了修正的管子模型，在此基础之上能够更好地描述缠结高分子流体的非线性行为\cite{OConnor1992ConfirmationOT,hassager2010constitutive,chupin2017mathematical}。
 
