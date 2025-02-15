@@ -1,28 +1,209 @@
 \chapter{基于流变学真实实验数据的物理信息-生成式混合建模方法研究}
 % 引言 引出第四章内容
-\todo[size=\small]{sff}
 \section{引言}
-流变学作为研究复杂流体与软物质力学响应的核心学科，其本构建模始终面临着实验数据与理论模型间的鸿沟。传统建模方法多依赖于理想化假设下的数值模拟，虽能构建出形式优美的本构方程，却难以准确捕捉真实材料在复杂工况下的非线性响应特征。近年来，随着高分子功能材料在柔性电子、生物医学等领域的突破性应用，材料体系呈现出多组分耦合、多尺度结构并存的特性，这使得基于第一性原理的建模方法在实验数据拟合精度与逆向设计效率方面遭遇双重瓶颈。针对这一科学难题，本研究提出物理信息驱动与生成式建模相融合的创新范式，通过深度整合流变学真实实验数据的多模态特征与物理守恒定律的强约束机制，构建起兼具预测精度与可解释性的智能建模框架。
+流变学本构建模长期面临实验数据与理论模型间的鸿沟。传统方法常基于理想化假设构建本构方程，虽能获得形式优美的数学模型，却难以准确表征真实材料在复杂工况下的非线性响应。基于前章通过GRU网络对模拟流变数据的时序建模基础，本章提出物理信息驱动与生成式建模融合的新范式，通过融合真实实验数据与物理守恒定律的强约束机制，构建兼具高预测精度与可解释性的智能建模框架。
 
-当前流变学本构建模领域存在两大核心矛盾：其一，传统物理模型在描述真实材料复杂流变行为时，常因过度简化导致预测偏差累积，而纯数据驱动的黑箱模型虽能实现高精度拟合，却丧失了物理可解释性这一流变学研究的本质诉求；其二，材料逆向设计过程中，基于试错法的实验优化模式耗费大量资源，而现有生成模型在流变学参数空间的可控生成方面缺乏物理约束，导致生成结果常偏离热力学可行域。本研究通过分析高分子嵌段共聚物（PBA）及其功能梯度材料（PFGs）的流变测试数据集，发现其储存模量-频率曲线在时温等效原理下呈现典型的分段幂律特征，这为构建物理信息嵌入的神经网络提供了天然的约束条件。与此同时，多组分材料体系的流变指纹具有高维参数空间中的低维流形特性，这为变分自编码器的潜空间建模创造了可行性基础。
+当前流变学本构建模领域存在两大核心矛盾，第一个矛盾是传统物理模型在描述真实材料复杂流变行为时，常因过度简化导致预测偏差累积，而纯数据驱动的黑箱模型虽能实现高精度拟合，却丧失了物理可解释性这一流变学研究的本质诉求，同时由于流变学数据往往依赖于各类流变仪的实验测量，所以优质的流变学数据是稀有的，本文前一章使用数值模拟方法可以生成大量模拟数据，但是这在真实实验上不可以复刻。Mahmoudabadbozchelou提出的一类PINN方法，通过多保重建模，首先通过对实验数据进行本构方程的参数拟合，然后借用拟合后的方程进行数值模拟生成大量低保真数据，之后使用高保真数据（原本的实验数据）和低保真数据（模拟数据）联合进行深度学习训练，在一定程度上缓解了数据不足问题，同时由于低保真数据本身是符合经典本构方程的，具有一定物理约束意义。本章参考了Mahmoudabadbozchelou的方法，来对一类黏弹性聚合物凝胶的流变学数据：储存模量（G'）、损耗模量（G"）和损耗角正切（tan$\delta$）进行PINN建模，尝试构建材料制备参数、频率到流变学性质的模型映射。在Mahmoudabadbozchelou的基础模型中，本文引入了几个优化，首先是通过引入可学习的损失函数权重，使得模型在训练过程中，能够根据训练数据中不同参数的分布情况，动态调整损失函数的权重，从而提高模型泛化能力，其次在特征工程方面，引入注意力特征融合的方法，进一步解决实验数据特征稀疏的问题。
 
-本研究创新性地将物理信息神经网络（PINN）与条件变分自编码器（CVAE）进行耦合，建立双向建模通道：在正向建模路径中，通过将质量守恒、动量守恒等物理定律编码为PINN的软约束条件，有效解决了小样本实验数据下的过拟合问题；在逆向设计路径中，利用CVAE的潜空间探索能力，结合流变响应的物理可行性验证模块，实现了从目标流变特性到材料制备参数的可控映射。这种混合建模策略不仅突破了传统方法在数据-物理融合层面的技术壁垒，更重要的是构建了闭环的材料设计-验证工作流，为智能流变学奠定了方法论基础。本章后续内容将系统阐述该混合建模方法的数据处理流程、网络架构创新以及验证实验结果，重点揭示物理约束与数据驱动机制的协同作用规律，为拓展智能建模在复杂流体研究中的应用边界提供新的理论工具。
+第二个矛盾是材料逆向设计过程中，基于试错法的实验优化模式耗费大量资源，而现有生成模型在流变学参数空间的可控生成方面缺乏物理约束，导致生成结果常偏离热力学可行域。近年来，许多研究者聚焦于材料制备参数到流变学性质的建模，但是实际应用中，根据已知的期望的材料性质，通过反向建模来确定这种材料应该如何制备也是非常重要。考虑到多组分材料体系的流变指纹具有高维参数空间中的低维流形特性，变分自编码器（VAE）的潜空间建模应用于流变学的反向建模是可行的，本章使用了VAE类模型中的条件变分自编码器（CVAE）来进行反向建模，探究特定制备参数到流变学特性的可控映射。
 
+综上所述，本章创新性地将物理信息神经网络（PINN）与条件变分自编码器（CVAE）进行耦合，建立双向建模通道：在正向建模路径中，通过将已知的本构方程编码为PINN的软约束条件，有效解决了小样本实验数据下的过拟合问题；在逆向设计路径中，利用CVAE的潜空间探索能力，结合流变响应的物理可行性验证模块，实现了从目标流变特性到材料制备参数的可控映射。这种混合建模策略不仅突破了传统方法在数据-物理融合层面的技术壁垒，更重要的是构建了闭环的材料设计-验证工作流，为智能流变学提供一定方法论基础。
 % 实验设计  描述本章的实验过程，介绍黄金的工作，模型相关公式等等
 \section{实验设计}
 \subsection{PINN数据预处理}
-\subsection{PINN模型训练}
-\subsection{PINN模型测试}
-\subsection{CVAE反向建模训练}
-\subsection{CVAE反向建模测试}
+\subsubsection{实验数据来源}
+本章所有训练和测试的实验数据是基于Huang等人的工作\cite{huangUltrahighEnergydissipationElastomers2021}。Huang等人介绍了一种将粘性聚合物流体（PBA）注入弹性网络中，形成聚合物流体凝胶（PFGs），以实现宽频带可控超高能量耗散的策略，如图\ref{huangjin-illustration}所示。
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/huangjin.png}
+  \FigureBicaption{\label{huangjin-illustration}PINN示意图}{PINN illustration}
+\end{figure}
+在实验过程中，Huang等人对不同分子量的PBA流体，注入不同分子量PBA制备的PFGs，分别进行了流变学实验，得到了对应材料特定频率下的储存模量、损耗模量和损耗角正切等数据。本章采用他们的实验数据进行具体的深度学习建模。
 
+\subsubsection{实验数据分类}
+首先本节对真实实验数据进行分类，第一类为单PBA流体数据，为不同分子量的PBA流体的流变学数据，特征包括：聚合度（DP）、数均分子量（Mn）、分散指数（PDI）、频率（$\omega$），标签包括：储存模量（G'）、损耗模量（G"）和损耗角正切（tan$\delta$），第二类为单分子量PBA注入制备的PFGs数据，特征和标签和第一类单PBA流体数据一致，第三类为多分子量PBA注入制备的PFGs数据，特征包括：不同分子量的PBA特征和组分信息（Mn$_i$、PDI$_i$、DP$_i$、$\phi_i$，$i=1,2,3$）、频率（$\omega$），标签包括：储存模量（G'）、损耗模量（G"）和损耗角正切（tan$\delta$）。
+
+\subsubsection{低保真数据生成}
+分类后，本节使用Doi-Edwards模型来进行低保真数据拟合。首先假设实验数据可以使用Doi-Edwards模型描述。Doi-Edwards模型的频率域公式可以通过时间域公式进行傅里叶变换得到公式\eqref{eq:doi-edwards-g1}和公式\eqref{eq:doi-edwards-g2}
+\begin{align}
+  G'(\omega) = G_0 \frac{8}{\pi^2} \sum_{p=1,3,5,\ldots}^{\infty} \frac{1}{p^2} \frac{1}{1 + (\omega \tau_d / p^2)^2} \label{eq:doi-edwards-g1} \\
+  G''(\omega) = G_0 \frac{8}{\pi^2} \sum_{p=1,3,5,\ldots}^{\infty} \frac{1}{p^2} \frac{\omega \tau_d / p^2}{1 + (\omega \tau_d / p^2)^2}
+  \label{eq:doi-edwards-g2}
+\end{align}
+本节使用Python的scipy.optimize库对真实数据进行最小二乘法的拟合，为了简化运算设置公式中的$p$为1，得到Doi-Edwards模型的拟合参数。之后根据拟合后的方程，通过Numpy库生成频率-模量数据，用于后续的PINN模型训练，这一部分数据被称为低保真数据（LF-data）。
+
+\subsubsection{数据集划分}
+\todo[inline]{数据集划分修改}
+将数据集按照8:1:1的比例划分为训练集、验证集和测试集，其中训练集和验证集用于模型训练，测试集用于模型验证。
+\subsection{PINN模型训练}
+\todo[inline]{详细说明一下PINN低保真和高保真的数据流}
+\subsubsection{损失函数构建}
+本节使用PINN模型对低保真数据（LF-data）和真实实验数据（高保真数据——HF-data）进行训练。构建低保真（$\mathbf{F_{lf}}$）和高保真（$\mathbf{F_{hf}}$）两个模型，两个模型为多层感知机（MLP）。低保真数据首先通过低保真模型输出低保真标签$y_{lf}$，之后$y_{lf}$与高保真数据进行拼接，组成联合特征，输入到高保真模型进行训练。具体公式如公式\eqref{eq:lf-model}和公式\eqref{eq:hf-model}所示。
+\begin{align}
+  y_{lf} & = \mathbf{F_{lf}}(X_{LF}) \label{eq:lf-model}                          \\
+  y_{hf} & = \mathbf{F_{hf}}(X_{HF}, \mathbf{F_{lf}}(X_{LF})) \label{eq:hf-model}
+\end{align}
+
+训练代码通过Python实现，机器学习框架采用PyTorch库，训练模型采用Adam优化器来进行优化，采用指标监控学习率调度器自动调整学习率，采用网格搜索算法和随机搜索算法对超参数进行调优，其中超参数包括：隐藏层数、隐藏层节点数、学习率、正则化系数、迭代次数、批次大小等。损失函数采用HuberLoss函数，如公式\eqref{eq:huber-loss}所示。HuberLoss通过$\delta$调节对异常值的敏感度，当$\delta$接近0时，HuberLoss接近平均绝对误差（MAE），当$\delta$接近无穷大时，HuberLoss接近均方误差（MSE），这种特性使得其可以更好地处理真实实验数据中的异常值问题和噪声问题。
+\begin{equation}
+  \begin{aligned}
+    L_\delta(y, \hat{y}) =
+    \begin{cases}
+      \frac{1}{2}(y - \hat{y})^2                 & \text{if } |y - \hat{y}| \le \delta    \\
+      \delta |y - \hat{y}| - \frac{1}{2}\delta^2 & \text{otherwise} \label{eq:huber-loss}
+    \end{cases}
+  \end{aligned}
+\end{equation}
+本节在基本的PINN损失函数构建公式中添加可学习的权重$\alpha$，如公式\eqref{eq:pinn-loss-weight}， 通过$\alpha$权重平衡数据拟合与物理约束的强度，适应不同的训练任务。
+\begin{equation}
+  L_{\text{PINN}} = \underbrace{L_\delta(u, u_\theta)}_{\text{数据项}} + \alpha \cdot \underbrace{L_\delta(f(u_\theta), 0)}_{\text{物理项}} \label{eq:pinn-loss-weight}
+\end{equation}
+
+\subsubsection{特征融合细节}
+本章中4.2.1中提到的的第一类和第二类数据的PINN训练均直接按照PINN方案进行训练，第三类数据涉及不同分子量的分子量和组分数据，在训练时分别采用哈达玛积特征融合和注意力特征融合的方法进行特征融合，再进行训练。哈达积融合方法如公式\eqref{eq:hadamard-product-Mn}，
+\begin{equation}
+  \mathbf{Mn} \circ \mathbf{w} =
+  \begin{bmatrix}
+    M_{n_1} \cdot w_1 \\
+    M_{n_2} \cdot w_2 \\
+    \vdots            \\
+    M_{n_k} \cdot w_k
+  \end{bmatrix} \label{eq:hadamard-product-Mn}
+\end{equation}
+即将不同的分子量与其对应的组分进行哈达玛积融合，这有助于模型更好地理解特征间的关系，优化训练效果。该操作的本质是构建流变学特征基元，其中高分子链的松弛行为同时受$Mn$(链长)和$w_i$(浓度)调控。
+
+公式\eqref{eq:Mn-w-hadamard-slice}表示经过哈达玛积融合后的结果，根据$\mathbf{H}$按照公式\eqref{eq:Attention-Q}到\eqref{eq:Attention-V}计算$\mathbf{Q}$、$\mathbf{K}$和$\mathbf{V}$。$\mathbf{Q}$(Query)是编码目标流变性能的特征查询，$\mathbf{K}$(Key)表征各组分分子量分布的"响应指纹"，$\mathbf{V}$(Value)携带原始流变特征的实际物理量级信息。
+
+\begin{equation}
+  \mathbf{H} =
+  \begin{bmatrix}
+    Mn_{1} \cdot w_1 \\
+    Mn_{2} \cdot w_2 \\
+    Mn_{3} \cdot w_3
+  \end{bmatrix} \label{eq:Mn-w-hadamard-slice}
+\end{equation}
+\begin{align}
+  \mathbf{Q} & = \mathbf{W}_q \mathbf{H}, \quad \mathbf{W}_q \in \mathbb{R}^{d \times 3}  \label{eq:Attention-Q} \\
+  \mathbf{K} & = \mathbf{W}_k \mathbf{H}, \quad \mathbf{W}_k \in \mathbb{R}^{d \times 3} \label{eq:Attention-K}  \\
+  \mathbf{V} & = \mathbf{W}_v \mathbf{H}, \quad \mathbf{W}_v \in \mathbb{R}^{d \times 3} \label{eq:Attention-V}
+\end{align}
+% 步骤3: 注意力分数计算
+之后使用公式\eqref{eq:Attention-score}计算注意力分数，注意力分数量化了组分间的流变学相互作用，该机制可自动识别关键组分，例如高分子量组分($M_{n_1} > M_{n_2}$)对模量等的主导作用。
+\begin{equation}
+  \text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{softmax}\left(\frac{\mathbf{Q} \mathbf{K}^\top}{\sqrt{d}}\right) \mathbf{V} \label{eq:Attention-score}
+\end{equation}
+最后使用公式\eqref{eq:Attention-output}计算最终的注意力输出。
+% 步骤4: 最终融合输出
+\begin{equation}
+  \mathbf{Z} = \text{LayerNorm}(\mathbf{H} + \text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}))
+  \label{eq:Attention-output}
+\end{equation}
+
+本节分别使用原始特征的PINN、哈达玛积特征融合后的PINN和注意力特征融合后的PINN训练多分子量PBA注入制备的PFGs数据，得到不同的训练模型。
+
+\subsection{PINN模型测试}
+本节对训练模型进行测试，并分析训练结果，对于第一类数据（单PBA流体数据）和第二类数据（单分子量PBA注入制备的 PFGs数据），使用DNN和PINN两种模型分别训练。保存模型后，使用测试数据进行预测，并分析预测结果。绘制真实值-预测值曲线，残差曲线进行定性分析。计算指标：决定系数R$^2$、平均绝对误差MAE、平均百分比误差MAPE和训练时间Training Time，并绘制指标对比图进行定量分析。
+
+对于第三类数据（多分子量 PBA 注入制备的 PFGs 数据），本节分别使用DNN、PINN、哈达玛积特征融合后的PINN和注意力特征融合后的PINN进行训练，对不同的训练模型进行测试，并分析训练结果，具体分析方法同上。
+
+\subsection{CVAE反向建模训练}
+本节使用条件变分自编码器（CVAE）进行反向建模，训练数据集以及数据集划分与正向PINN建模保持一致，但是输入特征改为频率-模量序列，输出标签为制备参数：$M_{n_i}$和$w_i$。
+
+本节使用Python的Pytorch库编写CVAE代码，并使用训练数据进行训练，得到模型参数。CVAE的损失函数公式如公式\eqref{eq:cvae-expriment}所示，其中$x = [w, G', G'', \tan \delta]$，$p = { M_{n_i}, w_i }'$。
+\begin{equation}
+  \mathcal{L}(\theta_E, \theta_D) = \mathbb{E}{q{\theta_E}(z|\mathbf{x},p)} \left[ \log p_{\theta_D}(\mathbf{x}|z,p) \right] - D_{KL}\left(q_{\theta_E}(z|\mathbf{x},p) | p(z|p)\right) \label{eq:cvae-expriment}
+\end{equation}
+CVAE的训练模型采用Adam优化器来进行优化，采用余弦退火算法自动调整学习率，采用网格搜索算法和随机搜索算法对超参数进行调优，其中超参数包括：隐藏层数、隐藏层节点数、学习率、迭代次数、批次大小，隐藏层激活函数采用ReLU6激活函数。
+\subsection{CVAE反向建模测试}
+本节通过CVAE训练频率-模量序列到组分信息的映射，将训练好后的模型保存。生成测试数据时，首先加载保存的模型参数，并输入目标制备条件$p = { M_{n_i}, w_i }'$作为生成约束；随后从条件先验分布$p(z∣p)$中采样潜在变量$z$（通过重参数化技巧$z=\mu_p+\epsilon⋅\sigma_p$实现可导性，其中$\epsilon$服从标准正态分布），将其与条件变量$p$拼接后输入解码器网络$p_{\theta_D}(\mathbf{x}|z,p)$，生成对应的$x = [w, G', G'', \tan \delta]$。为增强生成多样性，通过潜在空间插值或对条件参数p施加微小扰动生成100个多模态解。
+
+针对生成的多模态解，本节通过多模态分布分析揭示其内在结构特征，采用核密度估计与箱线图结合的小提琴图可视化方法，呈现不同模态下解的密度分布、峰值位置及离散程度。使用残差分析对预测值与理论解的偏离模式进行系统性检验。使用真实数据误差分析，采用平均绝对百分比误差（MAPE）量化多模态解的整体预测精度。
 % 结果与讨论 全面的数据展开
 \section{结果与讨论}
 \subsection{低保真数据拟合}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/pba-LF.pdf}
+  \FigureBicaption{\label{pba-LF}PINN示意图}{PINN illustration}
+\end{figure}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/pfgs-LF.pdf}
+  \FigureBicaption{\label{pfgs-LF}PINN示意图}{PINN illustration}
+\end{figure}
 \subsection{单PBA流体本构建模}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/pba-g1.pdf}
+  \FigureBicaption{\label{pba-g1}PINN示意图}{PINN illustration}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/pba-g2.pdf}
+  \FigureBicaption{\label{pba-g2}PINN示意图}{PINN illustration}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/pba-lossf.pdf}
+  \FigureBicaption{\label{pba-lossf}PINN示意图}{PINN illustration}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/pba-metrics.pdf}
+  \FigureBicaption{\label{pba-metrics}PINN示意图}{PINN illustration}
+\end{figure}
 \subsection{单PBA嵌入的PFGs本构建模}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/pfgs-single.pdf}
+  \FigureBicaption{\label{pfgs-single}PINN示意图}{PINN illustration}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/pfgs-single-metrics.pdf}
+  \FigureBicaption{\label{pfgs-single-metrics}PINN示意图}{PINN illustration}
+\end{figure}
 \subsection{多组分PBA嵌入的PFGs本构建模}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/pfgs-com.pdf}
+  \FigureBicaption{\label{pfgs-com}PINN示意图}{PINN illustration}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/pfgs-com-metrics.pdf}
+  \FigureBicaption{\label{pfgs-com-metrics}PINN示意图}{PINN illustration}
+\end{figure}
 \subsection{CVAE组分预测}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/reverse-redisual-Mn.pdf}
+  \FigureBicaption{\label{reverse-redisual-Mn}PINN示意图}{PINN illustration}
+\end{figure}
+
+\todo[inline]{图片大小问题，残差略小，violin过大，记得修改}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/reverse-redisual-phi.pdf}
+  \FigureBicaption{\label{reverse-redisual-phi}PINN示意图}{PINN illustration}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/reverse-violin.pdf}
+  \FigureBicaption{\label{reverse-violin}PINN示意图}{PINN illustration}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/MAPE_bar_chart.pdf}
+  \FigureBicaption{\label{reverse-mape}PINN示意图}{PINN illustration}
+\end{figure}
 
 % 本章小结 总结与展望
 \section{本章小结}

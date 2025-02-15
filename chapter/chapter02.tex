@@ -104,7 +104,7 @@ Mamba网络是近年来提出的一种新型时间序列处理架构，专门针
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pinn_logo.png}
-  \FigureBicaption{\label{pinn illustration}PINN 示意图}{Schematic illustration of PINN}
+  \FigureBicaption{\label{pinn illustration}PINN 示意图\cite{cuomoScientificMachineLearning2022}}{Schematic illustration of PINN\cite{cuomoScientificMachineLearning2022}}
 \end{figure}
 PINN的优势在于其能够通过物理方程进行训练，极大减少了对大量标注数据的需求。此外，PINN能够确保模型的预测符合实际的物理规律，从而避免了数据驱动模型可能出现的不合理结果。尽管PINN在处理复杂问题时可能会面临训练难度和求解精度的挑战。
 \subsection{损失函数构建}
@@ -172,6 +172,7 @@ $用于最大化潜在变量分布的重构似然。为了使 VAE 的训练过�
 \end{figure}
 \begin{equation}
   \mathcal{L}(\theta_E, \theta_D) = \mathbb{E}_{q_{\theta_E}(z|x,y)} \left[ \log p_{\theta_D}(x|z,y) \right] - D_{KL}(q_{\theta_E}(z|x,y) \| p(z|y))
+  \label{eq:cvae}
 \end{equation}
 其中，第一项是重构损失，用于衡量模型输出与真实数据的差异；第二项是 KL散度，用于衡量后验分布与先验分布之间的差异。通过最小化这一损失函数，CVAE能够学习到数据的生成分布，并生成与训练数据类似的样本。
 CVAE引入条件变量$y$使得模型能够根据特定条件生成样本，这对于许多实际应用非常重要。例如，在图像生成任务中，条件变量可以控制生成图像的类别或属性。通过指定不同的条件变量，CVAE可以生成不同类别的图像，如不同类型的动物、不同的场景等。这使得CVAE在图像生成领域具有广泛的应用前景。
