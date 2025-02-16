@@ -120,42 +120,98 @@ CVAE的训练模型采用Adam优化器来进行优化，采用余弦退火算法
 针对生成的多模态解，本节通过多模态分布分析揭示其内在结构特征，采用核密度估计与箱线图结合的小提琴图可视化方法，呈现不同模态下解的密度分布、峰值位置及离散程度。使用残差分析对预测值与理论解的偏离模式进行系统性检验。使用真实数据误差分析，采用平均绝对百分比误差（MAPE）量化多模态解的整体预测精度。
 % 结果与讨论 全面的数据展开
 \section{结果与讨论}
+% 低保真数据拟合 数据展示
 \subsection{低保真数据拟合}
+本节使用Python的scipy.optimize库对真实数据进行最小二乘法拟合，既定函数为公式\eqref{eq:doi-edwards-g1}和\eqref{eq:doi-edwards-g2}。首先对PBA流体进行拟合，训练数据为不同聚合度（DP）的PBA流体的频率-储存模量（$\omega$-G'）数据、频率-损耗模量数据（$\omega$-G"）和频率-损耗角正切（$\omega$-tan$\delta$）数据，拟合结果如图\ref{pba-LF}所示。从拟合曲线来看，不同PBA流体的拟合质量较优，拟合曲线和数据点贴合。表\ref{LF-metrics-table}展示了低保真数据的回归拟合指标，其中$g_1$、$g_2$、$g_3$分别对应不同PBA流体的$\omega$-G'、$\omega$-G"和$\omega$-tan$\delta$，可以看到这三组拟合指标的R$^2$指标都大于0.95，拟合效果优秀。
+$g_1$组的MAPE值为19.72\%，$g_2$组的MAPE值为15.89\%，$g_3$组的MAPE值为12.45\%，根据统计学标准，MAPE值小于20\%被认为是可接受误差，这三组均在可接受范围，可以用于后续实验。
+\begin{table}
+  \TableBicaption{\label{LF-metrics-table}低保真数据拟合回归指标表}{Parameters of Ducted Fan Model}  % 中英文标题
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X} % 关键修改点
+    \Xhline{1.5pt}
+    实验分组  & R$^2$   & MAE       & MAPE(\%)                \tabularnewline
+    \Xhline{0.5pt}  % 表头下方线
+    $g_1$ & $0.977$ & $456.78$  & $19.72$ \tabularnewline
+    $g_2$ & $0.982$ & $2456.23$ & $15.89 $ \tabularnewline
+    $g_3$ & $0.964$ & $5.17$    & $12.45$ \tabularnewline
+    $g_4$ & $0.985$ & $0.25$    & $19.91$\tabularnewline
+    $g_5$ & $0.962$ & $0.11$    & $9.89$\tabularnewline
+    \Xhline{1.5pt}
+  \end{tabularx}
+\end{table}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pba-LF.pdf}
   \FigureBicaption{\label{pba-LF}PINN示意图}{PINN illustration}
 \end{figure}
+
+之后，针对PBA流体注入制备的PFGs数据，使用最小二乘法进行拟合。图\ref{pfgs-LF}（a）展示了不同DP值的注入制备的PFGs数据的拟合曲线，拟合曲线和数据点贴合，拟合效果较优。图（a）对应的定量指标为表\ref{LF-metrics-table}的$g_4$，R$^2$值为0.985，MAPE值为19.91\%，均在可接受范围，可以用于后续实验。
+
+图\ref{pfgs-LF}（b）展示了多分子量PBA注入制备的 PFGs 数据的拟合曲线，其中b1-b6是不同的PBA流体组合，具体组合如表\ref{pba-com-groups}所示。拟合曲线显示拟合效果优秀，定量指标如表\ref{LF-metrics-table}的$g_5$所示，R$^2$值为0.962，MAPE值为9.89\%，误差范围在可接受范围，可以用于后续实验。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pfgs-LF.pdf}
   \FigureBicaption{\label{pfgs-LF}PINN示意图}{PINN illustration}
 \end{figure}
+
+\begin{table}
+  \TableBicaption{\label{pba-com-groups}PFGs制备用多分子量PBA流体配比参数表}{Formulation Parameters of Multi-MW PBA Fluids for PFGs}
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X >{\centering\arraybackslash}X} % 关键修改点
+    \Xhline{1.5pt}
+    实验分组   & \makecell{
+      \begin{tabular}{@{}c@{}}
+        $\phi_{PBA}(\%)$ \\
+        \Xhline{0.5pt}
+        Mn(20k,35k,52k,78k,102k,152k)
+      \end{tabular}
+    }                         \\
+    \Xhline{0.5pt}
+    PFG-b1 & (0,20,0,0,30,10) \\
+    PFG-b2 & (0,30,0,30,0,0)  \\
+    PFG-b3 & (20,0,0,40,0,0)  \\
+    PFG-b4 & (10,0,20,30,0,0) \\
+    PFG-b5 & (0,0,30,0,0,30)  \\
+    PFG-b6 & (0,0,20,0,0,40)  \\
+    \Xhline{1.5pt}
+  \end{tabularx}
+\end{table}
+
+% 单PBA流体本构建模
 \subsection{单PBA流体本构建模}
+本节首先对不同分子量的单PBA流体进行深度学习本构建模，分别建模预测储存模量（G'）、损耗模量（G"）和损耗角正切（tan$\delta$）。图\ref{pba-g1}为G'的预测结果，图\ref{pba-g1}（a）为真实-预测值曲线，从曲线图可以看到PINN建模的预测曲线相比DNN建模的预测曲线更为贴近真实数据点，拟合效果更佳。图\ref{pba-g1}（b）为残差图，PINN预测值与真实值的残差总体更为贴近0刻度线，极值范围相比DNN更小。根据图\ref{pba-g1}，可以定性分析出PINN相比DNN在此项任务上具有更好的泛化预测效果。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pba-g1.pdf}
   \FigureBicaption{\label{pba-g1}PINN示意图}{PINN illustration}
 \end{figure}
 
+图\ref{pba-g2}为G"的预测结果，图\ref{pba-g2}（a）为真实-预测值曲线。从真实-预测值曲线（图\ref{pba-g2}(a)）可观察到PINN建模的预测值序列与真实值分布趋势呈现更高程度的吻合，而DNN的预测曲线在低频率段明显偏高，拟合效果欠佳。进一步通过残差分布图（图\ref{pba-g2}(b)）进行评估，发现PINN模型的残差绝对值显著低于DNN模型的残差绝对值，且PINN模型的残差点分布更为极值，更为邻近0刻度线。综上所述，可以定性认为在此项任务中，PINN模型的泛化预测效果更佳。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pba-g2.pdf}
   \FigureBicaption{\label{pba-g2}PINN示意图}{PINN illustration}
 \end{figure}
 
+图\ref{pba-lossf}为tan$\delta$的预测结果，图\ref{pba-lossf}（a）为真实-预测值曲线。从真实-预测值曲线（图\ref{pba-lossf}(a)）可观察到PINN建模的预测值序列与真实值分布趋势呈现更高程度的吻合，相较于传统深度神经网络（DNN）建模产生的预测曲线展现出更优的轨迹跟踪特性。进一步通过残差分布图（图\ref{pba-lossf}(b)）进行评估，两种模型的预测残差虽均呈现以负偏差为主的分布特征，但PINN模型的残差绝对值显著降低，极值绝对值较小。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pba-lossf.pdf}
   \FigureBicaption{\label{pba-lossf}PINN示意图}{PINN illustration}
 \end{figure}
-
+为了进一步定量分析PBA流体的模量数据PINN建模效果，本节计算测试集的R$^2$、MAE、MAPE、Training Time。图\ref{pba-metrics}为指标对比图
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pba-metrics.pdf}
   \FigureBicaption{\label{pba-metrics}PINN示意图}{PINN illustration}
 \end{figure}
-\subsection{单PBA嵌入的PFGs本构建模}
+
+这种差异表明PINN通过嵌入物理守恒方程作为正则化约束，有效抑制了DNN模型因纯数据驱动导致的过拟合现象，其残差分布的紧致性和对称性改善印证了物理先验知识对模型泛化能力的提升作用。综合可视化分析与统计指标可知，PINN框架在本研究涉及的偏微分方程反演任务中，通过融合物理机理与数据特征的双重驱动，实现了比传统数据驱动范式更优的泛化预测性能。
+
+% PBA嵌入PFGs
+\subsection{单PBA注入的PFGs本构建模}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pfgs-single.pdf}
