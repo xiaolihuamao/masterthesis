@@ -201,47 +201,57 @@ $g_1$组的MAPE值为19.72\%，$g_2$组的MAPE值为15.89\%，$g_3$组的MAPE值
   \includegraphics[width=0.8\textwidth]{Fig/pba-lossf.pdf}
   \FigureBicaption{\label{pba-lossf}PINN示意图}{PINN illustration}
 \end{figure}
-为了进一步定量分析PBA流体的模量数据PINN建模效果，本节计算测试集的R$^2$、MAE、MAPE、Training Time。图\ref{pba-metrics}为指标对比图
+为了进一步定量分析PBA流体的模量数据PINN建模效果，本节计算测试集的R$^2$、MAE、MAPE、Training Time。图\ref{pba-metrics}为两个模型在G'预测、G"预测和tan$\delta$预测三种不同任务上的指标对比图。从图 \ref{pba-metrics} 可以看出，PINN模型在 G'、G" 和 tan$\delta$ 三个任务上的R$^2$ 均略高于 DNN 模型。此外，PINN 模型的 MAE 值在所有任务中均小于DNN模型，而 MAPE 值均小于 10\%，属于较小误差范围。相比之下，DNN模型的MAPE值均大于 10\%，表明其误差较大。这些结果表明，PINN模型在G'、G"和tan$\delta$三个任务上均具有更低的误差。然而，PINN 模型的训练时间显著更长，约为 DNN 模型的2-3倍。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pba-metrics.pdf}
-  \FigureBicaption{\label{pba-metrics}PINN示意图}{PINN illustration}
+  \FigureBicaption{\label{pba-metrics}pba-metrics}{PINN illustration}
 \end{figure}
-
 这种差异表明PINN通过嵌入物理守恒方程作为正则化约束，有效抑制了DNN模型因纯数据驱动导致的过拟合现象，其残差分布的紧致性和对称性改善印证了物理先验知识对模型泛化能力的提升作用。综合可视化分析与统计指标可知，PINN框架在本研究涉及的偏微分方程反演任务中，通过融合物理机理与数据特征的双重驱动，实现了比传统数据驱动范式更优的泛化预测性能。
-
 % PBA嵌入PFGs
-\subsection{单PBA注入的PFGs本构建模}
+\subsection{单组分PBA注入的PFGs本构建模}
+本节对第二类数据，即单一分子量PBA注入制备的PFGs进行深度学习本构建模，探究在不同分子量PBA注入的PFGs上，PINN模型与DNN模型的性能对比。图\ref{pfgs-single}为两种算法模型对这类数据的预测性能对比。图\ref{pfgs-single}（a）为真实值-预测值曲线，这里对比的是tan$\delta$的预测结果。从图中可以看出，PINN模型的预测曲线与真实值曲线更为贴近，拟合效果更佳。图\ref{pfgs-single}（b）为残差图，PINN模型的残差绝对值显著低于DNN模型的残差绝对值，PINN的残差更为邻近0刻度线。综上所述，可以定性认为在此项任务中，PINN模型的泛化预测效果更佳。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pfgs-single.pdf}
-  \FigureBicaption{\label{pfgs-single}PINN示意图}{PINN illustration}
+  \FigureBicaption{\label{pfgs-single}pfgs-single}{PINN illustration}
 \end{figure}
-
+为了进一步定量分析单组分PBA注入的PFGs数据的PINN建模效果，本节计算测试集的R$^2$、MAE、MAPE、Training Time。图\ref{pfgs-single-metrics}为两个模型tan$\delta$预测的指标对比图。从图中可以看出，PINN模型在该任务上的R$^2$略低于DNN模型。在MAE指标上，PINN为0.012，DNN为0.071，PINN的MAE值相比DNN降低了83.38\%。MAPE指标方面，PINN为0.03\%，DNN为8.59\%，相差近3个数量级别。这里PINN模型的R$^2$值意外地低可能是因为PINN引入的物理约束可能降低了模型对训练数据的过拟合程度，但模型的泛化能力和实际预测精度（MAPE）更好这些结果表明，PINN模型在预测单组分PBA注入的PFGs流变性能时具有更高的准确性和稳定性。然而，与前文类似，PINN模型的训练时间显著长于DNN模型，大约是后者的5倍，这是由于物理约束的引入增加了计算复杂度。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pfgs-single-metrics.pdf}
-  \FigureBicaption{\label{pfgs-single-metrics}PINN示意图}{PINN illustration}
+  \FigureBicaption{\label{pfgs-single-metrics}pfgs-single-metrics}{PINN illustration}
 \end{figure}
-\subsection{多组分PBA嵌入的PFGs本构建模}
+综上所述，PINN模型在单组分PBA注入的PFGs数据的建模预测中展现出显著优势。从定性分析角度来看，PINN模型生成的预测曲线与实验数据点更为贴合，残差分布更加集中且接近零值。从定量分析的角度来看，尽管PINN的R²指标略低于DNN模型，但在MAE和MAPE这两个更能反映实际预测精度的指标上，PINN模型都取得了显著优势。特别是在MAPE指标上，PINN与DNN指标差近3个数量级。这表明PINN通过引入物理约束，有效抑制了过拟合现象，提高了模型的泛化能力和预测准确性。然而需要注意的是，由于引入物理约束增加了计算复杂度，PINN模型的训练时间约为DNN模型的5倍，这是可以预见的成本增加。
+\subsection{多组分PBA注入的PFGs本构建模}
+上一节研究了单组分PBA注入的PFGs数据建模，验证了PINN模型在处理简单制备参数特征（单一分子量）时，通过引入物理约束能够有效提升模型的泛化能力。本节将进一步探讨PINN模型在多组分PBA注入的PFGs数据上的表现，研究其在处理复杂制备参数特征（多分子量组合）时的泛化性能，以期为实际应用提供更有价值的参考。
+
+图\ref{pfgs-com}为多组分PBA注入的PFGs数据建模结果，图\ref{pfgs-com}（a）为真实值-预测值曲线，图\ref{pfgs-com}（b）为残差图。本项预测建模任务一共使用4组不同的算法建模，分别是普通DNN、普通PINN、采用哈达玛积特征融合的PINN（PINN-HP）和采用注意力特征融合的PINN（PINN-AFF）。图\ref{pfgs-com}显示PINN-AFF的预测效果最佳，预测曲线与真实值曲线最为贴近，残差分布最为集中且接近0刻度线。而其他算法模型的预测存在不同类型的偏差。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pfgs-com.pdf}
-  \FigureBicaption{\label{pfgs-com}PINN示意图}{PINN illustration}
+  \FigureBicaption{\label{pfgs-com}pfgs-com}{PINN illustration}
 \end{figure}
 
+为了进一步定量分析多组分PBA注入的PFGs数据的PINN建模效果，本节计算了测试集的R$^2$、MAE、MAPE和训练时间等评价指标。图\ref{pfgs-com-metrics}展示了4种不同算法模型在tan$\delta$预测任务上的性能对比。从图中可以看出，在所有评价指标上，注意力特征融合的PINN（PINN-AFF）模型均表现最佳，其次是哈达玛积特征融合的PINN（PINN-HP）模型，再次是普通PINN模型，而传统DNN模型的表现最差。这一结果表明，引入特征融合机制能够有效提升PINN模型的预测性能，其中基于注意力机制的特征融合方案尤为有效。从时间指标上看，PINN的训练时间略大于DNN，这与之前的实验一致，PINN-HP的训练时间略小于PINN，这是因为PINN-HP通过将分子量和组分含量特征融合减少了总的特征数量，减少了训练参数的数量。PINN-AFF的训练时间又略大于PINN-HP，这是因为PINN-AFF引入了注意力机制，增加了计算复杂度。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pfgs-com-metrics.pdf}
   \FigureBicaption{\label{pfgs-com-metrics}PINN示意图}{PINN illustration}
 \end{figure}
+
+综合图\ref{pfgs-com}和图\ref{pfgs-com-metrics}的分析结果可以看出，在处理特征数量较多且特征之间存在复杂物理关系的情况下，普通PINN模型的学习泛化能力相对有限。针对这一问题，本研究提出了两种改进方案。首先，哈达玛积特征融合的PINN（PINN-HP）模型通过将分子量和组分含量特征进行哈达玛积运算进行特征融合，这种方式相当于为模型预设了特征之间的物理关联，从而提升了模型的预测效果。在此基础上，注意力特征融合的PINN（PINN-AFF）模型进一步引入了注意力机制，对不同分子量与组分含量融合后的联合特征进行注意力加权。这种机制能够有效学习不同高分子链段之间的相互作用关系，通过注意力分数定量描述组分间的流变学相互作用强度，并能自动识别关键组分的影响程度，例如能够捕捉到高分子量组分对整体流变学性能的主导作用。实验结果表明，这两种改进方案都显著提升了模型性能，其中PINN-AFF模型取得了最优的预测效果。
+
+% CVAE组分预测
 \subsection{CVAE组分预测}
+本节使用CVAE模型对PBA流体的组分进行预测，CVAE模型是一种基于变分自编码器（VAE）的生成模型，能够从高维数据中学习到潜在的低维表示，并能够生成新的数据。本节使用CVAE模型对PBA流体的组分进行预测，预测结果如图\ref{reverse-redisual-Mn}所示。从图中可以看出，CVAE模型能够较好地预测PBA流体的组分。
+
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/reverse-redisual-Mn.pdf}
   \FigureBicaption{\label{reverse-redisual-Mn}PINN示意图}{PINN illustration}
 \end{figure}
-
+本节使用CVAE模型对PBA流体的组分进行预测，预测结果如图\ref{reverse-redisual-Mn}所示。从图中可以看出，CVAE模型能够较好地预测PBA流体的组分。
 \todo[inline]{图片大小问题，残差略小，violin过大，记得修改}
 \begin{figure}[htbp]
   \centering
