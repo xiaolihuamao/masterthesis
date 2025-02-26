@@ -154,14 +154,15 @@ Doi-Edwards模型和Giesekus模型与Maxwell模型的实验流程一致，采用
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/Maxwell_sin_.pdf}
-  \FigureBicaption{\label{maxwell_sin}GRU算法和DNN算法在Maxwell模型测试集上的预测效果对比示意图：（a）GRU和DNN在测试集上的预测值与真实值的应力-应变曲线（Lissajous曲线）；（b）GRU和DNN在测试集上的预测值与真实值的应力-时间曲线；（c）GRU和DNN在测试集上的预测值残差图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm on the Maxwell model test set: (a) Stress–Strain curves (Lissajous curves) of predicted and true values for GRU and DNN on the test set; (b) Stress–Time curves of predicted and true values for GRU and DNN on the test set; (c) Residual plots of predicted values for GRU and DNN on the test set}
+  \FigureBicaption{\label{maxwell_sin}GRU算法和DNN算法在Maxwell模型交变协议测试集上的预测效果对比示意图：（a）GRU和DNN在测试集上的预测值与真实值的应力-应变曲线（Lissajous曲线）；（b）GRU和DNN在测试集上的预测值与真实值的应力-时间曲线；（c）GRU和DNN在测试集上的预测值残差图}{Comparison of prediction performance between GRU and DNN algorithms on Maxwell model alternating protocol test set: (a) Stress-strain curves (Lissajous curves) of predicted vs. true values for GRU and DNN on test set; (b) Stress-time curves of predicted vs. true values for GRU and DNN on test set; (c) Residual plots of predicted values for GRU and DNN on test set}
 \end{figure}
+
 接下来，本节计算两种算法的测试集预测指标，绘制指标对比图\ref{maxwell_sin_metric}。从图\ref{maxwell_sin_metric
 }（a）显示，GRU的R$^2$值为0.986，接近1，说明GRU的预测效果十分优秀，而DNN的R$^2$值为0.904，略低于GRU，但是也高于0.9，属于非常出色的指标。仅从R$^2$指标来看，GRU预测效果优于DNN，但是优势不明显。从图\ref{maxwell_sin_metric}（b-c）看，GRU预测结果的MAE值为0.019，仅为DNN预测结果的MAE值的一半，GRU预测结果的MAPE值为1.89，仅为DNN预测结果的MAPE值3.35的一半。这定量说明GRU的预测结果误差远小于DNN的预测结果误差，GRU在此项任务上预测泛化效果更好。当然，由于GRU的模型特性，其训练时间如图\ref{maxwell_sin_metric}（d）所示，要高于DNN。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/Maxwell_sin_metric.pdf}
-  \FigureBicaption{\label{maxwell_sin_metric}}{}
+  \FigureBicaption{\label{maxwell_sin_metric}GRU算法和DNN算法在Maxwell模型交变测试集上的预测指标对比图：（a）GRU和DNN在测试集上的R$^2$指标图；（b）GRU和DNN在测试集上的MAE指标图；（c）GRU和DNN在测试集上的MAPE指标图；（d）GRU和DNN在测试集上的训练时间指标图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm on the Maxwell model alternating protocol test set: (a) R$^2$ metric plots on the test set for GRU and DNN; (b) MAE metric plots on the test set for GRU and DNN; (c) MAPE metric plots on the test set for GRU and DNN; (d) Training Time metric plots on the test set for GRU and DNN}
 \end{figure}
 综合各项分析数据来看，当训练数据和测试数据为同类型应变变化过程（都为交变应变）时，GRU算法可以更好的学习到Maxwell模型数据的内在特征，包括周期性响应，黏弹性，时间依赖性响应。从定性与定量分析结果看，GRU算法的预测泛化效果在此项任务上明显优于DNN，在计算资源足够时，GRU算法相比DNN性能更佳。
 
@@ -175,13 +176,13 @@ Doi-Edwards模型和Giesekus模型与Maxwell模型的实验流程一致，采用
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/maxwell_linear_test.pdf}
-  \FigureBicaption{\label{maxwell_linear}}{}
+  \FigureBicaption{\label{maxwell_linear}GRU算法和DNN算法在Maxwell模型线性协议测试集上的预测效果对比示意图：（a）GRU和DNN在测试集上的预测值与真实值的应力-应变曲线（Lissajous曲线）；（b）GRU和DNN在测试集上的预测值残差图}{Comparison of prediction performance between GRU and DNN algorithms on Maxwell model linear protocol test set: (a) Stress-strain curves (Lissajous curves) of predicted vs. true values for GRU and DNN on test set; (b) Residual plots of predicted values for GRU and DNN on test set}
 \end{figure}
 接下来，本节计算两种算法的测试集预测指标，绘制指标对比图\ref{maxwell_linear_metric}。图\ref{maxwell_linear_metric}（a）显示，GRU的R$^2$值为0.976，接近1，证明GRU的预测效果十分优秀，而DNN的R$^2$值为0.908，略低于GRU，但是也高于0.9，属于非常出色的指标。仅从R$^2$指标来看，GRU预测效果优于DNN，但是优势不明显。从图\ref{maxwell_linear_metric}（b-c）看，GRU预测结果的MAE值为0.071，而DNN的预测结果的MAE值为0.293，GRU在绝对误差上仅为DNN的四分之一，优势显著。GRU预测结果的MAPE值为3.09，仅为DNN预测结果的MAPE值14.95的五分之一左右。这定量说明GRU的预测结果误差远小于DNN的预测结果误差，GRU在此项任务上预测泛化效果更好。这里的训练时间对比与上一节的交变协议预测交变协议一致，同图\ref{maxwell_sin_metric}（d）所示。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/maxwell_linear_metric.pdf}
-  \FigureBicaption{\label{maxwell_linear_metric}}{}
+  \FigureBicaption{\label{maxwell_linear_metric}GRU算法和DNN算法在Maxwell模型线性协议测试集上的预测指标对比图：（a）GRU和DNN在测试集上的R$^2$指标图；（b）GRU和DNN在测试集上的MAE指标图；（c）GRU和DNN在测试集上的MAPE指标图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm on the Maxwell model linear protocol test set: (a) R$^2$ metric plots on the test set for GRU and DNN; (b) MAE metric plots on the test set for GRU and DNN; (c) MAPE metric plots on the test set for GRU and DNN}
 \end{figure}
 
 综合各项分析数据来看，当训练数据和测试数据为不同类型应变变化过程时，GRU算法展现出了显著的优势，尤其是在学习Maxwell模型数据的内在特征方面。Maxwell模型作为一种经典的粘弹性模型，其核心在于描述材料在应力作用下的时间依赖性响应。GRU算法可以仅通过学习交变应变的训练数据，就能够很好地预测线性应变的测试数据。这是因为GRU算法能够有效地从交变应变数据中提取出关键的时间依赖性特征，并将其应用于线性应变的预测中。
@@ -192,7 +193,7 @@ Doi-Edwards模型和Giesekus模型与Maxwell模型的实验流程一致，采用
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/Maxwell_timesteps_metrics.pdf}
-  \FigureBicaption{\label{maxwell_timesteps_metrics}}{}
+  \FigureBicaption{\label{maxwell_timesteps_metrics}GRU算法在Maxwell模型不同时间步下的预测效果对比图：（a）GRU在不同时间步下的R$^2$指标图；（b）GRU在不同时间步下的MAE指标图；（c）GRU在不同时间步下的MAPE指标图；（d）GRU在不同时间步下的训练时间指标图}{Comparison of prediction performance of the GRU algorithm on the Maxwell model with different time steps: (a) R$^2$ metric plots with different time steps; (b) MAE metric plots with different time steps; (c) MAPE metric plots with different time steps; (d) Training Time metric plots with different time steps}
 \end{figure}
 
 % Doi-Edwards模型建模
@@ -202,7 +203,7 @@ Doi-Edwards模型和Giesekus模型与Maxwell模型的实验流程一致，采用
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/doi-edwards-moni.pdf}
-  \FigureBicaption{\label{doi-edwards-moni}}{}
+  \FigureBicaption{\label{doi-edwards-moni}不同应变振幅下Doi-Edwards模型模拟的剪切应力应变Lissajous曲线（a）、第一法向应力差（N$_1$）的Lissajous曲线（b）、线性应变协议下的应力-时间曲线（c）}{Lissajous curves of shear stress-strain (a), first normal stress difference (N$_1$) (b), and stress-time curves (c) of Doi-Edwards model under different strain amplitudes}
 \end{figure}
 \subsubsection{交变协议预测交变协议效果验证}
 为了验证GRU算法在Doi-Edwards模型本构方程数据中的预测效果，本节使用交变应变协议生成的数据作为训练集，交变应变协议生成的数据作为测试集。分别使用了GRU和DNN进行训练，并在测试集上进行验证，测试结果如图\ref{doi-edwards-sin}、图\ref{doi-edwards-sin-metric}所示。
@@ -212,14 +213,14 @@ Doi-Edwards模型和Giesekus模型与Maxwell模型的实验流程一致，采用
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/doi-edwards-sin.pdf}
-  \FigureBicaption{\label{doi-edwards-sin}}{}
+  \FigureBicaption{\label{doi-edwards-sin}GRU算法和DNN算法在Doi-Edwards模型交变协议测试集上的预测效果对比示意图：（a）GRU和DNN在测试集上的预测值与真实值的剪切应力-应变曲线（Lissajous曲线）；（b）GRU和DNN在测试集上的预测值与真实值的时间-应力曲线；（c）GRU和DNN在测试集上剪切应力的预测值残差图；（d）GRU和DNN在测试集上的预测值与真实值的第一法向应力差（N$_1$）的Lissajous曲线；（e）GRU和DNN在测试集上的预测值与真实值的时间-第一法向应力差曲线；（f）GRU和DNN在测试集上的第一法向应力差预测值残差图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm on the Doi-Edwards model alternating protocol test set: (a) Shear stress-strain curves (Lissajous curves) of predicted vs. true values for GRU and DNN on test set; (b) Time-stress curves of predicted vs. true values for GRU and DNN on test set; (c) Residual plots of shear stress predicted values for GRU and DNN on test set; (d) First normal stress difference (N$_1$) Lissajous curves of predicted vs. true values for GRU and DNN on test set; (e) Time-first normal stress difference curves of predicted vs. true values for GRU and DNN on test set; (f) Residual plots of first normal stress difference predicted values for GRU and DNN on test set}
 \end{figure}
 
 之后本节分别对两种不同算法在$\sigma_{12}$和N$_1$上的预测效果做了定量分析，指标图如图\ref{doi-edwards-sin-metric}所示。在R$^2$指标上，GRU在$\sigma_{12}$和N$_1$的预测指标均优于DNN，而同种算法下$\sigma_{12}$的R$^2$值要高于N$_1$，显示$\sigma_{12}$的预测效果更好。在MAE指标上，DNN的$\sigma_{12}$和N$_1$的MAE值均远高于GRU，说明GRU的预测误差远小于DNN。MAPE指标与MAE指标的对比基本一致，都是GRU的预测误差小于DNN。但是同种算法下$\sigma_{12}$的MAE值高于N$_1$，但是MAPE值反之，这是因为MAE值强调的是绝对值比较，受到真实数据本身尺度的影响，因此比较同种算法下$\sigma_{12}$和N$_1$的预测效果应当以去除了数据尺度影响的MAPE值来判定，而MAPE值的结论表明同种算法下$\sigma_{12}$值的预测效果相比N$_1$更好，这与R$^2$的分析和图\ref{doi-edwards-sin}的定性分析一致，这也是后续可以优化的方向之一。最后，从图\ref{doi-edwards-sin-metric}（d）来看，GRU在此项任务上的训练时间为DNN的3倍左右，符合更高成本的预期。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/doi-edwards-sin-metrics.pdf}
-  \FigureBicaption{\label{doi-edwards-sin-metric}}{}
+  \FigureBicaption{\label{doi-edwards-sin-metric}GRU算法和DNN算法在Doi-Edwards模型交变协议测试集上的预测指标对比图：（a）GRU和DNN在测试集上的R$^2$指标图；（b）GRU和DNN在测试集上的MAE指标图；（c）GRU和DNN在测试集上的MAPE指标图；（d）GRU和DNN在测试集上的训练时间指标图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm on the Doi-Edwards model alternating protocol test set: (a) R$^2$ metric plots on the test set for GRU and DNN; (b) MAE metric plots on the test set for GRU and DNN; (c) MAPE metric plots on the test set for GRU and DNN; (d) Training Time metric plots on the test set for GRU and DNN}
 \end{figure}
 综合各项分析数据来看，当训练数据和测试数据为同类型应变变化过程（都为交变应变）时，GRU算法可以更好的学习到Doi-Edwards模型数据的内在特征，包括周期性响应，黏弹性，时间依赖性响应。从定性与定量分析结果看，GRU算法的预测泛化效果在此项任务上明显优于DNN，在计算资源足够时，GRU算法相比DNN性能更佳，而在同种算法下$\sigma_{12}$的预测效果优于N$_1$。
 \subsubsection{交变协议预测线性协议效果验证}
@@ -231,7 +232,7 @@ Doi-Edwards模型和Giesekus模型与Maxwell模型的实验流程一致，采用
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/doi-edwards-linear.pdf}
-  \FigureBicaption{\label{doi-edwards-linear}}{}
+  \FigureBicaption{\label{doi-edwards-linear}GRU算法和DNN算法在Doi-Edwards模型线性协议测试集上的预测效果对比示意图：（a）GRU和DNN在测试集上的预测值与真实值的剪切应力-应变曲线（Lissajous曲线）；（b）GRU和DNN在测试集上的预测值残差图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm on the Doi-Edwards model linear protocol test set: (a) Shear stress-strain curves (Lissajous curves) of predicted vs. true values for GRU and DNN on test set; (b) Residual plots of predicted values for GRU and DNN on test set}
 \end{figure}
 
 接下来，本节对两种算法在测试集上的预测性能指标进行了详细计算，并绘制了相应的指标对比图，如图\ref{doi-edwards-linear-metrics}所示。从图\ref{doi-edwards-linear-metrics}（a）中可以看出，GRU算法的 R$^2$值达到了0.979，这一结果充分证明了GRU在预测任务中的卓越表现。相比之下，DNN算法的 R$^2$值仅为0.882，明显低于GRU，这表明在 R$^2$指标的评估中，GRU的表现更为出色。进一步观察图\ref{doi-edwards-linear-metrics}（b-c），可以发现GRU预测结果的平均绝对误差（MAE）值为0.006，而DNN的MAE值则高达0.044。这意味着GRU在绝对误差方面的表现仅为DNN的七分之一，优势极为显著。此外，GRU预测结果的平均绝对百分比误差（MAPE）值为1.03，而DNN的MAPE值则为95.09。这些定量数据充分说明了GRU的预测结果误差远小于DNN，从而证明了GRU在该任务上的预测泛化能力更强。
@@ -239,7 +240,7 @@ Doi-Edwards模型和Giesekus模型与Maxwell模型的实验流程一致，采用
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/doi-edwards-linear-metrics.pdf}
-  \FigureBicaption{\label{doi-edwards-linear-metrics}}{}
+  \FigureBicaption{\label{doi-edwards-linear-metrics}GRU算法和DNN算法在Doi-Edwards模型线性协议测试集上的预测效果对比示意图：（a）GRU和DNN在测试集上的R$^2$指标图；（b）GRU和DNN在测试集上的MAE指标图；（c）GRU和DNN在测试集上的MAPE指标图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm on the Doi-Edwards model linear protocol test set: (a) R$^2$ metric plots on the test set for GRU and DNN; (b) MAE metric plots on the test set for GRU and DNN; (c) MAPE metric plots on the test set for GRU and DNN}
 \end{figure}
 从整体分析数据来看，当训练数据与测试数据涉及不同类型的应变变化过程时，GRU算法在学习Doi-Edwards模型数据的内在特性方面有显著优势。这主要归因于GRU算法能够高效地从交变应变数据中提取关键的时间依赖特征，并将其成功应用于线性应变的预测之中。
 
@@ -248,7 +249,7 @@ Doi-Edwards模型和Giesekus模型与Maxwell模型的实验流程一致，采用
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/doi-edwards-timesteps-metrics.pdf}
-  \FigureBicaption{\label{doi-edwards-timesteps-metrics}}{}
+  \FigureBicaption{\label{doi-edwards-timesteps-metrics}GRU算法和DNN算法在Doi-Edwards模型不同时间步长下的预测指标对比图：（a）GRU和DNN在不同时间步下的R$^2$指标图；（b）GRU和DNN在不同时间步下的MAE指标图；（c）GRU和DNN在不同时间步下的MAPE指标图；（d）GRU和DNN在不同时间步下的训练时间指标图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm under different time steps of the Doi-Edwards model: (a) R$^2$ metric plots under different time steps for GRU and DNN; (b) MAE metric plots under different time steps for GRU and DNN; (c) MAPE metric plots under different time steps for GRU and DNN; (d) Training Time metric plots under different time steps for GRU and DNN}
 \end{figure}
 % Giesekus模型建模
 \subsection{Giesekus模型建模}
@@ -259,7 +260,7 @@ Doi-Edwards模型和Giesekus模型与Maxwell模型的实验流程一致，采用
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/giesekus-moni.pdf}
-  \FigureBicaption{\label{giesekus_moni}}{}
+  \FigureBicaption{\label{giesekus_moni}Giesekus模型模拟数据：（a）不同交变应变协议的应力-应变率Lissajous曲线；（b）不同交变应变协议的第一法向应力差-应变率Lissajous曲线；（c）线性应变协议下的应力-时间曲线}{Giesekus model simulation data: (a) Lissajous curves of stress-strain rate for different oscillatory shear protocols; (b) Lissajous curves of first normal stress difference-strain rate for different oscillatory shear protocols; (c) Stress-time curve under linear strain protocol}
 \end{figure}
 图\ref{giesekus_moni}（c）为线性应变协议下的应力-时间曲线，曲线先随着应变加载攀升，存在明显峰值后回落，后趋于稳定。这可能是因为在屈服点之前，材料主要表现出弹性行为，应力随着应变的增加而线性增长。当应力达到峰值时，材料开始发生塑性变形，内部结构发生不可逆的变化，峰值之后，材料的内部结构开始重新组织，形成新的平衡状态，这种重组过程通常伴随着应力的下降与重新平衡。综上，线性协议的曲线符合Giesekus模型对于大剪切应变下材料应力响应的假设，可以用于后续实验。
 
@@ -274,7 +275,7 @@ Doi-Edwards模型和Giesekus模型与Maxwell模型的实验流程一致，采用
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/giesekus_sin.pdf}
-  \FigureBicaption{\label{giesekus_sin}}{}
+  \FigureBicaption{\label{giesekus_sin}GRU算法和DNN算法在Giesekus模型交变协议测试集上的预测效果对比示意图：（a）GRU和DNN在测试集上的预测值与真实值的剪切应力-应变率Lissajous曲线；（b）GRU和DNN在测试集上的剪切应力-时间曲线；（c）GRU和DNN在测试集上的剪切应力预测值残差图；（d）GRU和DNN在测试集上的预测值与真实值的第一法向应力差-应变率Lissajous曲线；（e）GRU和DNN在测试集上的第一法向应力差-时间曲线；（f）GRU和DNN在测试集上的第一法向应力差预测值残差图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm on the Giesekus model oscillatory protocol test set: (a) Shear stress-strain rate Lissajous curves of predicted vs. true values for GRU and DNN on test set; (b) Shear stress-time curves for GRU and DNN on test set; (c) Residual plots of shear stress predicted values for GRU and DNN on test set; (d) First normal stress difference-strain rate Lissajous curves of predicted vs. true values for GRU and DNN on test set; (e) First normal stress difference-time curves for GRU and DNN on test set; (f) Residual plots of first normal stress difference predicted values for GRU and DNN on test set}
 \end{figure}
 在本节中，进一步对两种算法在 $\sigma_{12}$ 和 N$_{1}$ 上的预测效果进行了定量分析，相关指标如图 \ref{giesekus-sin-metrics} 所示。
 在 R$^2$指标方面，GRU 在 $\sigma_{12}$ 和 N$_{1}$ 的预测中均优于 DNN。此外，对于同一种算法，$\sigma_{12}$ 的 R$^2$ 值高于 N$_{1}$，例如GRU算法下$\sigma_{12}$的R$^2$值达到0.981，但是对应的N$_{1}$ 的 R$^2$ 值仅达到0.857。
@@ -284,7 +285,7 @@ MAPE值的结果表明相同的结论，DNN预测结果的$\sigma_{12}$和N$_1$�
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/giesekus-sin-metrics.pdf}
-  \FigureBicaption{\label{giesekus-sin-metrics}}{}
+  \FigureBicaption{\label{giesekus-sin-metrics}GRU算法和DNN算法在Giesekus模型交变协议测试集上的预测效果对比示意图：（a）GRU和DNN在测试集上的R$^2$指标图；（b）GRU和DNN在测试集上的MAE指标图；（c）GRU和DNN在测试集上的MAPE指标图；（d）GRU和DNN在测试集上的训练时间指标图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm on the Giesekus model oscillatory protocol test set: (a) R$^2$ metric plots on the test set for GRU and DNN; (b) MAE metric plots on the test set for GRU and DNN; (c) MAPE metric plots on the test set for GRU and DNN; (d) Training Time metric plots on the test set for GRU and DNN}
 \end{figure}
 根据综合分析结果，当训练数据和测试数据均为交变应变时，GRU算法相比DNN能够更好地学习到Giesekus模型数据的内在特征。本节中，我们使用了SAOS和LAOS结合的训练数据，以探究模型对非线性黏弹性的学习能力。结果显示，GRU算法很好地完成了任务，成功捕捉了Giesekus模型模拟数据中的复杂非线性关系。综合来看，GRU算法在处理Giesekus模型的非线性黏弹性数据时表现出了显著的优越性，为后续研究提供了新的视角。
 
@@ -296,7 +297,7 @@ MAPE值的结果表明相同的结论，DNN预测结果的$\sigma_{12}$和N$_1$�
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/giesekus-linear.pdf}
-  \FigureBicaption{\label{giesekus-linear}}{}
+  \FigureBicaption{\label{giesekus-linear}GRU算法和DNN算法在Giesekus模型交变协议预测线性协议测试集上的预测效果对比示意图：（a）GRU和DNN在测试集上的时间-应力曲线；（b）GRU和DNN在测试集上的残差图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm on the Giesekus model oscillatory protocol predicting linear protocol test set: (a) Time-stress curves for GRU and DNN on test set; (b) Residual plots for GRU and DNN on test set}
 \end{figure}
 
 具体如图\ref{giesekus-linear-metrics} 所示。从图\ref{giesekus-linear-metrics}（a）可以清晰地观察到，GRU 算法的 R$^2$值高达 0.989，这一结果有力地表明了 GRU 在预测任务中的出色表现。与之形成鲜明对比的是，DNN算法的R$^2$值小于 0，这表明 DNN 并未有效学习到相关特征。进一步分析图\ref{giesekus-linear-metrics}（b-c），可以发现 GRU 预测结果的平均绝对误差（MAE）值为 0.008，而 DNN的 MAE 值则高达 0.083。这表明GRU 在绝对误差方面的表现仅为DNN的十分之一，优势极为明显。此外，GRU 预测结果的平均绝对百分比误差（MAPE）值为2.62\%，而DNN 的 MAPE 值则为 29.41\%。这些定量数据充分证明了 GRU 的预测结果误差小于 DNN，从而进一步证实了 GRU 在该任务上的预测泛化能力更强。
@@ -304,20 +305,20 @@ MAPE值的结果表明相同的结论，DNN预测结果的$\sigma_{12}$和N$_1$�
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/giesekus-linear-metrics.pdf}
-  \FigureBicaption{\label{giesekus-linear-metrics}}{}
+  \FigureBicaption{\label{giesekus-linear-metrics}GRU算法和DNN算法在Giesekus模型交变协议预测线性协议测试集上的预测效果对比示意图：（a）GRU和DNN在测试集上的R$^2$指标图；（b）GRU和DNN在测试集上的MAE指标图；（c）GRU和DNN在测试集上的MAPE指标图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm on the Giesekus model oscillatory protocol predicting linear protocol test set: (a) R$^2$ metric plots on the test set for GRU and DNN; (b) MAE metric plots on the test set for GRU and DNN; (c) MAPE metric plots on the test set for GRU and DNN}
 \end{figure}
 \subsubsection{不同时间步的预测效果对比}
 为了探究在Giesekus模型上GRU算法的最佳时间步，本节研究了不同时间步下训练的模型在测试集上的预测效果，如图\ref{giesekus-timesteps-metrics}所示。由图可见，预测模型R$^2$值在时间步小于40时为0.7左右，当时间步为40时为0.969，时间步进一步增加，R$^2$开始下降。MAE值在时间步为40相比20时从0.306调跃减少至0.008，进一步增加时间步，MAE值不再显著改变，直到时间步为100，MAE值回升至0.156，显现过拟合趋势。MAPE值变化趋势与MAE值类似，在时间步为40左右跳跃减少，随后直到100步开始回升。从训练时间来看，随着时间步增加，训练时间单调增加，这一点与预期一致。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/giesekus-timesteps-metrics.pdf}
-  \FigureBicaption{\label{giesekus-timesteps-metrics}}{}
+  \FigureBicaption{\label{giesekus-timesteps-metrics}GRU算法和DNN算法在Giesekus模型不同时间步长下的预测指标对比图：（a）GRU和DNN在不同时间步下的R$^2$指标图；（b）GRU和DNN在不同时间步下的MAE指标图；（c）GRU和DNN在不同时间步下的MAPE指标图；（d）GRU和DNN在不同时间步下的训练时间指标图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm under different time steps of the Giesekus model: (a) R$^2$ metric plots under different time steps for GRU and DNN; (b) MAE metric plots under different time steps for GRU and DNN; (c) MAPE metric plots under different time steps for GRU and DNN; (d) Training Time metric plots under different time steps for GRU and DNN}
 \end{figure}
 
 % 本章小结 
 \section{本章小结}
 
-本章运用了GRU（门控循环单元）算法对数值模拟的 Herschel-Bulkley 模型、Maxwell 模型、Doi-Edwards 模型以及 Giesekus 模型所产生的模拟数据展开深度学习建模工作。
+本章运用了门控循环单元（GRU）算法对数值模拟的 Herschel-Bulkley 模型、Maxwell 模型、Doi-Edwards 模型以及 Giesekus 模型所产生的模拟数据展开深度学习建模工作。
 
 研究结果揭示出，GRU 作为一种循环神经网络，依托其独特的门控单元机制，能够精准地捕捉黏弹性材料流变学模拟数据所蕴含的时间依赖性以及复杂非线性特征。在处理 Herschel-Bulkley 模型这类非时间序列数据时，GRU 模型的预测效果相较于DNN（深度神经网络）模型略胜一筹。究其原因，在于 GRU 的门控单元机制引入了更多的参数，从而赋予了其更佳的泛化性能。对于经典的简单 Maxwell模型，鉴于其属于典型的时间序列数据，GRU对其进行建模预测的效果全面超越DNN，各项评估指标均展现出显著优势。这一现象主要得益于 GRU 的门控循环单元机制，该机制能够有效地控制材料历史记忆的流动与记录过程。当面对更为复杂Doi-Edwards 模型时，GRU的建模预测效果依旧优于 DNN。进一步分析发现，在相同的建模任务中，GRU 在剪切应力$\sigma_{12}$的预测效果上强于第一法向应力差N$_1$，这主要是由于输入特征为剪切速率，而剪切速率与剪切应力之间存在着更为直接的关联。在Giesekus 模型的研究中，本章模拟了小振幅振荡剪切（SAOS）以及大振幅振荡剪切（LAOS）这两种不同的工况。实验结果表明，GRU 的建模效果优于 DNN，这有力地说明 GRU 所捕捉的时间依赖性，不仅仅局限于基于玻尔兹曼叠加原理的线性黏弹性的时间特性，还能够涵盖更为复杂的非线性关系，而Giesekus模型下GRU对第一法向应力差N$_1$的预测效果也比$\sigma_{12}$差。
 

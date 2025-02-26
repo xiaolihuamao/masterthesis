@@ -16,13 +16,35 @@
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/huangjin.png}
-  \FigureBicaption{\label{huangjin-illustration}PINN示意图}{PINN illustration}
+  \FigureBicaption{\label{huangjin-illustration}Huang等人制备的PFGs示意图}{Schematic illustration of the PFGs prepared by Huang et al.}
 \end{figure}
 在实验过程中，Huang等人对不同分子量的PBA流体，注入不同分子量PBA制备的PFGs，分别进行了流变学实验，得到了对应材料特定频率下的储存模量、损耗模量和损耗角正切等数据。本章采用他们的实验数据进行具体的深度学习建模。
 
 \subsubsection{实验数据分类}
-首先本节对真实实验数据进行分类，第一类为单PBA流体数据，为不同分子量的PBA流体的流变学数据，特征包括：聚合度（DP）、数均分子量（Mn）、分散指数（PDI）、频率（$\omega$），标签包括：储存模量（G'）、损耗模量（G"）和损耗角正切（tan$\delta$），第二类为单分子量PBA注入制备的PFGs数据，特征和标签和第一类单PBA流体数据一致，第三类为多分子量PBA注入制备的PFGs数据，特征包括：不同分子量的PBA特征和组分信息（Mn$_i$、PDI$_i$、DP$_i$、$\phi_i$，$i=1,2,3$）、频率（$\omega$），标签包括：储存模量（G'）、损耗模量（G"）和损耗角正切（tan$\delta$）。
-
+首先本节对真实实验数据进行分类，第一类为单PBA流体数据，为不同分子量的PBA流体的流变学数据，特征包括：聚合度（DP）、数均分子量（Mn）、分散指数（PDI）、频率（$\omega$），标签包括：储存模量（G'）、损耗模量（G"）和损耗角正切（tan$\delta$），第二类为单分子量PBA注入制备的PFGs数据，特征和标签和第一类单PBA流体数据一致，第三类为多分子量PBA注入制备的PFGs数据，特征包括：不同分子量的PBA特征和组分信息（Mn$_i$、PDI$_i$、DP$_i$、$\phi_i$，$i=1,2,3$）、频率（$\omega$），标签包括：储存模量（G'）、损耗模量（G"）和损耗角正切（tan$\delta$）。第三类数据的组分信息见表\ref{pba-com-groups}所示。
+\begin{table}
+  \TableBicaption{\label{pba-com-groups}多分子量PBA流体制备PFGs的配比参数表}{Formulation Parameters of Multi-MW PBA Fluids for PFGs}
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X >{\centering\arraybackslash}X} % 关键修改点
+    \Xhline{1.5pt}
+    实验分组   & \makecell{
+      \begin{tabular}{@{}c@{}}
+        $\phi_{PBA}(\%)$ \\
+        \Xhline{0.5pt}
+        Mn(20k,35k,52k,78k,102k,152k)
+      \end{tabular}
+    }                         \\
+    \Xhline{0.5pt}
+    PFG-b1 & (0,20,0,0,30,10) \\
+    PFG-b2 & (0,30,0,30,0,0)  \\
+    PFG-b3 & (20,0,0,40,0,0)  \\
+    PFG-b4 & (10,0,20,30,0,0) \\
+    PFG-b5 & (0,0,30,0,0,30)  \\
+    PFG-b6 & (0,0,20,0,0,40)  \\
+    \Xhline{1.5pt}
+  \end{tabularx}
+\end{table}
 \subsubsection{低保真数据生成}
 分类后，本节使用Doi-Edwards模型来进行低保真数据拟合。首先假设实验数据可以使用Doi-Edwards模型描述。Doi-Edwards模型的频率域公式可以通过时间域公式进行傅里叶变换得到公式\eqref{eq:doi-edwards-g1}和公式\eqref{eq:doi-edwards-g2}
 \begin{align}
@@ -38,13 +60,19 @@
 % 模型训练细节
 \subsection{PINN模型训练}
 \subsubsection{损失函数构建}
-本节使用PINN模型对低保真数据（LF-data）和高保真数据（HF-data）进行训练。构建低保真（$\mathbf{F_{lf}}$）和高保真（$\mathbf{F_{hf}}$）两个模型，两个模型为多层感知机（MLP）。具体训练时，低保真数据首先通过低保真模型输出低保真标签$y_{lf}$，之后$y_{lf}$与高保真数据进行拼接，组成联合特征，输入到高保真模型进行训练。具体公式如公式\eqref{eq:lf-model}和公式\eqref{eq:hf-model}所示。
+本节使用PINN模型对低保真数据（LF-data）和高保真数据（HF-data）进行训练。模型架构包含两个多层感知机（MLP）网络：低保真网络$\mathbf{M_{low}}$和高保真网络$\mathbf{M_{high}}$。训练流程如下:
+
+首先低保真数据$X_{low}$首先通过低保真网络得到预测值$\hat{y}_{low}$，与真实低保真标签$y_{low}$计算物理损失。之后高保真数据$X_{high}$通过低保真网络得到中间特征$f_{mid}$，将$f_{mid}$与$X_{high}$拼接后输入高保真网络，得到最终预测值$\hat{y}_{high}$。$\hat{y}_{high}$与真实高保真标签$y_{high}$计算数据损失，并与物理损失拼接得到总损失。
+
+具体计算过程可表示为公式\eqref{eq:lf-model}和公式\eqref{eq:hf-model}：
 \begin{align}
-  y_{lf} & = \mathbf{F_{lf}}(X_{LF}) \label{eq:lf-model}                          \\
-  y_{hf} & = \mathbf{F_{hf}}(X_{HF}, \mathbf{F_{lf}}(X_{LF})) \label{eq:hf-model}
+  \hat{y}_{low}  & = \mathbf{M_{low}}(X_{low}) \label{eq:lf-model}                               \\
+  \hat{y}_{high} & = \mathbf{M_{high}}(X_{high}, \mathbf{M_{low}}(X_{high})) \label{eq:hf-model}
 \end{align}
 
-训练代码通过Python实现，机器学习框架采用PyTorch库，训练模型采用Adam优化器来进行优化，采用指标监控学习率调度器自动调整学习率，采用网格搜索算法和随机搜索算法对超参数进行调优，其中超参数包括：隐藏层数、隐藏层节点数、学习率、正则化系数、迭代次数、批次大小等。损失函数采用HuberLoss函数，如公式\eqref{eq:huber-loss}所示。HuberLoss通过$\delta$调节对异常值的敏感度，当$\delta$接近0时，HuberLoss接近平均绝对误差（MAE），当$\delta$接近无穷大时，HuberLoss接近均方误差（MSE），这种特性使得其可以更好地处理真实实验数据中的异常值问题和噪声问题。
+本节使用Python语言和PyTorch深度学习框架实现模型训练。在优化策略方面，采用Adam优化器进行参数更新，并引入基于性能指标的学习率调度机制实现自适应学习率调整。为获得最优的模型结构，本文结合网格搜索和随机搜索两种方法对关键超参数进行系统调优，包括网络层数、每层神经元数量、初始学习率、正则化强度、训练轮次以及批次大小等。
+
+在损失函数选择上，考虑到实验数据中可能存在的异常值和噪声，本文采用鲁棒性较好的Huber损失函数，其定义如公式\eqref{eq:huber-loss}所示：
 \begin{equation}
   \begin{aligned}
     L_\delta(y, \hat{y}) =
@@ -54,9 +82,11 @@
     \end{cases}
   \end{aligned}
 \end{equation}
-本节在基本的PINN损失函数构建公式中添加可学习的权重$\alpha$，如公式\eqref{eq:pinn-loss-weight}， 通过$\alpha$权重平衡数据拟合与物理约束的强度，适应不同的训练任务。
+Huber损失函数通过参数$\delta$实现对异常值敏感度的动态调节：当$\delta$趋近于0时，其行为接近平均绝对误差(MAE)，表现出对异常值的强鲁棒性；当$\delta$较大时，其特性近似于均方误差(MSE)，保持了较高的训练效率。这种自适应特性使得模型能够在保持训练稳定性的同时，有效应对实验数据中的噪声干扰。
+
+本节在基本的PINN损失函数构建公式中添加可学习的权重$\alpha$，如公式\eqref{eq:pinn-loss-weight}，通过权重$\alpha$平衡损失强度，适应不同的训练任务。
 \begin{equation}
-  L_{\text{PINN}} = \underbrace{L_\delta(u, u_\theta)}_{\text{数据项}} + \alpha \cdot \underbrace{L_\delta(f(u_\theta), 0)}_{\text{物理项}} \label{eq:pinn-loss-weight}
+  L_{\text{PINN}} = \underbrace{L_\delta(y_{low}, \hat{y}_{low})}_{\text{低保真物理损失}} + \alpha \cdot \underbrace{L_\delta(y_{high}, \hat{y}_{high})}_{\text{高保真数据损失}}  \label{eq:pinn-loss-weight}
 \end{equation}
 
 \subsubsection{特征融合细节}
@@ -125,7 +155,7 @@ CVAE的训练模型采用Adam优化器来进行优化，采用余弦退火算法
 本节使用Python的scipy.optimize库对真实数据进行最小二乘法拟合，既定函数为公式\eqref{eq:doi-edwards-g1}和\eqref{eq:doi-edwards-g2}。首先对PBA流体进行拟合，训练数据为不同聚合度（DP）的PBA流体的频率-储存模量（$\omega$-G'）数据、频率-损耗模量数据（$\omega$-G"）和频率-损耗角正切（$\omega$-tan$\delta$）数据，拟合结果如图\ref{pba-LF}所示。从拟合曲线来看，不同PBA流体的拟合质量较优，拟合曲线和数据点贴合。表\ref{LF-metrics-table}展示了低保真数据的回归拟合指标，其中$g_1$、$g_2$、$g_3$分别对应不同PBA流体的$\omega$-G'、$\omega$-G"和$\omega$-tan$\delta$，可以看到这三组拟合指标的R$^2$指标都大于0.95，拟合效果优秀。
 $g_1$组的MAPE值为19.72\%，$g_2$组的MAPE值为15.89\%，$g_3$组的MAPE值为12.45\%，根据统计学标准，MAPE值小于20\%被认为是可接受误差，这三组均在可接受范围，可以用于后续实验。
 \begin{table}
-  \TableBicaption{\label{LF-metrics-table}低保真数据拟合回归指标表}{Parameters of Ducted Fan Model}  % 中英文标题
+  \TableBicaption{\label{LF-metrics-table}低保真数据拟合回归指标表}{Regression Metrics of Low-Fidelity Data Fitting}  % 中英文标题
   \centering
   \small
   \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X} % 关键修改点
@@ -143,7 +173,7 @@ $g_1$组的MAPE值为19.72\%，$g_2$组的MAPE值为15.89\%，$g_3$组的MAPE值
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pba-LF.pdf}
-  \FigureBicaption{\label{pba-LF}PINN示意图}{PINN illustration}
+  \FigureBicaption{\label{pba-LF}不同PBA流体的频率-流变学性质参数数据低保真拟合结果：（a）不同DP值的PBA流体的频率-储存模量（$\omega$-G'）数据拟合结果；（b）不同DP值的PBA流体的频率-损耗模量（$\omega$-G"）数据拟合结果；（c）不同DP值的PBA流体的频率-损耗角正切（$\omega$-tan$\delta$）数据拟合结果}{Low-fidelity fitting results of frequency-rheological property parameter data of different PBA fluids: (a) Fitting results of frequency-storage modulus ($\omega$-G') data of PBA fluids with different DP values; (b) Fitting results of frequency-loss modulus ($\omega$-G") data of PBA fluids with different DP values; (c) Fitting results of frequency-loss tangent ($\omega$-tan$\delta$) data of PBA fluids with different DP values}
 \end{figure}
 
 之后，针对PBA流体注入制备的PFGs数据，使用最小二乘法进行拟合。图\ref{pfgs-LF}（a）展示了不同DP值的注入制备的PFGs数据的拟合曲线，拟合曲线和数据点贴合，拟合效果较优。图（a）对应的定量指标为表\ref{LF-metrics-table}的$g_4$，R$^2$值为0.985，MAPE值为19.91\%，均在可接受范围，可以用于后续实验。
@@ -152,32 +182,10 @@ $g_1$组的MAPE值为19.72\%，$g_2$组的MAPE值为15.89\%，$g_3$组的MAPE值
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pfgs-LF.pdf}
-  \FigureBicaption{\label{pfgs-LF}PINN示意图}{PINN illustration}
+  \FigureBicaption{\label{pfgs-LF}}{不同PBA流体组合制备的PFGs的频率-流变学性质参数数据低保真拟合结果：（a）不同DP值的PBA流体制备的PFGs的频率-储存模量（$\omega$-G'）数据拟合结果；（b）不同PBA流体组合制备的PFGs的频率-损耗模量（$\omega$-G"）数据拟合结果；（c）不同PBA流体组合制备的PFGs的频率-损耗角正切（$\omega$-tan$\delta$）数据拟合结果}{Low-fidelity fitting results of frequency-rheological property parameter data of PFGs prepared by different PBA fluid combinations: (a) Fitting results of frequency-storage modulus ($\omega$-G') data of PFGs prepared by PBA fluids with different DP values; (b) Fitting results of frequency-loss modulus ($\omega$-G") data of PFGs prepared by different PBA fluid combinations; (c) Fitting results of frequency-loss tangent ($\omega$-tan$\delta$) data of PFGs prepared by different PBA fluid combinations}
 \end{figure}
 
-\begin{table}
-  \TableBicaption{\label{pba-com-groups}PFGs制备用多分子量PBA流体配比参数表}{Formulation Parameters of Multi-MW PBA Fluids for PFGs}
-  \centering
-  \small
-  \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X >{\centering\arraybackslash}X} % 关键修改点
-    \Xhline{1.5pt}
-    实验分组   & \makecell{
-      \begin{tabular}{@{}c@{}}
-        $\phi_{PBA}(\%)$ \\
-        \Xhline{0.5pt}
-        Mn(20k,35k,52k,78k,102k,152k)
-      \end{tabular}
-    }                         \\
-    \Xhline{0.5pt}
-    PFG-b1 & (0,20,0,0,30,10) \\
-    PFG-b2 & (0,30,0,30,0,0)  \\
-    PFG-b3 & (20,0,0,40,0,0)  \\
-    PFG-b4 & (10,0,20,30,0,0) \\
-    PFG-b5 & (0,0,30,0,0,30)  \\
-    PFG-b6 & (0,0,20,0,0,40)  \\
-    \Xhline{1.5pt}
-  \end{tabularx}
-\end{table}
+
 
 % 单PBA流体本构建模
 \subsection{单PBA流体本构建模}
