@@ -52,6 +52,7 @@ LSTM 的状态更新公式如下：
   \mathbf{h}_t         & = \mathbf{o}_t \odot \tanh(\mathbf{c}_t)
 \end{align}
 在LSTM中，$\mathbf{i}_t$、$\mathbf{f}_t$和$\mathbf{o}_t$分别是输入门、遗忘门和输出门，$\tilde{\mathbf{c}}_t$是候选单元状态，$\mathbf{c}_t$是单元状态，$\odot$表示哈达乘法，即逐元素乘法。遗忘门的输出控制着单元状态中旧信息的保留程度。当$\mathbf{f}_t$接近1时，表示大部分旧信息将被保留，梯度能够稳定地传播下去；而当$\mathbf{f}_t$接近0时，表示大部分旧信息将被丢弃。然而，只要隐藏状态单元不为0，梯度依然可以传播。
+\todo{这里需要图片的引用文献}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/rnn_lstm.pdf}

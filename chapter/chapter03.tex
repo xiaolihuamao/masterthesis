@@ -1,4 +1,4 @@
-\chapter{流变学模拟时序数据的GRU本构建模研究}
+\chapter{时间域流变学本构方程的GRU建模研究}
 % 3.2表================================================
 % % 本节仅展示使用常见的三线表
 % \begin{table}
@@ -19,10 +19,11 @@
 \section{引言}
 近年来在深度学习对于流变学的本构建模中研究中，例如Lennon、Mahmoudabadbozchelou等人的研究工作，虽然细节方法各有不同，但是基本在模型选择上都选择普通多层感知机模型（MLP）\cite{lennonScientificMachineLearning2023a,mahmoudabadbozchelouDatadrivenPhysicsinformedConstitutive2021}。MLP是一种经典的前馈人工神经网络，由全连接层堆叠而成，包含输入层、多个隐藏层（$\geqslant$1）及输出层，通过非线性激活函数实现复杂函数逼近。当MLP的隐藏层数到达一定值，MLP被视为深度神经网络（DNN）。传统的前馈性质的DNN模型（后简称DNN）具备一定的非线性行为捕捉能力，但是在处理时间序列数据或具有时间依赖性的数据时，其性能可能受到限制。Lennon和Mahmoudabadbozchelou的工作使用DNN模型，很难捕捉到黏弹性材料中的长程应变历史依赖性。本章的研究工作在前人的基础之上尝试使用GRU模型来构建本构建模，期待解决在处理时间序列数据时，DNN模型性能受限的问题。GRU的门控机制允许处理流变学数据，如应力应变数据时，控制历史信息的网络间流动。
 
-本章的研究工作首先采用数值模拟方法构建了经典本构方程的应力应变模拟数据，所涉及的经典本构方程包括Herschel-Bulkley模型、Maxwell模型、Doi-Edwards模型和Giesekus模型。这些模型在流变学领域具有重要的理论和应用价值，能够描述不同类型的流变行为。首先本章研究通过数值模拟方法，生成这些模型的应力应变数据，然后对GRU模型进行了详细的构建，包括模型的结构设计、参数初始化以及训练过程中的优化策略，之后，使用数值模拟生成的应力应变数据GRU模型进行训练，通过调整模型参数和优化算法，使模型能够准确地拟合训练数据。最终本章的研究通过与DNN的训练模型对比，验证了GRU模型在处理时间序列数据时的优势。
+本章的研究工作首先采用数值模拟方法构建了经典本构方程的应力应变模拟数据，所涉及的经典本构方程包括Herschel-Bulkley模型、Maxwell模型、Doi-Edwards模型和Giesekus模型。这些模型在流变学领域具有重要的理论和应用价值，能够描述不同类型的流变行为。首先本章研究通过数值模拟方法，生成这些模型的应力应变数据，然后构建了物理信息-门控循环单元（PI-GRU）模型，包括模型的结构设计、参数初始化以及训练过程中的优化策略，之后，使用数值模拟生成的应力应变数据进行训练，通过调整模型参数和优化算法，使模型能够准确地拟合训练数据。最终本章的研究通过与DNN的训练模型对比，验证了PI-GRU模型在处理时间序列数据时的优势。
+
+之后，本章使用一类阻尼黏弹性材料的真实流变学数据，使用PI-GRU进行建模，通过对材料的小振幅振荡剪切（SAOS）实验数据和大振幅振荡剪切（LAOS）实验数据进行建模，对比不同的机器学习算法，探究物理信息约束的GRU模型在处理真实流变学时间序列数据时的优势。
 \section{实验设计}
-\subsection{数值模拟}
-本章的数值模拟工作采用Python语言实现，主要依托Numpy、Scipy等高效的数值计算库来完成离散采样和数据处理。
+\subsection{数据生成}
 \subsubsection{Herschel-Bulkley模型模拟}
 Herschel-Bulkley模型的本构方程如公式\eqref{eq:herschel}所示，其中剪切应力$\sigma$与剪切率$\dot{\gamma}$之间存在函数关系。该模型包含流变参数$K$、流动指数$n$及屈服应力$\sigma_0$。在模拟过程中，本章设置$\sigma_0$为1.0 Pa，$K$为1，而$n$则取值为0.2、0.6、1.0、1.4及1.8。剪切率$\dot{\gamma}$范围设定为[0,100]，并以0.01的时间步长进行离散采样。
 
@@ -75,6 +76,8 @@ Giesekus模型的本构方程如公式\eqref{eq:giesekus}所示，迁移因子$\
   \end{aligned} \label{eq:giesekus-gammadot}
 \end{equation}
 随后设置迁移因子$\alpha$为0.8,其余松弛时间参数（$\lambda_1$、$\lambda_2$）为1.0，使用Python的scipy.integrate.solve\_ivp函数（内置方法为Runge-Kutta法）对Giesekus模型的微分方程组进行求解计算，生成3*3应力张量矩阵，如公式\eqref{eq:sigma_bmatrix}所示。本章提取$\sigma_{12}$、$\sigma_{11}$、$\sigma_{22}$分量作为模拟实验数据，与对应的应变速率张量数据、计算后的应变张量数据一起通过Pandas库存入Excel文件，便于后续的模型训练。
+\subsubsection{阻尼黏弹性材料数据测量}
+\todo{单茜数据介绍}
 
 \subsection{模型训练}
 \subsubsection{数据集划分}
@@ -82,16 +85,51 @@ Giesekus模型的本构方程如公式\eqref{eq:giesekus}所示，迁移因子$\
 
 Herschel-Bulkley模型数据单独划分$n=1.0$的数据为测试集，其余数据按照9:1比例划分为训练集和验证集。
 
-Maxwell模型单独划分4个交变应变协议为训练集和验证集，其中按照9:1比例划分为训练集和验证集。划分1个交变应变协议，1个线性应变协议为测试集。
+Maxwell模型数据单独划分4个交变应变协议为训练集和验证集，其中按照9:1比例划分为训练集和验证集。划分1个交变应变协议，1个线性应变协议为测试集。
 
-Doi-Edwards模型单独划分5个交变应变协议为训练集和验证集，其中按照9:1比例划分为训练集和验证集。划分1个交变应变协议，1个线性应变协议为测试集。
+Doi-Edwards模型数据单独划分5个交变应变协议为训练集和验证集，其中按照9:1比例划分为训练集和验证集。划分1个交变应变协议，1个线性应变协议为测试集。
 
-Giesekus模型单独划分6个交变应变协议为训练集和验证集，其中按照9:1比例划分为训练集和验证集。划分1个交变应变协议，1个线性应变协议为测试集。
+Giesekus模型数据单独划分6个交变应变协议为训练集和验证集，其中按照9:1比例划分为训练集和验证集。划分1个交变应变协议，1个线性应变协议为测试集。
+
+ABE弹性体数据选取一组SAOS数据和一组LAOS数据作为测试集，其余数据按照9:1比例划分为训练集和验证集。
+\subsubsection{损失函数构建}
+本章模型为PI-GRU架构，损失函数由数据损失和物理约束损失共同组成：
+\begin{equation}
+  \mathcal{L}_{\text{total}} =
+  \lambda_{\text{data}} \mathcal{L}_{\text{data}} +
+  \lambda_{\text{ode}} \mathcal{L}_{\text{ode}} +
+  \lambda_{\text{dae}} \mathcal{L}_{\text{dae}}+
+  \mathcal{L}_{L_{2}}
+\end{equation}
+
+\begin{equation}
+  \mathcal{L}_{\text{data}} = \frac{1}{N} \sum_{i=1}^N
+  \|\hat{\bm{\sigma}}_i - \bm{\sigma}_i^{\text{real}}\|_F^2
+  \quad
+\end{equation}
+
+\begin{equation}
+  \mathcal{L}_{\text{ode}} = \frac{1}{T-1} \sum_{t=1}^{T-1}
+  \|\hat{\bm{\sigma}}_{t+1} - \Bigl[
+    \hat{\bm{\sigma}}_t + \Delta t \cdot
+    f_{\text{constitutive}}(\hat{\bm{\sigma}}_t, \dot{\gamma}_t)
+    \Bigr] \|_F^2
+  \quad
+\end{equation}
+
+\begin{equation}
+  \mathcal{L}_{\text{dae}} = \frac{1}{T} \sum_{t=1}^T \Biggl(
+  \underbrace{\|\hat{\bm{\sigma}}_t - \hat{\bm{\sigma}}_t^\top\|_F^2}_{\text{对称性约束}}
+  \Biggr)
+\end{equation}
+\begin{equation}
+  \mathcal{L}_{L_{2}} = \lambda \sum_{i} w_i^2
+\end{equation}
+其中数据损失$\mathcal{L}_{\text{data}}$通过MSE计算，目的是确保模型的预测结果与数值模拟数据尽可能接近，这是监督学习的基础，直接拟合数据，也是最重要和最基本的损失项。物理损失分为ODE损失$\mathcal{L}_{\text{ode}}$确保模型的预测遵循本构方程描述的物理规律。这里的本构方程在模拟数值训练时为构建模拟数据的原方程，在真实实验数据（ABE弹性体数据）时为最小二乘法拟合的Maxwell方程。这部分是为了将物理知识融入模型，增强泛化能力。$\mathcal{L}_{\text{dae}}$保证预测的应力张量满足对称性。
 \subsubsection{训练细节}
 本章所有模型的训练过程基本一致，首先将数据集划分后，将训练集数据和验证集数据进行归一化，之后转为Torch张量，通过Pytorch框架编写GRU模型代码进行深度学习训练。在训练过程中使用Adam优化算法，使用MSE损失函数,使用
 网格搜索算法和随机搜索算法进行超参数优化和选取，训练完成将模型参数保存为.pth文件，以便后续的模型测试。
 
-本章使用GRU和普通DNN（简单MLP）两套模型分别进行训练，训练数据集保持一致。
 \subsection{模型测试}
 \subsubsection{测试指标细节}
 本章的模型训练均为回归问题，所以采用的测试指标为决定系数（R$^2$），如公式\eqref{eq:r2}，平均绝对误差（MAE），如公式\eqref{eq:mae}和平均百分比误差（MAPE），如公式\eqref{eq:mape}。
@@ -117,6 +155,9 @@ Maxwell模型训练数据为交变应变数据，其应变关系符合公式\eqr
 \end{equation}
 
 Doi-Edwards模型和Giesekus模型与Maxwell模型的实验流程一致，采用已知交变协议数据预测未知交变协议数据，已知交变协议数据预测未知线性协议数据，预测物理量为xy方向剪切应力（$\sigma_{12}$）和第一法向应力差（$\text{N}_1$）。第一法向应力差的公式为$\text{N}_1=\sigma_{11}-\sigma_{12} $，表示模拟流体的弹性行为。按照上述实验步骤分别使用DNN和GRU两种模型进行测试，绘制两个模型的测试比对曲线。对于GRU模型，设置不同的序列时间步进行训练，探究模型的最佳时间步。
+
+作为真实实验数据测试的ABE弹性体的数据测试，本文选取一组SAOS数据和一组LAOS数据作为测试集，通过其他不同振幅的动态流变学数据训练，预测未知的振幅的Lissajous曲线。按照上述实验步骤分别使用极端梯度提升树（XGBoost）、多层感知器（MLP）、物理信息-多层感知器（PI-MLP）、物理信息-门控循环单元（PI-GRU）四种模型进行测试，绘制不同算法下的测试比对曲线。
+
 \section{结果与讨论}
 \subsection{Herschel-Bulkley模型建模}
 \subsubsection{数值模拟数据}
@@ -203,7 +244,7 @@ Doi-Edwards模型和Giesekus模型与Maxwell模型的实验流程一致，采用
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/doi-edwards-moni.pdf}
-  \FigureBicaption{\label{doi-edwards-moni}不同应变振幅下Doi-Edwards模型模拟的剪切应力应变Lissajous曲线（a）、第一法向应力差（N$_1$）的Lissajous曲线（b）、线性应变协议下的应力-时间曲线（c）}{Lissajous curves of shear stress-strain (a), first normal stress difference (N$_1$) (b), and stress-time curves (c) of Doi-Edwards model under different strain amplitudes}
+  \FigureBicaption{\label{doi-edwards-moni}Doi-Edwards模型模拟数据：（a）不同应变振幅下的剪切应力应变Lissajous曲线；（b）不同应变振幅下的第一法向应力差（N$_1$）的Lissajous曲线；（c）线性应变协议下的应力-时间曲线}{Doi-Edwards model simulation data: (a) Lissajous curves of shear stress-strain under different strain amplitudes; (b) Lissajous curves of first normal stress difference (N$_1$); (c) Stress-time curves under linear strain protocol}
 \end{figure}
 \subsubsection{交变协议预测交变协议效果验证}
 为了验证GRU算法在Doi-Edwards模型本构方程数据中的预测效果，本节使用交变应变协议生成的数据作为训练集，交变应变协议生成的数据作为测试集。分别使用了GRU和DNN进行训练，并在测试集上进行验证，测试结果如图\ref{doi-edwards-sin}、图\ref{doi-edwards-sin-metric}所示。
@@ -291,29 +332,46 @@ MAPE值的结果表明相同的结论，DNN预测结果的$\sigma_{12}$和N$_1$�
 
 % Giesekus模型交变预测线性协议效果验证
 \subsubsection{交变协议预测线性协议效果验证}
-为了检验GRU算法在不同形式的应变历史下对Giesekus模型的泛化预测能力，本节采用交变应变协议生成的数据作为训练集，线性应变协议生成的数据作为测试集。分别使用GRU和DNN进行模型训练，并在测试集上进行验证，验证结果如图 \ref{giesekus-linear} 和图 \ref{giesekus-linear-metrics} 所示。
-
-图\ref{giesekus-linear}（a）为两种不同算法预测模型在测试集上的真实值-预测值曲线，图中可以看到GRU算法的预测值的曲线与真实值曲线接近，仅在1-2 s之间存在小部分突出偏差，而DNN算法的预测值曲线完全没有拟合到曲线特征。图\ref{giesekus-linear}（b）展示了两种算法在测试集上的残差图。从图中可以明显看出，DNN算法的预测值与真实值之间的残差整体呈现出较为清晰的曲线趋势，存在明显的峰值。图中结果表明DNN完全没有捕捉到训练数据中的关键特征，导致其在测试集上的表现很差。与之形成鲜明对比的是，GRU 算法的残差图呈现出无序分布的特征，残差点均匀地分布贴近在 0 刻度线两侧。这一现象表明，GRU 能够更有效地学习数据中的关键特征，从而实现更小的预测偏差。结合真实值与预测值的曲线分析以及残差图的观察，可以分析出GRU在此项任务的预测性能优于DNN。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/giesekus-linear.pdf}
   \FigureBicaption{\label{giesekus-linear}GRU算法和DNN算法在Giesekus模型交变协议预测线性协议测试集上的预测效果对比示意图：（a）GRU和DNN在测试集上的时间-应力曲线；（b）GRU和DNN在测试集上的残差图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm on the Giesekus model oscillatory protocol predicting linear protocol test set: (a) Time-stress curves for GRU and DNN on test set; (b) Residual plots for GRU and DNN on test set}
 \end{figure}
-
-具体如图\ref{giesekus-linear-metrics} 所示。从图\ref{giesekus-linear-metrics}（a）可以清晰地观察到，GRU 算法的 R$^2$值高达 0.989，这一结果有力地表明了 GRU 在预测任务中的出色表现。与之形成鲜明对比的是，DNN算法的R$^2$值小于 0，这表明 DNN 并未有效学习到相关特征。进一步分析图\ref{giesekus-linear-metrics}（b-c），可以发现 GRU 预测结果的平均绝对误差（MAE）值为 0.008，而 DNN的 MAE 值则高达 0.083。这表明GRU 在绝对误差方面的表现仅为DNN的十分之一，优势极为明显。此外，GRU 预测结果的平均绝对百分比误差（MAPE）值为2.62\%，而DNN 的 MAPE 值则为 29.41\%。这些定量数据充分证明了 GRU 的预测结果误差小于 DNN，从而进一步证实了 GRU 在该任务上的预测泛化能力更强。
-在两种算法的训练时间对比方面，与上一节中交变协议预测交变协议的情况相同，具体可参考图 \ref{giesekus-sin-metrics}（d）所示。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/giesekus-linear-metrics.pdf}
   \FigureBicaption{\label{giesekus-linear-metrics}GRU算法和DNN算法在Giesekus模型交变协议预测线性协议测试集上的预测效果对比示意图：（a）GRU和DNN在测试集上的R$^2$指标图；（b）GRU和DNN在测试集上的MAE指标图；（c）GRU和DNN在测试集上的MAPE指标图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm on the Giesekus model oscillatory protocol predicting linear protocol test set: (a) R$^2$ metric plots on the test set for GRU and DNN; (b) MAE metric plots on the test set for GRU and DNN; (c) MAPE metric plots on the test set for GRU and DNN}
 \end{figure}
+为了检验GRU算法在不同形式的应变历史下对Giesekus模型的泛化预测能力，本节采用交变应变协议生成的数据作为训练集，线性应变协议生成的数据作为测试集。分别使用GRU和DNN进行模型训练，并在测试集上进行验证，验证结果如图 \ref{giesekus-linear} 和图 \ref{giesekus-linear-metrics} 所示。
+
+图\ref{giesekus-linear}（a）为两种不同算法预测模型在测试集上的真实值-预测值曲线，图中可以看到GRU算法的预测值的曲线与真实值曲线接近，仅在1-2 s之间存在小部分突出偏差，而DNN算法的预测值曲线完全没有拟合到曲线特征。图\ref{giesekus-linear}（b）展示了两种算法在测试集上的残差图。从图中可以明显看出，DNN算法的预测值与真实值之间的残差整体呈现出较为清晰的曲线趋势，存在明显的峰值。图中结果表明DNN完全没有捕捉到训练数据中的关键特征，导致其在测试集上的表现很差。与之形成鲜明对比的是，GRU 算法的残差图呈现出无序分布的特征，残差点均匀地分布贴近在 0 刻度线两侧。这一现象表明，GRU 能够更有效地学习数据中的关键特征，从而实现更小的预测偏差。结合真实值与预测值的曲线分析以及残差图的观察，可以分析出GRU在此项任务的预测性能优于DNN。
+
+
+具体如图\ref{giesekus-linear-metrics} 所示。从图\ref{giesekus-linear-metrics}（a）可以清晰地观察到，GRU 算法的 R$^2$值高达 0.989，这一结果有力地表明了 GRU 在预测任务中的出色表现。与之形成鲜明对比的是，DNN算法的R$^2$值小于 0，这表明 DNN 并未有效学习到相关特征。进一步分析图\ref{giesekus-linear-metrics}（b-c），可以发现 GRU 预测结果的平均绝对误差（MAE）值为 0.008，而 DNN的 MAE 值则高达 0.083。这表明GRU 在绝对误差方面的表现仅为DNN的十分之一，优势极为明显。此外，GRU 预测结果的平均绝对百分比误差（MAPE）值为2.62\%，而DNN 的 MAPE 值则为 29.41\%。这些定量数据充分证明了 GRU 的预测结果误差小于 DNN，从而进一步证实了 GRU 在该任务上的预测泛化能力更强。
+在两种算法的训练时间对比方面，与上一节中交变协议预测交变协议的情况相同，具体可参考图 \ref{giesekus-sin-metrics}（d）所示。
+
 \subsubsection{不同时间步的预测效果对比}
-为了探究在Giesekus模型上GRU算法的最佳时间步，本节研究了不同时间步下训练的模型在测试集上的预测效果，如图\ref{giesekus-timesteps-metrics}所示。由图可见，预测模型R$^2$值在时间步小于40时为0.7左右，当时间步为40时为0.969，时间步进一步增加，R$^2$开始下降。MAE值在时间步为40相比20时从0.306调跃减少至0.008，进一步增加时间步，MAE值不再显著改变，直到时间步为100，MAE值回升至0.156，显现过拟合趋势。MAPE值变化趋势与MAE值类似，在时间步为40左右跳跃减少，随后直到100步开始回升。从训练时间来看，随着时间步增加，训练时间单调增加，这一点与预期一致。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/giesekus-timesteps-metrics.pdf}
   \FigureBicaption{\label{giesekus-timesteps-metrics}GRU算法和DNN算法在Giesekus模型不同时间步长下的预测指标对比图：（a）GRU和DNN在不同时间步下的R$^2$指标图；（b）GRU和DNN在不同时间步下的MAE指标图；（c）GRU和DNN在不同时间步下的MAPE指标图；（d）GRU和DNN在不同时间步下的训练时间指标图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm under different time steps of the Giesekus model: (a) R$^2$ metric plots under different time steps for GRU and DNN; (b) MAE metric plots under different time steps for GRU and DNN; (c) MAPE metric plots under different time steps for GRU and DNN; (d) Training Time metric plots under different time steps for GRU and DNN}
 \end{figure}
+为了探究在Giesekus模型上GRU算法的最佳时间步，本节研究了不同时间步下训练的模型在测试集上的预测效果，如图\ref{giesekus-timesteps-metrics}所示。由图可见，预测模型R$^2$值在时间步小于40时为0.7左右，当时间步为40时为0.969，时间步进一步增加，R$^2$开始下降。MAE值在时间步为40相比20时从0.306调跃减少至0.008，进一步增加时间步，MAE值不再显著改变，直到时间步为100，MAE值回升至0.156，显现过拟合趋势。MAPE值变化趋势与MAE值类似，在时间步为40左右跳跃减少，随后直到100步开始回升。从训练时间来看，随着时间步增加，训练时间单调增加，这一点与预期一致。
+
+
+
+
+\subsection{真实数据集实验}
+为了验证我们的PI-GRU模型在真实数据集上的表现，本文选取了ABE弹性体数据集，训练数据集为SAOS和LAOS的混合数据集，测试集分为SAOS和LAOS数据两类以验证模型在线性区间和非线性区间的预测效果。由图\ref{fgr:real-data-differstrain}可知，PI-GRU模型在SAOS测试集上相比对比的XGBoost模型、多层感知器（MLP）模型、PI-MLP模型（该模型构建参考Mahmoudabadbozchelou）具有最佳的预测效果，预测指标（图S14）中MAPE值仅为3.33\%，属于优秀泛化范畴，相比PI-MLP模型的14.9\%下降了11.57\%，在训练时间成本上，PI-GRU模型为1070s相比PI-MLP模型（789s）仅增加了281s。
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/real-data-differstrain.pdf} % 此处填写图片名
+  \caption{ABE弹性体的Lissajous曲线在不同算法上的预测效果：(a)小振幅振荡剪切（SAOS）测试集真实值与模型预测值的Lissajous曲线对比；(b)小振幅振荡剪切（SAOS）测试集真实值与模型预测值的残差图；(c)大振幅振荡剪切（LAOS）测试集真实值与模型预测值的Lissajous曲线对比；(d)大振幅振荡剪切（LAOS）测试集真实值与模型预测值的残差图}
+  \label{fgr:real-data-differstrain}
+\end{figure}
+LAOS测试集上（图\ref{fgr:real-data-differstrain}c-d），PI-GRU的表现大幅度领先对比模型，PI-GRU模型预测指标（图S15）中MAPE值仅为4.32\%，相比PI-MLP模型的28.4\%下降了24.08\%，在训练时间成本上，PI-GRU模型为895s相比PI-MLP模型（671s）仅增加了224s。这一结果说明，PI-GRU模型在处理非线性黏弹性材料的流变学数据时，能够更好地捕捉到数据中的时间依赖性特征，门控单元可以自主决定是否记忆和遗忘信息，即对于每一个时间步的应变状态历史，门控单元自主给予不同的权重，从而更好地拟合非线性区应力历史叠加并非玻尔兹曼叠加原理的流变学数据，这一特性使得GRU结构相当于对黏弹性材料的历史依赖性做了特有的特征融合，这是作为前馈神经网络的MLP模型无法做到的。值得注意的是，在预测过程中，物理约束损失的本构方程形式为最简单的Maxwell模型（并未引入非线性点），然后就结果来看，我们的PI-GRU模型依旧可以很好地泛化到非线性区间的LAOS数据，这是因为物理约束给予的是大致的物理规律符合，Oldroyd-B类模型（Giesekus、FENE-P、​LPTT）通过不同形式非线性修正扩展了基础模型的适用范围，而GRU模型在Maxwell模型的物理约束下从另一种独特的形式构建了本构模型。由于简单Maxwell模型的参数拟合非常简单，且本文的研究并不需要过分追求其拟合精确度，因此我们的模型可以低成本地扩展到其他不同的流变学实验体系。
+
+
 
 % 本章小结 
 \section{本章小结}
@@ -325,12 +383,6 @@ MAPE值的结果表明相同的结论，DNN预测结果的$\sigma_{12}$和N$_1$�
 在本章设计的实验中，我们探讨了两类预测任务：首先，利用交变应变变化的训练数据，预测相应的测试数据；其次，使用交变应变变化实验的训练数据，预测线性应变变化的测试数据。在针对不同本构模型的这两类实验中，GRU（门控循环单元）模型的表现均优于DNN（深度神经网络）。这一现象充分表明，GRU具备更强的泛化能力，能够有效地预测更为一般化的本构关系，而不仅仅是进行简单的函数逼近。GRU通过引入门控机制，能够有效捕捉序列数据中的长期依赖关系，从而在处理复杂的本构模型时展现出更优的性能。相比之下，DNN虽然在非时序本构模型中表现出色，但在处理具有复杂时序特征的本构模型时，其性能会受到限制。因此，选择GRU模型进行本构关系的预测，能够更好地适应数据的复杂性和多样性，提升预测的准确性和可靠性，但是本章的实验结果同样表明，GRU模型由于其架构特征，比普通DNN的训练时间高很多，且训练时消耗更多的计算机资源（计算机内存、GPU显存等）。可以预见的是，在超大型数据集上，GRU的训练成本会远远大于DNN。
 
 综上所述，本章的研究工作充分验证了GRU模型在流变学数据建模中的优异效果。该模型不仅能够准确捕捉黏弹性材料的时间依赖性，从而高效刻画非线性、时变的物理过程，展现出良好的关联适配性，而且在理论上突破了传统数据拟合方法的局限，在模拟数据实践中表现出卓越的泛化能力和预测稳定性，为进一步开展真实实验中的流变学数据研究提供了坚实依据。总的来说，本章的研究为深度学习在流变学本构建模领域的应用开辟了全新的思路，即可以从模型升级的角度去优化本构建模的过程。
-
-
-
-
-
-
 
 
 
