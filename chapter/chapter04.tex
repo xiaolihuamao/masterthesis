@@ -148,10 +148,24 @@ CVAE的训练模型采用Adam优化器来进行优化，采用余弦退火算法
 本节通过CVAE训练频率-模量序列到组分信息的映射，将训练好后的模型保存。生成测试数据时，首先加载保存的模型参数，并输入目标制备条件$p = { M_{n_i}, w_i }'$作为生成约束；随后从条件先验分布$p(z∣p)$中采样潜在变量$z$（通过重参数化技巧$z=\mu_p+\epsilon⋅\sigma_p$实现可导性，其中$\epsilon$服从标准正态分布），将其与条件变量$p$拼接后输入解码器网络$p_{\theta_D}(\mathbf{x}|z,p)$，生成对应的$x = [w, G', G'', \tan \delta]$。为增强生成多样性，通过潜在空间插值或对条件参数p施加微小扰动生成100个多模态解。
 
 针对生成的多模态解，本节通过多模态分布分析揭示其内在结构特征，采用核密度估计与箱线图结合的小提琴图可视化方法，呈现不同模态下解的密度分布、峰值位置及离散程度。使用残差分析对预测值与理论解的偏离模式进行系统性检验。使用真实数据误差分析，采用平均绝对百分比误差（MAPE）量化多模态解的整体预测精度。
+
+\subsection{正逆向联合建模}
+本节将训练好的PINN模型和CVAE模型进行正逆向联合建模，将CVAE生成的组分信息作为PINN模型的输入的特征，验证CVAE生成的数据对最终的流变学性质参数的预测效果，并分析CVAE生成的数据对PINN模型预测效果的提升作用，绘制真实组分特征与CVAE生成的数据输入PINN模型后预测的流变学性质参数的对比图，并计算MAPE指标，进行定量分析。
+
 % 结果与讨论 全面的数据展开
 \section{结果与讨论}
 % 低保真数据拟合 数据展示
 \subsection{低保真数据拟合}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/pba-LF.pdf}
+  \FigureBicaption{\label{pba-LF}不同PBA流体的频率-流变学性质参数数据低保真拟合结果：（a）不同DP值的PBA流体的频率-储存模量（$\omega$-G'）数据拟合结果；（b）不同DP值的PBA流体的频率-损耗模量（$\omega$-G"）数据拟合结果；（c）不同DP值的PBA流体的频率-损耗角正切（$\omega$-tan$\delta$）数据拟合结果}{Low-fidelity fitting results of frequency-rheological property parameter data of different PBA fluids: (a) Fitting results of frequency-storage modulus ($\omega$-G') data of PBA fluids with different DP values; (b) Fitting results of frequency-loss modulus ($\omega$-G") data of PBA fluids with different DP values; (c) Fitting results of frequency-loss tangent ($\omega$-tan$\delta$) data of PBA fluids with different DP values}
+\end{figure}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/pfgs-LF.pdf}
+  \FigureBicaption{\label{pfgs-LF}}{不同PBA流体组合制备的PFGs的频率-流变学性质参数数据低保真拟合结果：（a）不同DP值的PBA流体制备的PFGs的频率-储存模量（$\omega$-G'）数据拟合结果；（b）不同PBA流体组合制备的PFGs的频率-损耗模量（$\omega$-G"）数据拟合结果；（c）不同PBA流体组合制备的PFGs的频率-损耗角正切（$\omega$-tan$\delta$）数据拟合结果}{Low-fidelity fitting results of frequency-rheological property parameter data of PFGs prepared by different PBA fluid combinations: (a) Fitting results of frequency-storage modulus ($\omega$-G') data of PFGs prepared by PBA fluids with different DP values; (b) Fitting results of frequency-loss modulus ($\omega$-G") data of PFGs prepared by different PBA fluid combinations; (c) Fitting results of frequency-loss tangent ($\omega$-tan$\delta$) data of PFGs prepared by different PBA fluid combinations}
+\end{figure}
 本节使用Python的scipy.optimize库对真实数据进行最小二乘法拟合，既定函数为公式\eqref{eq:doi-edwards-g1}和\eqref{eq:doi-edwards-g2}。首先对PBA流体进行拟合，训练数据为不同聚合度（DP）的PBA流体的频率-储存模量（$\omega$-G'）数据、频率-损耗模量数据（$\omega$-G"）和频率-损耗角正切（$\omega$-tan$\delta$）数据，拟合结果如图\ref{pba-LF}所示。从拟合曲线来看，不同PBA流体的拟合质量较优，拟合曲线和数据点贴合。表\ref{LF-metrics-table}展示了低保真数据的回归拟合指标，其中$g_1$、$g_2$、$g_3$分别对应不同PBA流体的$\omega$-G'、$\omega$-G"和$\omega$-tan$\delta$，可以看到这三组拟合指标的R$^2$指标都大于0.95，拟合效果优秀。
 $g_1$组的MAPE值为19.72\%，$g_2$组的MAPE值为15.89\%，$g_3$组的MAPE值为12.45\%，根据统计学标准，MAPE值小于20\%被认为是可接受误差，这三组均在可接受范围，可以用于后续实验。
 \begin{table}
@@ -170,21 +184,10 @@ $g_1$组的MAPE值为19.72\%，$g_2$组的MAPE值为15.89\%，$g_3$组的MAPE值
     \Xhline{1.5pt}
   \end{tabularx}
 \end{table}
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{Fig/pba-LF.pdf}
-  \FigureBicaption{\label{pba-LF}不同PBA流体的频率-流变学性质参数数据低保真拟合结果：（a）不同DP值的PBA流体的频率-储存模量（$\omega$-G'）数据拟合结果；（b）不同DP值的PBA流体的频率-损耗模量（$\omega$-G"）数据拟合结果；（c）不同DP值的PBA流体的频率-损耗角正切（$\omega$-tan$\delta$）数据拟合结果}{Low-fidelity fitting results of frequency-rheological property parameter data of different PBA fluids: (a) Fitting results of frequency-storage modulus ($\omega$-G') data of PBA fluids with different DP values; (b) Fitting results of frequency-loss modulus ($\omega$-G") data of PBA fluids with different DP values; (c) Fitting results of frequency-loss tangent ($\omega$-tan$\delta$) data of PBA fluids with different DP values}
-\end{figure}
 
 之后，针对PBA流体注入制备的PFGs数据，使用最小二乘法进行拟合。图\ref{pfgs-LF}（a）展示了不同DP值的注入制备的PFGs数据的拟合曲线，拟合曲线和数据点贴合，拟合效果较优。图（a）对应的定量指标为表\ref{LF-metrics-table}的$g_4$，R$^2$值为0.985，MAPE值为19.91\%，均在可接受范围，可以用于后续实验。
 
 图\ref{pfgs-LF}（b）展示了多分子量PBA注入制备的 PFGs 数据的拟合曲线，其中b1-b6是不同的PBA流体组合，具体组合如表\ref{pba-com-groups}所示。拟合曲线显示拟合效果优秀，定量指标如表\ref{LF-metrics-table}的$g_5$所示，R$^2$值为0.962，MAPE值为9.89\%，误差范围在可接受范围，可以用于后续实验。
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{Fig/pfgs-LF.pdf}
-  \FigureBicaption{\label{pfgs-LF}}{不同PBA流体组合制备的PFGs的频率-流变学性质参数数据低保真拟合结果：（a）不同DP值的PBA流体制备的PFGs的频率-储存模量（$\omega$-G'）数据拟合结果；（b）不同PBA流体组合制备的PFGs的频率-损耗模量（$\omega$-G"）数据拟合结果；（c）不同PBA流体组合制备的PFGs的频率-损耗角正切（$\omega$-tan$\delta$）数据拟合结果}{Low-fidelity fitting results of frequency-rheological property parameter data of PFGs prepared by different PBA fluid combinations: (a) Fitting results of frequency-storage modulus ($\omega$-G') data of PFGs prepared by PBA fluids with different DP values; (b) Fitting results of frequency-loss modulus ($\omega$-G") data of PFGs prepared by different PBA fluid combinations; (c) Fitting results of frequency-loss tangent ($\omega$-tan$\delta$) data of PFGs prepared by different PBA fluid combinations}
-\end{figure}
-
 
 
 % 单PBA流体本构建模
@@ -196,25 +199,26 @@ $g_1$组的MAPE值为19.72\%，$g_2$组的MAPE值为15.89\%，$g_3$组的MAPE值
   \FigureBicaption{\label{pba-g1}不同分子量的PBA流体PINN和DNN建模的G'预测结果：（a）真实-预测值曲线；（b）残差图}{Prediction results of G' of PBA fluids with different DP values using PINN and DNN: (a) Real-predicted value curve; (b) Residual diagram}
 \end{figure}
 
-图\ref{pba-g2}为G"的预测结果，图\ref{pba-g2}（a）为真实-预测值曲线。从真实-预测值曲线（图\ref{pba-g2}(a)）可观察到PINN建模的预测值序列与真实值分布趋势呈现更高程度的吻合，而DNN的预测曲线在低频率段明显偏高，拟合效果欠佳。进一步通过残差分布图（图\ref{pba-g2}(b)）进行评估，发现PINN模型的残差绝对值显著低于DNN模型的残差绝对值，且PINN模型的残差点分布更为极值，更为邻近0刻度线。综上所述，可以定性认为在此项任务中，PINN模型的泛化预测效果更佳。
+图\ref{pba-g2}为G"的预测结果，图\ref{pba-g2}（a）为真实-预测值曲线。从真实-预测值曲线（图\ref{pba-g2}（a））可观察到PINN建模的预测值序列与真实值分布趋势呈现更高程度的吻合，而DNN的预测曲线在低频率段明显偏高，拟合效果欠佳。进一步通过残差分布图（图\ref{pba-g2}（b）进行评估，发现PINN模型的残差绝对值显著低于DNN模型的残差绝对值，且PINN模型的残差点分布更为集中，更为邻近0刻度线。综上所述，可以定性认为在此项任务中，PINN模型的泛化预测效果更佳。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pba-g2.pdf}
   \FigureBicaption{\label{pba-g2}不同分子量的PBA流体PINN和DNN建模的G"预测结果：（a）真实-预测值曲线；（b）残差图}{Prediction results of G" of PBA fluids with different DP values using PINN and DNN: (a) Real-predicted value curve; (b) Residual diagram}
 \end{figure}
 
-图\ref{pba-lossf}为tan$\delta$的预测结果，图\ref{pba-lossf}（a）为真实-预测值曲线。从真实-预测值曲线（图\ref{pba-lossf}(a)）可观察到PINN建模的预测值序列与真实值分布趋势呈现更高程度的吻合，相较于传统深度神经网络（DNN）建模产生的预测曲线展现出更优的轨迹跟踪特性。进一步通过残差分布图（图\ref{pba-lossf}(b)）进行评估，两种模型的预测残差虽均呈现以负偏差为主的分布特征，但PINN模型的残差绝对值显著降低，极值绝对值较小。
+图\ref{pba-lossf}为tan$\delta$的预测结果，图\ref{pba-lossf}（a）为真实-预测值曲线。从真实-预测值曲线（图\ref{pba-lossf}(a)）可观察到PINN建模的预测值序列与真实值分布趋势呈现更高程度的吻合，相较于传统深度神经网络（DNN）建模产生的预测曲线展现出更优的轨迹跟踪特性。进一步通过残差分布图（图\ref{pba-lossf}(b)）进行评估，两种模型的预测残差虽均呈现以负偏差为主的分布特征，但PINN模型的残差绝对值显著低于DNN模型的残差绝对值，极值绝对值较小。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pba-lossf.pdf}
   \FigureBicaption{\label{pba-lossf}不同分子量的PBA流体PINN和DNN建模的tan$\delta$预测结果：（a）真实-预测值曲线；（b）残差图}{Prediction results of tan$\delta$ of PBA fluids with different DP values using PINN and DNN: (a) Real-predicted value curve; (b) Residual diagram}
 \end{figure}
-为了进一步定量分析PBA流体的模量数据PINN建模效果，本节计算测试集的R$^2$、MAE、MAPE、Training Time。图\ref{pba-metrics}为两个模型在G'预测、G"预测和tan$\delta$预测三种不同任务上的指标对比图。从图 \ref{pba-metrics} 可以看出，PINN模型在 G'、G" 和 tan$\delta$ 三个任务上的R$^2$ 均略高于 DNN 模型。此外，PINN 模型的 MAE 值在所有任务中均小于DNN模型，而 MAPE 值均小于 10\%，属于较小误差范围。相比之下，DNN模型的MAPE值均大于 10\%，表明其误差较大。这些结果表明，PINN模型在G'、G"和tan$\delta$三个任务上均具有更低的误差。然而，PINN 模型的训练时间显著更长，约为 DNN 模型的2-3倍。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pba-metrics.pdf}
   \FigureBicaption{\label{pba-metrics}不同分子量的PBA流体PINN和DNN建模的指标对比图：（a）R$^2$对比；（b）MAE对比；（c）MAPE对比；（d）训练时间对比}{Metrics comparison of PINN and DNN modeling for PBA fluids with different molecular weights: (a) R$^2$ comparison; (b) MAE comparison; (c) MAPE comparison; (d) Training time comparison}
 \end{figure}
+为了进一步定量分析PBA流体的模量数据PINN建模效果，本节计算测试集的R$^2$、MAE、MAPE、Training Time。图\ref{pba-metrics}为两个模型在G'预测、G"预测和tan$\delta$预测三种不同任务上的指标对比图。从图 \ref{pba-metrics} 可以看出，PINN模型在 G'、G" 和 tan$\delta$ 三个任务上的R$^2$ 均略高于 DNN 模型。此外，PINN 模型的 MAE 值在所有任务中均小于DNN模型，而 MAPE 值均小于 10\%，属于较小误差范围。相比之下，DNN模型的MAPE值均大于 10\%，表明其误差较大。这些结果表明，PINN模型在G'、G"和tan$\delta$三个任务上均具有更低的误差。然而，PINN 模型的训练时间显著更长，约为 DNN 模型的2-3倍。
+
 这种差异表明PINN通过嵌入物理守恒方程作为正则化约束，有效抑制了DNN模型因纯数据驱动导致的过拟合现象，其残差分布的紧致性和对称性改善印证了物理先验知识对模型泛化能力的提升作用。综合可视化分析与统计指标可知，PINN框架在本研究涉及的偏微分方程反演任务中，通过融合物理机理与数据特征的双重驱动，实现了比传统数据驱动范式更优的泛化预测性能。
 % PBA嵌入PFGs
 \subsection{单组分PBA注入的PFGs本构建模}
@@ -258,7 +262,6 @@ $g_1$组的MAPE值为19.72\%，$g_2$组的MAPE值为15.89\%，$g_3$组的MAPE值
   \FigureBicaption{\label{reverse-redisual-Mn}CVAE生成的100组多模态解中不同分子量组分Mn$_1$、Mn$_2$、Mn$_3$的残差分布：（a）Mn$_1$残差分布；（b）Mn$_2$残差分布；（c）Mn$_3$残差分布}{Residual distributions of 100 multimodal solutions generated by CVAE for different molecular weight components Mn$_1$, Mn$_2$, Mn$_3$: (a) Residual distribution of Mn$_1$; (b) Residual distribution of Mn$_2$; (c) Residual distribution of Mn$_3$}
 \end{figure}
 
-\todo[inline]{图片大小问题，残差略小，violin过大，记得修改}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/reverse-redisual-phi.pdf}
@@ -285,6 +288,20 @@ $g_1$组的MAPE值为19.72\%，$g_2$组的MAPE值为15.89\%，$g_3$组的MAPE值
 图\ref{reverse-mape}为MAPE的条形图。从图中可以看出，分子量参数Mn$_1$、Mn$_2$、Mn$_3$的MAPE值分别为4.94\%、2.75\%、1.49\%，组分含量参数$\phi_1$、$\phi_2$、$\phi_3$的MAPE值分别为8.27\%、3.87\%、2.80\%。这些数据揭示了几个重要的趋势：首先，分子量参数的预测总体优于组分含量参数，这表明模型在预测分子量特征时具有更好的准确性；其次，无论是分子量还是组分含量参数，都呈现出随着数值增大（即Mn$_1$ < Mn$_2$ < Mn$_3$和$\phi_1$ < $\phi_2$ < $\phi_3$）预测误差逐渐减小的规律，这与之前残差分析的结果相一致。特别值得注意的是，即使是预测误差最大的$\phi_1$，其MAPE值也仅为8.27\%，而其他参数的MAPE值都控制在5\%以内，这说明模型整体的预测精度达到了较高水平，具有良好的实用价值。
 
 综合以上分析结果，CVAE模型在从流变学性质反向预测组分配比的任务中展现出了良好的性能。通过残差分析、violin图分析和MAPE定量分析，我们可以得出以下主要结论：首先，模型生成的组分配比数据整体呈现正态分布特征，预测结果的分布集中且稳定，异常值较少；其次，预测误差随着参数数值的增大而减小，这一特征在分子量和组分含量两类参数中均有体现。这种误差分布特征可能源于在数据标准化过程中，较小数值参数更容易受到数值舍入和归一化误差的影响。第三，从MAPE指标来看，分子量参数的预测精度普遍优于组分含量参数，但两类参数的预测误差均控制在可接受范围内（最大MAPE为8.27\%）。这些结果表明，CVAE模型能够有效地实现从材料性质到材料制备参数的反向设计，为高分子材料配方开发提供了一种可靠的数据驱动方法。
+
+\subsection{正逆向联合建模分析}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Fig/prediction_results.pdf}
+  \FigureBicaption{\label{cvae2pinn}100组CVAE生成的多模态解输入PINN模型后的预测值曲线}{Prediction curves of 100 multimodal solutions generated by CVAE after input into PINN model}
+\end{figure}
+上一节通过分析CVAE生成的100组生成组分数据与真实组分数据的误差来确定CVAE模型的生成效果，但是这种分析方法存在一定的局限性。首先，组分数据与频率-损耗角正切曲线之间存在多对一的映射关系，即理论上可能存在多种不同的组分配比，制备出来的材料具有相同或近似的频率-损耗角正切曲线。这种多解性是高分子材料设计中的一个普遍现象，源于不同分子量组分之间复杂的相互作用。其次，组分配比的微小变化可能导致材料性能的显著差异，这种非线性关系使得仅通过比较组分数据的误差来评估模型效果是不够全面的。
+
+从实验验证的角度来看，最准确的分析方法应该是按照生成的组分配比分别制备材料样品，通过DMA频率扫描实验测试其损耗角正切，并与目标曲线进行对比。然而，考虑到实验成本和时间效率，这种方法在实际操作中并不现实。为了在保证验证可靠性的同时提高效率，本节采用了一种替代方案：将CVAE模型生成的100组组分特征输入到已训练好的PINN模型中，通过PINN的预测结果来评估CVAE生成结果的质量。这种方法虽然不能完全替代实验验证，但可以在一定程度上反映生成组分的合理性。
+
+图\ref{cvae2pinn}展示了这100组特征输入PINN后得到的频率-损耗角正切曲线，其中Test线代表原始真实特征对应的预测曲线。从图中可以观察到，这100组预测特征绘制的曲线形成了一个连续的曲线带，且具有以下特点：首先，曲线带的整体趋势与Test线高度一致，表明生成的组分特征能够较好地捕捉材料的主要流变学特性；其次，Test线位于曲线带的中心区域，说明生成结果的分布是合理的；最后，曲线带的宽度随频率变化呈现出不均匀的特征，这反映了在不同频率区间，组分配比对材料性能的影响程度是不同的。这种曲线带的分布特征也从另一个角度验证了CVAE模型在材料组分反演任务中的有效性。
+
+通过建立PINN-CVAE的联合建模，可以建立一个自适应增强的流变学机器学习系统。该系统的工作流程如下：首先，PINN模型通过物理约束和特征融合机制对流变学数据进行正向建模，建立组分特征到流变学性质的映射关系。在实际应用过程中，通过真实实验获得的新数据可以不断补充到训练集中，进一步提升PINN模型的预测精度。与此同时，CVAE模型负责从目标流变学性质反向生成可能的组分配比方案，为材料设计提供多样化的参考。这些由CVAE生成的组分方案可以输入到PINN模型中进行快速评估和筛选，通过比较预测曲线与目标曲线的吻合度，筛选出最具潜力的组分配比进行实验验证，从而大大减轻实验负担。最后，实验验证结果又可以作为新的训练数据反馈给两个模型，形成一个不断优化的闭环系统。这种联合建模方法充分发挥了两种模型的优势，既保证了预测的物理合理性，又提供了材料设计的多样化方案，同时通过数据驱动和实验验证的结合，实现了系统性能的持续提升。
 
 % 本章小结 总结与展望
 \section{本章小结}
