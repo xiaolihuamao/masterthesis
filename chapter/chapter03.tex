@@ -80,7 +80,7 @@ Giesekus模型的本构方程如公式\eqref{eq:giesekus}所示，迁移因子$\
 随后设置迁移因子$\alpha$为0.8,其余松弛时间参数（$\lambda_1$、$\lambda_2$）为1.0，使用Python的scipy.integrate.solve\_ivp函数（内置方法为Runge-Kutta法）对Giesekus模型的微分方程组进行求解计算，生成3*3应力张量矩阵，如公式\eqref{eq:sigma_bmatrix}所示。本章提取$\sigma_{12}$、$\sigma_{11}$、$\sigma_{22}$分量作为模拟实验数据，与对应的应变速率张量数据、计算后的应变张量数据一起通过Pandas库存入Excel文件，便于后续的模型训练。
 \subsubsection{阻尼黏弹性材料数据}
 \todo[inline]{单茜数据介绍}
-这里介绍材料制备与策略
+这里介绍材料制备与策略 todo
 \subsection{模型训练}
 \subsubsection{数据集划分}
 首先本章对模拟生成的数据进行数据集划分，将数据集分为训练集（Train）、验证集（Valid）和测试集（Test），不同模型的具体划分如下：
