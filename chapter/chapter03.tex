@@ -41,7 +41,7 @@ Maxwell模型的微分本构方程如公式\eqref{eq:maxwell_model_dt}所示。�
 \begin{equation}
   \sigma_i = \frac{\sigma_{i-1} + G (\gamma_i - \gamma_{i-1})}{1 + \frac{\Delta t}{\tau}} \label{eq:maxwell_euler_back_2}
 \end{equation}
-根据公式\eqref{eq:maxwell_euler_back_2}，本章首先使用NumPy库生成6个不同应变变化协议的应变数据，时间步为0.01，每个协议模拟2000个数据点，并存为NumPy数组，随后通过迭代法计算单个应变数据对应的应力数据，并存为NumPy数组。之后，本章使用Matplotlib库绘制出剪切应力与剪切应变的关系曲线，观察模拟效果，并进行生成效果评估。最后本章使用Pandas库将数据存储为Excel文件，便于后续的模型训练。
+根据公式\eqref{eq:maxwell_euler_back_2}，本章首先使用NumPy库生成6个不同应变变化协议的应变数据，时间步为0.01 s，每个协议模拟2000个数据点，并存为NumPy数组，随后通过迭代法计算单个应变数据对应的应力数据，并存为NumPy数组。之后，本章使用Matplotlib库绘制出剪切应力与剪切应变的关系曲线，观察模拟效果，并进行生成效果评估。最后本章使用Pandas库将数据存储为Excel文件，便于后续的模型训练。
 \subsubsection{Doi-Edwards模型模拟数据}
 Doi-Edwards模型的本构方程如公式\eqref{eq:doi_edwards}所示。该方程为积分形式的本构方程，本章首先对该方程进行处理，将取向张量函数$\underline{Q}(t^{\prime},t)$写为球坐标形式，即公式\eqref{eq:doi_edwards_moni_q}。
 \begin{align}
@@ -192,7 +192,7 @@ Doi-Edwards模型和Giesekus模型与Maxwell模型的实验流程一致，采用
 \subsubsection{交变协议预测交变协议效果验证}
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.8\textwidth]{Fig/Maxwell_sin_.pdf}
+  \includegraphics[width=0.8\textwidth]{Fig/Maxwell_sin_test.pdf}
   \FigureBicaption{\label{maxwell_sin}GRU算法和DNN算法在Maxwell模型交变协议测试集上的预测效果对比示意图：（a）GRU和DNN在测试集上的预测值与真实值的应力-应变曲线（Lissajous曲线）；（b）GRU和DNN在测试集上的预测值与真实值的应力-时间曲线；（c）GRU和DNN在测试集上的预测值残差图}{Comparison of prediction performance between GRU and DNN algorithms on Maxwell model alternating protocol test set: (a) Stress-strain curves (Lissajous curves) of predicted vs. true values for GRU and DNN on test set; (b) Stress-time curves of predicted vs. true values for GRU and DNN on test set; (c) Residual plots of predicted values for GRU and DNN on test set}
 \end{figure}
 \begin{figure}[htbp]
@@ -205,7 +205,7 @@ Doi-Edwards模型和Giesekus模型与Maxwell模型的实验流程一致，采用
 图\ref{maxwell_sin}（a-b）为两种不同算法预测模型在测试集上的真实值-预测值曲线，
 图a为Lissajous曲线，可以看到GRU算法的预测值的Lissajous曲线与真实值曲线十分接近，而DNN算法的预测值的Lissajous曲线与真实的曲线则有明显的周期性偏差，尤其在大应变时，预测值与真实值有较大的偏差。图b为时间-应力曲线，从中可以看到GRU算法的预测值曲线随时间变化较为稳定，贴近真实值曲线，而DNN算法的预测值的曲线明显偏离真实值曲线。
 
-图\ref{maxwell_sin}（c）为两种算法预测模型的测试集残差图，从图中可以看到DNN算法的预测值与真实值残差呈现非常明显的周期性分布，说明DNN未能捕捉到训练数据中的周期性特征，或者说无法泛化到测试集。而GRU的残差图则为无序的近似正态分布，虽然局部存在一定周期性，但是总体分布效果明显由于DNN的对应残差，这说明GRU捕捉到了训练数据的较完整的特征，尤其是DNN未能捕捉的周期性特征。综合真实值-预测值曲线和残差图，可以定性分析出GRU的预测效果更为优秀。
+图\ref{maxwell_sin}（c）为两种算法预测模型的测试集残差图，从图中可以看到DNN算法的预测值与真实值残差呈现非常明显的周期性分布，极值偏离0刻度线，说明DNN模型无法泛化到测试集。而GRU的残差图虽然也存在一定周期性，但是总体分布效果明显优于DNN的对应残差，这说明GRU捕捉到了训练数据的较完整的特征，尤其是DNN未能捕捉的周期性特征。综合真实值-预测值曲线和残差图，可以定性分析出GRU的预测效果更为优秀。
 
 
 接下来，本节计算两种算法的测试集预测指标，绘制指标对比图\ref{maxwell_sin_metric}。从图\ref{maxwell_sin_metric
@@ -228,7 +228,7 @@ Doi-Edwards模型和Giesekus模型与Maxwell模型的实验流程一致，采用
 \end{figure}
 图\ref{maxwell_linear}（a）为两种不同算法预测模型在测试集上的真实值-预测值的Lissajous曲线，图中可以看到GRU算法的预测值的Lissajous曲线与真实值曲线接近，在小应变时有一定偏差，这可能源于门控单元对初始状态记忆单元的权重初始化敏感性问题。而DNN算法的预测值的Lissajous曲线与真实的曲线相比GRU偏差更大，在小应变时，预测值与真实值有较大的偏差。
 
-图\ref{maxwell_linear}（b）为两种算法预测模型的测试集残差图，从图中可以看到DNN算法的预测值与真实值残差分布不均匀，在小应变时为单调增曲线趋势，在Strain=0.25处存在明显峰，整体呈现清晰曲线趋势，说明DNN未能捕捉到训练数据中的关键特征，在测试集上表现较差。而GRU的残差图则为无序分布，总体分布效果明显优于DNN的对应残差，GRU的残差图残差点均匀分布在0刻度线两侧，残差值相比DNN较小。这说明GRU捕捉到了训练数据的较完整的特征，且预测偏差较小。综合真实值-预测值曲线和残差图，可以定性分析出GRU的预测效果更为优秀。
+图\ref{maxwell_linear}（b）为两种算法预测模型的测试集残差图，从图中可以看到DNN算法的残差在初始时相比GRU更为偏离0刻度线，GRU的残差图残差点相对均匀地分布在0刻度线两侧，总体分布效果明显优于DNN的对应残差。这说明GRU捕捉到了训练数据的较完整的特征，且预测偏差较小。综合真实值-预测值曲线和残差图，可以定性分析出GRU的预测效果更为优秀。
 
 接下来，本节计算两种算法的测试集预测指标，绘制指标对比图\ref{maxwell_linear_metric}。图\ref{maxwell_linear_metric}（a）显示，GRU的R$^2$值为0.976，接近1，证明GRU的预测效果十分优秀，而DNN的R$^2$值为0.908，略低于GRU，但是也高于0.9，属于非常出色的指标。仅从R$^2$指标来看，GRU预测效果优于DNN，但是优势不明显。从图\ref{maxwell_linear_metric}（b-c）看，GRU预测结果的MAE值为0.071，而DNN的预测结果的MAE值为0.293，GRU在绝对误差上仅为DNN的四分之一，优势显著。GRU预测结果的MAPE值为3.09，仅为DNN预测结果的MAPE值14.95的五分之一左右。这定量说明GRU的预测结果误差远小于DNN的预测结果误差，GRU在此项任务上预测泛化效果更好。这里的训练时间对比与上一节的交变协议预测交变协议一致，同图\ref{maxwell_sin_metric}（d）所示。
 
