@@ -17,9 +17,72 @@
 %   \end{tabularx}
 % \end{table}
 \section{引言}
-近年来在深度学习对于流变学的本构建模中研究中，例如Lennon、Mahmoudabadbozchelou等人的研究工作，虽然细节方法各有不同，但是基本在模型选择上都选择普通多层感知机模型（MLP）\cite{lennonScientificMachineLearning2023a,mahmoudabadbozchelouDatadrivenPhysicsinformedConstitutive2021}。MLP是一种经典的前馈人工神经网络，由全连接层堆叠而成，包含输入层、多个隐藏层（$\geqslant$1）及输出层，通过非线性激活函数实现复杂函数逼近。当MLP的隐藏层数到达一定值，MLP被视为深度神经网络（DNN）。传统的前馈性质的DNN模型具备一定的非线性行为捕捉能力，但是在处理具有时间依赖性的数据时，其性能可能受到限制。Lennon和Mahmoudabadbozchelou的工作使用DNN模型，很难捕捉到黏弹性材料中的长程应变历史依赖性。本章的研究工作在前人的基础之上尝试使用门控循环单元（GRU）来进行本构建模，期待解决在处理时间序列数据时，DNN模型性能受限的问题。GRU的门控机制允许处理流变学数据，如应力应变数据时，控制历史信息的网络间流动。
+近年来，深度学习在流变学本构建模研究中得到广泛应用。例如Lennon、Mahmoudabadbozchelou等人的研究工作，虽然具体方法各有不同，但在模型选择上基本都采用了普通多层感知机模型（MLP）\cite{lennonScientificMachineLearning2023a,mahmoudabadbozchelouDatadrivenPhysicsinformedConstitutive2021}。MLP是一种经典的前馈人工神经网络，由输入层、多个隐藏层（$\geqslant$1）及输出层的全连接层堆叠而成，通过非线性激活函数实现复杂函数逼近。当MLP的隐藏层数达到一定值时，它被视为深度神经网络（DNN）。传统的前馈性质DNN模型虽具备一定的非线性行为捕捉能力，但在处理具有时间依赖性的数据时，其性能往往受到限制。Lennon和Mahmoudabadbozchelou的工作使用DNN模型，难以有效捕捉黏弹性材料中的长程应变历史依赖性。本章研究在前人基础上，采用门控循环单元（GRU）进行本构建模，旨在解决DNN模型在处理时间序列数据时性能受限的问题。GRU的门控机制能够在处理流变学数据（如应力应变数据）时，有效控制历史信息在网络中的流动。
 
-研究首先通过数值模拟方法构建了多种经典本构方程的应力应变数据，包括Herschel-Bulkley模型、Maxwell模型、Doi-Edwards模型。这些模型在流变学领域具有重要的理论和应用价值，能够描述不同类型的流变行为。本章详细设计了GRU模型的结构、参数初始化及训练优化策略，并使用数值模拟生成的应力应变数据进行训练和参数优化，使模型能够准确拟合训练数据。通过与传统DNN模型的对比实验，验证了GRU模型在处理时间序列数据方面的优势。
+本章研究首先通过数值模拟方法构建了多种经典本构方程的应力应变数据，包括Herschel-Bulkley模型、Maxwell模型和Doi-Edwards模型。这些模型在流变学领域具有重要的理论和应用价值，能够描述不同类型的流变行为。随后，本章详细设计了GRU模型的结构、参数初始化及训练优化策略，并使用数值模拟生成的应力应变数据进行训练和参数优化，使模型能够准确拟合训练数据。为了验证GRU模型在探索未知流变学本构方程方面的能力，本章将训练好的GRU模型应用于未经训练的测试集数据，并通过与经典DNN模型的对比，验证了GRU模型在处理时间序列数据方面的优势。
+
+\section{算法介绍}
+\subsection{时间序列数据介绍}
+时间序列数据是指在一系列时间点上按时间顺序排列的数据点集合。这些数据点通常是连续或定期记录的，反映了某个变量随时间的变化情况。在流变学研究中，时间域的应力应变数据在小应变时满足玻尔兹曼叠加原理，即当前应力状态为之前所有应变历史的线性和\cite{boltzmannZurTheorieElastischen1878}。大应变时应力应变数据虽然不满足玻尔兹曼的线性叠加，但是依旧可以表示为过去应变历史的某种非线性关系叠加。
+\subsection{循环神经网络}
+\subsubsection{简单RNN}
+循环神经网络（RNN）是一种专门处理序列数据的神经网络结构，其核心在于利用循环结构捕捉时间或顺序上的依赖关系\cite{elmanFindingStructureTime1990}。RNN的基本结构由输入层、隐藏层和输出层组成。隐藏层中的神经元不仅接收来自输入层的信号，还接收来自前一时刻隐藏层的信号。这种循环连接使得RNN能够捕获序列中的时间依赖关系。
+RNN的数学模型可以通过以下公式\eqref{eq:rnnht}描述：
+\begin{align}
+   & \mathbf{h}_t = \sigma(\mathbf{W}_{xh} \mathbf{x}_t + \mathbf{W}_{hh} \mathbf{h}_{t-1} + \mathbf{b}_h) \label{eq:rnnht} \\
+   & {\mathbf{o}_t = \mathbf{W}_{ho} \mathbf{h}_t + \mathbf{b}_o} \label{eq:rnnot}
+\end{align}
+其中$\mathbf{h}_t$ 是时刻 $t$ 的隐藏状态，$\mathbf{x}_t$ 是时刻 $t$ 的输入，$\mathbf{o}_t$ 是时刻 $t$ 的输出，$\mathbf{W}_{xh}$ 是输入到隐藏层的权重矩阵，$\mathbf{W}_{hh}$ 是隐藏层到隐藏层的权重矩阵，$\mathbf{W}_{ho}$ 是隐藏层到输出层的权重矩阵，$\mathbf{b}_h$ 和 $\mathbf{b}_o$ 是偏置。$\sigma$是激活函数，通常使用 $\tanh$ 或 $\text{ReLU}$。RNN 的训练过程通常使用反向传播算法。通过计算梯度来更新权重矩阵，从而最小化损失函数。
+
+在简单的RNN中，存在梯度消失问题，这主要源于反向传播过程中梯度的连乘效应\cite{schmidhuber1997long}。损失函数 $L$ 对 $\mathbf{W}_{hh}$ 的梯度可以表示为公式\eqref{eq:rnngradient}：
+\begin{align}
+  \frac{\partial L}{\partial \mathbf{W}_{hh}} = \sum_{t=1}^{T} \frac{\partial L}{\partial \mathbf{h}_t} \cdot \frac{\partial \mathbf{h}_t}{\partial \mathbf{W}_{hh}} \label{eq:rnngradient}
+\end{align}
+展开后，隐藏状态关于$\mathbf{W}_{hh}$ 的导数为公式\eqref{eq:rnngradient2}：
+\begin{align}
+  \frac{\partial \mathbf{h}_t}{\partial \mathbf{W}_{hh}} = \sigma'(\mathbf{W}_{hh} \mathbf{h}_{t-1} + \mathbf{W}_{xh} \mathbf{x}_t + \mathbf{b}_h) \cdot \mathbf{h}_{t-1}^T \label{eq:rnngradient2}
+\end{align}
+注意到，$\frac{\partial L}{\partial \mathbf{h}_t}$依赖于前一个时间步的梯度，如公式\eqref{eq:rnngradient3}：
+\begin{align}
+  \frac{\partial L}{\partial \mathbf{h}_t} = \frac{\partial L}{\partial \mathbf{h}_{t+1}} \cdot \frac{\partial \mathbf{h}_{t+1}}{\partial \mathbf{h}_t} = \frac{\partial L}{\partial \mathbf{h}_{t+1}} \cdot \mathbf{W}_{hh} \cdot \sigma'(\mathbf{h}_t) \label{eq:rnngradient3}
+\end{align}
+这表明梯度在通过时间反向传播时会乘以$\mathbf{W}_{hh}$。
+从时间$t$到时间$T$的梯度可以表示为公式\eqref{eq:rnngradient4}：
+\begin{align}
+  \frac{\partial L}{\partial \mathbf{h}_t} = \left( \prod_{k=t+1}^{T} \mathbf{W}_{hh} \cdot \sigma'(\mathbf{h}_{k-1}) \right) \cdot \frac{\partial L}{\partial \mathbf{h}_T} \label{eq:rnngradient4}
+\end{align}
+其中乘积 $\prod_{k=t+1}^{T} \mathbf{W}_{hh} \cdot \sigma'(\mathbf{h}_{k-1})$在某些情况下可能会非常小，例如如果 $\mathbf{W}_{hh}$的特征值小于1，那么随着$(T - t)$的增加，$\mathbf{W}_{hh}^{T-t}$将呈指数级减小并趋近于零。
+如果反向传播过程中每一项都小于1，那么整个乘积将随着 $(T - t)$的增加呈指数级减小。
+这意味着对于远离输出端的时间步$t$，梯度$\frac{\partial L}{\partial \mathbf{h}_t}$将非常小，导致权重更新几乎停止，这就是RNN的梯度消失问题。由于RNN为了捕捉时间依赖性，我们不可避免地设置长时间步，这导致RNN梯度消失问题几乎难以避免。
+\subsubsection{LSTM}
+为了解决简单RNN的梯度消失问题，Schmidhuber等提出了长短期记忆网络（LSTM）\cite{schmidhuber1997long}。LSTM通过引入门控机制来控制信息的流动，从而有效地缓解梯度消失问题。LSTM的核心结构包括输入门、遗忘门和输出门，这些门控机制能够有效地控制信息的流动，从而捕获长期依赖关系。
+
+
+\subsubsection{GRU}
+LSTM虽然通过引入门控机制有效地解决了简单RNN中的梯度消失问题，但在实际应用中仍然存在一些问题。LSTM包含三个门（输入门、遗忘门、输出门），导致其参数数量较多，增加了模型的复杂度和计算成本。由于LSTM的复杂结构，其训练和推理速度相对较慢，尤其是在处理大规模数据时。为了解决LSTM的上述问题，Cho等提出了GRU（门控循环单元）作为LSTM的简化版本\cite{choLearningPhraseRepresentations2014}。GRU的设计初衷是为了简化LSTM的结构，同时保持其捕获长期依赖关系的能力。GRU只有重置门（Reset Gate）和更新门（Update Gate）两种门控单元，与LSTM相比，GRU的参数数量较少，训练和推理速度更快。重置门的计算公式为公式\eqref{eq:grureset}，
+\begin{align}
+  \mathbf{r}_t = \sigma(\mathbf{W}_r \mathbf{x}_t + \mathbf{U}_r \mathbf{h}_{t-1} + \mathbf{b}_r) \label{eq:grureset}
+\end{align}
+更新门的计算公式为公式\eqref{eq:gruupdate}，重置门决定了前一时间步的隐藏状态在多大程度上被忽略。当重置门的输出接近0时，网络倾向于“忘记”前一时间步的信息，仅依赖于当前输入；而当输出接近1时，前一时间步的信息将被更多地保留。
+更新门决定了多少过去的信息将被保留，而新信息将占据多少比例。当更新门的输出接近1时，新的隐藏状态几乎等同于旧的隐藏状态，从而实现了长期依赖的捕捉；当更新门的输出接近0时，新的隐藏状态将主要由当前输入决定。
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{Fig/rnn-gru.pdf}
+  \FigureBicaption{\label{rnn_lstm illustration}（a）RNN 示意图 ；（b）GRU 示意图}{Schematic illustration of (a) RNN and (b) LSTM}
+\end{figure}
+\begin{align}
+  \mathbf{z}_t = \sigma(\mathbf{W}_z \mathbf{x}_t + \mathbf{U}_z \mathbf{h}_{t-1} + \mathbf{b}_z) \label{eq:gruupdate}
+\end{align}
+候选隐藏状态决定了当前时间步的新信息，如公式\eqref{eq:gruhih}所示。
+\begin{align}
+  \tilde{\mathbf{h}}_t = \tanh(\mathbf{W}_h \mathbf{x}_t + \mathbf{U}_h (\mathbf{r}_t \odot \mathbf{h}_{t-1}) + \mathbf{b}_h) \label{eq:gruhih}
+\end{align}
+当前隐藏状态如公式\eqref{eq:gruhi}所示，这里的当前隐藏状态与上文LSTM的隐藏状态含义是一样的。
+\begin{align}
+  \mathbf{h}_t = (1 - \mathbf{z}_t) \odot \mathbf{h}_{t-1} + \mathbf{z}_t \odot \tilde{\mathbf{h}}_t \label{eq:gruhi}
+\end{align}
+
+GRU移除了单元状态的概念，直接从门控单元来计算隐藏状态，GRU 通过重置门和更新门的协同工作，实现了对信息流动的有效控制，使得网络能够在需要时记住长期依赖关系，同时减少梯度消失/爆炸的问题。GRU的结构比LSTM更简单，计算效率更高，因此在实践应用中广受欢迎。
 
 \section{实验设计}
 \subsection{数据获取}
