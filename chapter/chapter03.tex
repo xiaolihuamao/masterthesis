@@ -6,16 +6,7 @@
 本章节首先通过数值模拟方法生成非线性的Giesekus模型数据，之后使用PI-GRU模型进行建模，并与其他模型进行对比，验证PI-GRU模型在复杂的非线性本构关系建模中的有效性。之后本章使用一类黏弹性聚合物的真实流变学实验数据进行PI-GRU训练和测试，验证PI-GRU模型在真实工况下的有效性。
 
 \section{PI-GRU建模原理}
-\subsection{Giesekus模型模拟数据}
-Giesekus模型的本构方程如公式\eqref{eq:giesekus}所示，迁移因子$\alpha$用于引入剪切稀化的强度。Giesekus模型模拟的为简单剪切流动，只在xy方向存在应变，应变张量$\boldsymbol{\gamma}$仅在$\gamma_{12}$分量上存在值。
-本章首先使用NumPy库生成8个不同速度场协议的简单剪切流动速度数据，再使用公式\eqref{eq:giesekus-gammadot}对应生成应变速率张量数据，时间区间为[0,24]，单个协议的模拟数据点为2000，生成形式为3*3应变速率张量矩阵，之后根据$\gamma_{t}=\dot{\gamma}_{t-1}\Delta t+\gamma_{t-1}$迭代计算应变张量。
-\begin{equation}
-  \begin{aligned}
-    \dot{\gamma}_{ii} & = 2 v_{ii}(t)           \\
-    \dot{\gamma}_{ij} & = v_{ij}(t) + v_{ji}(t)
-  \end{aligned} \label{eq:giesekus-gammadot}
-\end{equation}
-随后设置迁移因子$\alpha$为0.8,其余松弛时间参数（$\lambda_1$、$\lambda_2$）为1.0，使用Python的scipy.integrate.solve\_ivp函数（内置方法为Runge-Kutta法）对Giesekus模型的微分方程组进行求解计算，生成3*3应力张量矩阵，如公式\eqref{eq:sigma_bmatrix}所示。本章提取$\sigma_{12}$、$\sigma_{11}$、$\sigma_{22}$分量作为模拟实验数据，与对应的应变速率张量数据、计算后的应变张量数据一起通过Pandas库存入Excel文件，便于后续的模型训练。
+
 \section{PI-GRU建模方法}
 Giesekus模型数据单独划分6个交变应变协议为训练集和验证集，其中按照9:1比例划分为训练集和验证集。划分1个交变应变协议，1个线性应变协议为测试集。
 

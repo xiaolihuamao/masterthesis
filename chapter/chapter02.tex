@@ -1,4 +1,4 @@
-\chapter{门控循环单元（GRU）流变学本构方程建模研究}
+\chapter{物理信息门控循环单元流变学本构方程建模研究}
 % 3.2表================================================
 % % 本节仅展示使用常见的三线表
 % \begin{table}
@@ -17,71 +17,55 @@
 %   \end{tabularx}
 % \end{table}
 \section{引言}
-近年来，深度学习在流变学本构建模研究中得到广泛应用。例如Lennon、Mahmoudabadbozchelou等人的研究工作，虽然具体方法各有不同，但在模型选择上基本都采用了多层感知机模型（Multi-Layer Perceptron，MLP）\cite{lennonScientificMachineLearning2023a,mahmoudabadbozchelouDatadrivenPhysicsinformedConstitutive2021}。MLP是一种经典的前馈人工神经网络，由输入层、多个隐藏层及输出层的全连接层堆叠而成，通过非线性激活函数实现复杂函数逼近。当MLP的隐藏层数达到一定值时，它被视为深度神经网络（Deep Neural Network，DNN）。传统的前馈性质DNN模型虽具备一定的非线性行为捕捉能力，但在处理具有时间依赖性的数据时，其性能往往受到限制。Lennon和Mahmoudabadbozchelou的工作使用DNN模型，难以有效捕捉黏弹性材料中的长程应变历史依赖性。本章研究在前人基础上，采用门控循环单元（Gated Recurrent Unit，GRU）进行本构建模，旨在解决DNN模型在处理时间序列数据时性能受限的问题。GRU的门控机制能够在处理流变学数据（如应力应变数据）时，有效控制历史信息在网络中的流动。
+近年来，深度学习在流变学本构建模研究中得到广泛应用。例如Lennon、Mahmoudabadbozchelou等人的研究工作，虽然具体方法各有不同，但在模型选择上基本都采用了多层感知机模型（Multi-Layer Perceptron，MLP）\cite{lennonScientificMachineLearning2023a,mahmoudabadbozchelouDatadrivenPhysicsinformedConstitutive2021}。MLP是一种经典的前馈人工神经网络，由输入层、多个隐藏层及输出层的全连接层堆叠而成，通过非线性激活函数实现复杂函数逼近。当MLP的隐藏层数达到一定值时，它被视为深度神经网络（Deep Neural Network，DNN）。传统的前馈性质DNN模型虽具备一定的非线性行为捕捉能力，但在处理具有时间依赖性的数据时，其性能往往受到限制。Lennon和Mahmoudabadbozchelou的工作使用DNN模型，难以有效捕捉黏弹性材料中的长程应变历史依赖性。本章研究在前人基础上，采用物理信息门控循环单元（Physical Information Gated Recurrent Unit，PI-GRU）进行本构建模，旨在解决DNN模型在处理时间序列数据时性能受限的问题。PI-GRU模型创新性地结合了物理约束和GRU的循环神经网络架构，通过在损失函数中引入物理方程残差作为惩罚项，同时利用GRU的循环结构处理时序数据。该模型包含输入层感知机、GRU循环层和输出层感知机三部分组成，输入为应变张量分量、应变速率张量分量和时间等参数，输出为预测的应力张量。
 
-本章研究首先通过数值模拟方法构建了多种经典本构方程的应力应变数据，包括Herschel-Bulkley模型、Maxwell模型和Doi-Edwards模型。这些模型在流变学领域具有重要的理论和应用价值，能够描述不同类型的流变行为。随后，本章详细设计了GRU模型的结构、参数初始化及训练优化策略，并使用数值模拟生成的应力应变数据进行训练和参数优化，使模型能够准确拟合训练数据。为了验证GRU模型在探索未知流变学本构方程方面的能力，本章将训练好的GRU模型应用于未经训练的测试集数据，并通过与经典DNN模型的对比，验证了GRU模型在处理时间序列数据方面的优势。
-
-\section{算法介绍}
-\subsection{时间序列数据介绍}
-时间序列数据是指在一系列时间点上按时间顺序排列的数据点集合。这些数据点通常是连续或定期记录的，反映了某个变量随时间的变化情况。在流变学研究中，时间域的应力应变数据在小应变时满足玻尔兹曼叠加原理，即当前应力状态为之前所有应变历史的线性和\cite{boltzmannZurTheorieElastischen1878}。大应变时应力应变数据虽然不满足玻尔兹曼的线性叠加，但是依旧可以表示为过去应变历史的非线性关系叠加。
-
-\subsection{循环神经网络}
-\subsubsection{简单RNN}
-循环神经网络（Recurrent Neural Network，RNN）是一种专门处理序列数据的神经网络结构，其核心在于利用循环结构捕捉时间或顺序上的依赖关系\cite{elmanFindingStructureTime1990}。RNN的基本结构由输入层、隐藏层和输出层组成（图\ref{rnn_gru illustration}（a））。隐藏层中的神经元不仅接收来自输入层的信号，还接收来自前一时刻隐藏层的信号。这种循环连接使得RNN能够捕获序列中的时间依赖关系。
-RNN的数学模型可以通过公式\eqref{eq:rnnht}描述：
-\begin{align}
-   & \mathbf{h}_t = \sigma(\mathbf{W}_{xh} \mathbf{x}_t + \mathbf{W}_{hh} \mathbf{h}_{t-1} + \mathbf{b}_h) \label{eq:rnnht} \\
-   & {\mathbf{o}_t = \mathbf{W}_{ho} \mathbf{h}_t + \mathbf{b}_o} \label{eq:rnnot}
-\end{align}
-其中$\mathbf{h}_t$ 是时刻 $t$ 的隐藏状态，$\mathbf{x}_t$ 是时刻 $t$ 的输入，$\mathbf{o}_t$ 是时刻 $t$ 的输出，$\mathbf{W}_{xh}$ 是输入到隐藏层的权重矩阵，$\mathbf{W}_{hh}$ 是隐藏层到隐藏层的权重矩阵，$\mathbf{W}_{ho}$ 是隐藏层到输出层的权重矩阵，$\mathbf{b}_h$ 和 $\mathbf{b}_o$ 是偏置。$\sigma$是激活函数，通常使用 $\tanh$ 或 $\text{ReLU}$。RNN 的训练过程通常使用反向传播算法。通过计算梯度来更新权重矩阵，从而最小化损失函数。
-
-在简单的RNN中，存在梯度消失问题，这主要源于反向传播过程中梯度的连乘效应\cite{schmidhuber1997long}。损失函数 $L$ 对 $\mathbf{W}_{hh}$ 的梯度可以表示为公式\eqref{eq:rnngradient}：
-\begin{align}
-  \frac{\partial L}{\partial \mathbf{W}_{hh}} = \sum_{t=1}^{T} \frac{\partial L}{\partial \mathbf{h}_t} \cdot \frac{\partial \mathbf{h}_t}{\partial \mathbf{W}_{hh}} \label{eq:rnngradient}
-\end{align}
-展开后，隐藏状态关于$\mathbf{W}_{hh}$ 的导数为公式\eqref{eq:rnngradient2}：
-\begin{align}
-  \frac{\partial \mathbf{h}_t}{\partial \mathbf{W}_{hh}} = \sigma'(\mathbf{W}_{hh} \mathbf{h}_{t-1} + \mathbf{W}_{xh} \mathbf{x}_t + \mathbf{b}_h) \cdot \mathbf{h}_{t-1}^T \label{eq:rnngradient2}
-\end{align}
-注意到，$\frac{\partial L}{\partial \mathbf{h}_t}$依赖于前一个时间步的梯度，如公式\eqref{eq:rnngradient3}：
-\begin{align}
-  \frac{\partial L}{\partial \mathbf{h}_t} = \frac{\partial L}{\partial \mathbf{h}_{t+1}} \cdot \frac{\partial \mathbf{h}_{t+1}}{\partial \mathbf{h}_t} = \frac{\partial L}{\partial \mathbf{h}_{t+1}} \cdot \mathbf{W}_{hh} \cdot \sigma'(\mathbf{h}_t) \label{eq:rnngradient3}
-\end{align}
-这表明梯度在通过时间反向传播时会乘以$\mathbf{W}_{hh}$。
-从时间$t$到时间$T$的梯度可以表示为公式\eqref{eq:rnngradient4}：
-\begin{align}
-  \frac{\partial L}{\partial \mathbf{h}_t} = \left( \prod_{k=t+1}^{T} \mathbf{W}_{hh} \cdot \sigma'(\mathbf{h}_{k-1}) \right) \cdot \frac{\partial L}{\partial \mathbf{h}_T} \label{eq:rnngradient4}
-\end{align}
-其中乘积 $\prod_{k=t+1}^{T} \mathbf{W}_{hh} \cdot \sigma'(\mathbf{h}_{k-1})$在某些情况下可能会非常小，例如如果 $\mathbf{W}_{hh}$的特征值小于1，那么随着$(T - t)$的增加，$\mathbf{W}_{hh}^{T-t}$将呈指数级减小并趋近于零。
-如果反向传播过程中每一项都小于1，那么整个乘积将随着 $(T - t)$的增加呈指数级减小。
-这意味着对于远离输出端的时间步$t$，梯度$\frac{\partial L}{\partial \mathbf{h}_t}$将非常小，导致权重更新几乎停止，这就是RNN的梯度消失问题。由于RNN为了捕捉时间依赖性，我们不可避免地设置长时间步，这导致RNN梯度消失问题几乎难以避免。
-\subsubsection{GRU}
-为了解决简单RNN的梯度消失问题，Schmidhuber等提出了长短期记忆网络（Long Short-Term Memory，LSTM）\cite{schmidhuber1997long}。LSTM通过引入门控机制来控制信息的流动，从而有效地缓解梯度消失问题。LSTM的核心结构包括输入门、遗忘门和输出门，这些门控机制能够有效地控制信息的流动，从而捕获长期依赖关系。
-
-LSTM虽然通过引入门控机制有效地解决了简单RNN中的梯度消失问题，但在实际应用中仍然存在一些问题。LSTM包含三个门（输入门、遗忘门、输出门），导致其参数数量较多，增加了模型的复杂度和计算成本。由于LSTM的复杂结构，其训练和推理速度相对较慢，尤其是在处理大规模数据时。为了解决LSTM的上述问题，Cho等提出了GRU作为LSTM的简化版本\cite{choLearningPhraseRepresentations2014}（图\ref{rnn_gru illustration}（b））。GRU的设计初衷是为了简化LSTM的结构，同时保持其捕获长期依赖关系的能力。GRU只有重置门（Reset Gate）和更新门（Update Gate）两种门控单元，与LSTM相比，GRU的参数数量较少，训练和推理速度更快。重置门的计算公式为公式\eqref{eq:grureset}。
-\begin{align}
-  \mathbf{r}_t = \sigma(\mathbf{W}_r \mathbf{x}_t + \mathbf{U}_r \mathbf{h}_{t-1} + \mathbf{b}_r) \label{eq:grureset}
-\end{align}
-更新门的计算公式为公式\eqref{eq:gruupdate}，重置门决定了前一时间步的隐藏状态在多大程度上被忽略。当重置门的输出接近0时，网络倾向于“忘记”前一时间步的信息，仅依赖于当前输入；而当输出接近1时，前一时间步的信息将被更多地保留。
-更新门决定了多少过去的信息将被保留，而新信息将占据多少比例。当更新门的输出接近1时，新的隐藏状态几乎等同于旧的隐藏状态，从而实现了长期依赖的捕捉；当更新门的输出接近0时，新的隐藏状态将主要由当前输入决定。
-\begin{figure}[htbp]
+本章研究首先通过数值模拟方法构建了多种经典本构方程的应力应变数据，包括Herschel-Bulkley模型、Maxwell模型、Doi-Edwards模型。这些模型在流变学领域具有重要的理论和应用价值，能够描述不同类型的流变行为。随后，本章详细设计了GRU模型的结构、参数初始化及训练优化策略，并使用数值模拟生成的应力应变数据进行训练和参数优化，使模型能够准确拟合训练数据。为了验证GRU模型在探索未知流变学本构方程方面的能力，本章将训练好的GRU模型应用于未经训练的测试集数据，并通过与传统DNN等基准模型的对比，验证了GRU模型在处理时间序列数据方面的优势。在此基础上，本章进一步研究了更复杂的非线性本构关系，通过数值模拟方法生成Giesekus模型数据，并引入物理信息约束，构建PI-GRU模型进行建模。通过与其他基准模型的对比，验证了PI-GRU模型在复杂非线性本构关系建模中的有效性。最后，本章使用一类黏弹性聚合物的真实流变学实验数据进行PI-GRU训练和测试，进一步验证了该模型在真实工况下的适用性和优越性。
+\section{深度学习模型设计}
+本章针对Herschel-Bulkley模型、Maxwell模型、Doi-Edwards模型使用GRU模型进行建模，其基本架构在第二章已经详细介绍。
+本章针对Giesekus模型和真实实验数据使用的算法模型PI-GRU模型，PI-GRU与基本的GRU神经网络模型架构类似，但不同的是，PI-GRU循环神经网络模型在GRU的基础上，加入了物理约束损失，用于约束模型的预测结果符合基本的本构物理规律，增强模型的泛化能力。
+\begin{figure}
   \centering
-  \includegraphics[width=0.9\textwidth]{Fig/rnn-gru.pdf}
-  \FigureBicaption{\label{rnn_gru illustration}（a）RNN 示意图 ；（b）GRU 示意图}{Schematic illustration of (a) RNN and (b) GRU}
+  \includegraphics[width=0.9\textwidth]{Fig/PI-GRU.pdf}
+  \FigureBicaption{\label{PI-GRU}本工作使用的PI-GRU架构示意图}{Schematic of the PI-GRU model used in this work}
 \end{figure}
-\begin{align}
-  \mathbf{z}_t = \sigma(\mathbf{W}_z \mathbf{x}_t + \mathbf{U}_z \mathbf{h}_{t-1} + \mathbf{b}_z) \label{eq:gruupdate}
-\end{align}
-候选隐藏状态决定了当前时间步的新信息，如公式\eqref{eq:gruhih}所示。
-\begin{align}
-  \tilde{\mathbf{h}}_t = \tanh(\mathbf{W}_h \mathbf{x}_t + \mathbf{U}_h (\mathbf{r}_t \odot \mathbf{h}_{t-1}) + \mathbf{b}_h) \label{eq:gruhih}
-\end{align}
-当前隐藏状态如公式\eqref{eq:gruhi}所示，这里的当前隐藏状态与上文LSTM的隐藏状态含义是一样的。
-\begin{align}
-  \mathbf{h}_t = (1 - \mathbf{z}_t) \odot \mathbf{h}_{t-1} + \mathbf{z}_t \odot \tilde{\mathbf{h}}_t \label{eq:gruhi}
-\end{align}
+其架构图如图\ref{PI-GRU}所示，模型的输入为应变张量分量、应变速率张量分量、时间等，首先经过输入层的感知机进行特征提取，然后经过GRU层进行时序信息处理，最后经过输出层的感知机输出预测的应力张量。
+PI-GRU的损失函数主体由数据损失和物理约束损失共同组成，具体公式如\ref{eq:pigru-loss-function}所示。
+\begin{equation}
+  \mathcal{L}_{\text{total}} =
+  \lambda_{\text{data}} \mathcal{L}_{\text{data}} +
+  \lambda_{\text{ode}} \mathcal{L}_{\text{ode}} +
+  \lambda_{\text{dae}} \mathcal{L}_{\text{dae}}+
+  \mathcal{L}_{L_{2}} \label{eq:pigru-loss-function}
+\end{equation}
+其中数据损失$\mathcal{L}_{\text{data}}$是预测值与真实值的均方误差(公式\ref{eq:data-loss})，目的是确保模型的预测结果与数值模拟数据尽可能接近，这是监督学习的基础，直接拟合数据，也是最重要和最基本的损失项。
+\begin{equation}
+  \mathcal{L}_{\text{data}} = \frac{1}{N} \sum_{i=1}^N
+  \|\hat{\bm{\sigma}}_i - \bm{\sigma}_i^{\text{real}}\|_F^2
+  \quad \label{eq:data-loss}
+\end{equation}
 
-GRU移除了单元状态的概念，直接从门控单元来计算隐藏状态，GRU 通过重置门和更新门的协同工作，实现了对信息流动的有效控制，使得网络能够在需要时记住长期依赖关系，同时减少梯度消失/爆炸的问题。GRU的结构比LSTM更简单，计算效率更高，因此在实践应用中广受欢迎。本章使用GRU模型进行流变学本构方程的预测建模。
+\begin{equation}
+  \mathcal{L}_{\text{ode}} = \frac{1}{T-1} \sum_{t=1}^{T-1}
+  \|\hat{\bm{\sigma}}_{t+1} - \Bigl[
+    \hat{\bm{\sigma}}_t + \Delta t \cdot
+    f_{\text{constitutive}}(\hat{\bm{\sigma}}_t, \dot{\gamma}_t)
+    \Bigr] \|_F^2
+  \quad \label{eq:ode-loss}
+\end{equation}
+物理损失分为ODE损失$\mathcal{L}_{\text{ode}}$和DAE损失$\mathcal{L}_{\text{dae}}$。$\mathcal{L}_{\text{ode}}$确保模型的预测遵循本构方程描述的物理规律，如公式\ref{eq:ode-loss}所示。该公式计算的是时间序列中相邻时间步之间的平均损失，其中$\hat{\bm{\sigma}}_{t+1}$是模型在$t+1$时刻的预测应力，而方括号内的表达式$\hat{\bm{\sigma}}_t + \Delta t \cdot f_{\text{constitutive}}(\hat{\bm{\sigma}}_t, \dot{\gamma}_t)$是根据本构方程从$t$时刻推导出的$t+1$时刻的理论应力值。这种损失函数通过比较模型预测值与基于物理定律推导值之间的差异，确保模型学习结果符合我们想要的本构关系。这里的本构方程在Giesekus模型模拟数值训练时为上对流Maxwell模型（UCM），在真实实验数据时为最小二乘法拟合的各类本构方程。
+
+$\mathcal{L}_{\text{dae}}$损失则是为了保证预测的应力张量满足基本的对称性要求。物理损失相当于一个独特的惩罚机制，迫使模型的预测结果约束在基本的框架内，一定程度上防止模型在纯数据驱动下出现过拟合现象。
+\begin{equation}
+  \mathcal{L}_{\text{dae}} = \frac{1}{T} \sum_{t=1}^T \Biggl(
+  \underbrace{\|\hat{\bm{\sigma}}_t - \hat{\bm{\sigma}}_t^\top\|_F^2}_{\text{symmetry constraint}}
+  \Biggr)
+  \quad \label{eq:dae-loss}
+\end{equation}
+\begin{equation}
+  \mathcal{L}_{L_{2}} = \lambda \sum_{i} w_i^2
+  \quad \label{eq:l2-loss}
+\end{equation}
+最后在损失函数中加入正则化项$\mathcal{L}_{L_{2}}$，具体公式如公式\ref{eq:l2-loss}。$\mathcal{L}_{L_{2}}$通过类似于归纳推理的机制，使得模型倾向于学习更通用的模式，参数更小更简单，对未知数据的预测更可靠。
 
 \section{实验设计}
 \subsection{数据获取}
@@ -126,43 +110,48 @@ Doi-Edwards模型的本构方程如公式\eqref{eq:doi_edwards}所示。该方�
     \sigma_{31} & \sigma_{32} & \sigma_{33}
   \end{bmatrix} \label{eq:sigma_bmatrix}
 \end{equation}
+\subsection{Giesekus模型模拟数据}
+Giesekus模型的本构方程如公式\eqref{eq:giesekus}所示，迁移因子$\alpha$用于引入剪切稀化的强度。Giesekus模型模拟的为简单剪切流动，只在xy方向存在应变，应变张量$\boldsymbol{\gamma}$仅在$\gamma_{12}$分量上存在值。
+本章首先使用NumPy库生成不同速度场协议的简单剪切流动速度数据，再使用公式\eqref{eq:giesekus-gammadot}对应生成应变速率张量数据，单个协议的模拟数据点为2000，生成形式为3*3应变速率张量矩阵，之后根据$\gamma_{t}=\dot{\gamma}_{t-1}\Delta t+\gamma_{t-1}$迭代计算应变张量。
+\begin{equation}
+  \begin{aligned}
+    \dot{\gamma}_{ii} & = 2 v_{ii}(t)           \\
+    \dot{\gamma}_{ij} & = v_{ij}(t) + v_{ji}(t)
+  \end{aligned} \label{eq:giesekus-gammadot}
+\end{equation}
+随后设置迁移因子$\alpha$为0.8,其余松弛时间参数（$\lambda_1$、$\lambda_2$）为1.0，使用Python的scipy.integrate.solve\_ivp函数（内置方法为Runge-Kutta法）对Giesekus模型的微分方程组进行求解计算，生成3*3应力张量矩阵，如公式\eqref{eq:sigma_bmatrix}所示。本章提取$\sigma_{12}$、$\sigma_{11}$、$\sigma_{22}$分量作为模拟实验数据，与对应的应变速率张量数据、计算后的应变张量数据一起通过Pandas库存入Excel文件，便于后续的模型训练。
+\subsubsection{真实实验数据}
+首先通过原子转移自由基聚合（ATRP）和开环异位聚合（ROMP）设计了由聚甲基丙烯酸（亲水单元）和聚甲基丙烯酸叔丁酯（疏水单元）的两亲性刷状聚合物（ABPs），再将合成的两亲性分子刷溶解在DMF中，与甲氧基丙烯酸酯混合制成弹性体前驱体溶液，该前驱体溶液含有规定的总单体浓度6 mol/L (= [ABPs] + [MEA])，其中 MEA质量分数为90\%， ABPs质量分数为10\%，引发剂为总单体摩尔量的0.1\%的二苯甲酮，交联剂含量为总单体摩尔量的0.1\%的PEGDA。在氩气气氛中将混合溶液注入一个反应池，该反应池由平行玻璃板组成，由1.0毫米厚的硅胶垫片隔开。聚合反应在紫外光照射下进行8 h。将制备好的弹性体从反应池中取出，并在大量去离子水中浸泡至少24小时，去除未反应的单体，然后在真空烘箱中40℃干燥3天，得到均匀的两亲性刷掺杂的弹性体（ABE弹性体）。
 
+通过安东帕型流变仪在25℃下测量具有0.8mm厚度的材料的振荡剪切试验。将样品置于8mm直径的平行板下，在1\%到300\%的应变范围内以10rad/s的固定频率对样品进行应变扫描。当正弦交变应变作用于材料时，材料发生相应的正弦交变应力，通过绘制振幅-模量曲线，可以得到材料的非线性区临界应变。
 \subsection{模型训练}
 \subsubsection{数据集划分}
-首先本章对模拟生成的数据进行数据集划分，将数据集分为训练集（Train）、验证集（Valid）和测试集（Test），不同模型的具体划分如下：
+首先本章对模拟生成的数据进行数据集划分，将数据集分为训练集（Train）、验证集（Valid）和测试集（Test）。其中每种本构模型数据集和真实数据数据集分别选取一组待预测数据作为测试集，其余数据按照9:1比例划分为训练集和验证集。
 
-Herschel-Bulkley模型数据单独划分$n=1.0$的数据为测试集，其余数据按照9:1比例划分为训练集和验证集。
-
-Maxwell模型数据单独划分4个交变应变协议为训练集和验证集，其中按照9:1比例划分为训练集和验证集。划分1个交变应变协议，1个线性应变协议为测试集。
-
-Doi-Edwards模型数据单独划分5个交变应变协议为训练集和验证集，其中按照9:1比例划分为训练集和验证集。划分1个交变应变协议，1个线性应变协议为测试集。
-
-\subsubsection{损失函数构建}
-本章构建的损失函数主要包括均方误差（Mean Squared Error，MSE）损失和L$_2$正则化损失两部分。均方误差损失用于衡量模型预测值与真实值之间的差异，L$_2$正则化损失则用于防止模型过拟合。
-
-均方误差损失函数的数学表达式如公式\eqref{eq:mse_loss}所示：
-\begin{equation}
-  \mathcal{L}_{\text{MSE}} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 \label{eq:mse_loss}
-\end{equation}
-其中，$y_i$表示第$i$个样本的真实值，$\hat{y}_i$表示模型对第$i$个样本的预测值，$n$表示样本总数。MSE损失函数对误差进行平方处理，使得较大的误差在优化过程中受到更多关注，有利于模型快速收敛到最优解。
-
-L$_2$正则化损失函数的数学表达式如公式\eqref{eq:l1_loss}所示：
-\begin{equation}
-  \mathcal{L}_{\text{L$_2$}} = \lambda \sum_{j=1}^{m} |\theta_j| \label{eq:l1_loss}
-\end{equation}
-其中，$\theta_j$表示模型的第$j$个参数，$m$表示模型参数总数，$\lambda$为正则化系数，用于控制正则化强度。L$_2$正则化通过惩罚较大的参数值，促使模型学习更加平滑的函数，从而提高模型的泛化能力。
-
-综合以上两部分，本章采用的总损失函数如公式\eqref{eq:total_loss}所示：
-\begin{equation}
-  \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{MSE}} + \mathcal{L}_{\text{L$_2$}} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^{m} \theta_j^2 \label{eq:total_loss}
-\end{equation}
 
 \subsubsection{训练细节}
-本章的模型训练流程相同。首先对数据集进行划分，接着对训练集和验证集的数据实施归一化处理，随后将其转换为 Torch 张量。利用 Pytorch 框架编写模型代码，开展深度学习训练。在训练期间，采用 Adam 优化算法，以 MSE 损失函数为评估标准，借助网格搜索算法和随机搜索算法实现超参数的优化与选择。待训练结束后，把模型参数存储为 .pth 文件，方便后续进行模型测试。
+本研究使用PyTorch框架进行模型训练，使用Adam优化器进行优化。超参数的设置采用随机搜索算法，该算法通过在预定义的超参数空间中进行随机采样来寻找最优组合。具体而言，对于学习率$\eta$，在对数空间[10$^{-5}$, 10$^{-2}$]内随机采样；batch size在{16, 32, 64, 128}中随机选择；隐藏层神经元数量在{10, 20, 30, 40}范围内随机采样。随机搜索的优化目标函数可表示为：
 
+\begin{equation}
+  \theta^* = \arg \min_{\theta \in \Theta} \mathcal{L}_{\text{val}}(f_\theta(X_{\text{val}}), y_{\text{val}})
+\end{equation}
+
+其中$\Theta$表示超参数空间，$\mathcal{L}_{\text{val}}$为验证集上的损失函数。
+
+为了进一步提高训练效率，本文还采用了学习率自适应调整策略。具体使用带有预热(warmup)的余弦退火调度\cite{loshchilov2016sgdr}，学习率$\eta$随训练轮次$t$的变化可表示为：
+
+\begin{equation}
+  \eta(t) = \begin{cases}
+    \eta_{\text{max}} \cdot \frac{t}{T_{\text{warmup}}}                                                                                             & \text{if } t \leq T_{\text{warmup}} \\
+    \eta_{\text{min}} + \frac{1}{2}(\eta_{\text{max}}-\eta_{\text{min}})(1+\cos(\frac{t-T_{\text{warmup}}}{T_{\text{total}}-T_{\text{warmup}}}\pi)) & \text{if } t > T_{\text{warmup}}
+  \end{cases}
+\end{equation}
+
+其中$T_{\text{warmup}}$为预热期轮次数，$T_{\text{total}}$为总训练轮次，$\eta_{\text{max}}$和$\eta_{\text{min}}$分别为最大和最小学习率。这种策略既能避免训练初期不稳定，又可以在后期实现更精细的参数调整。
 \subsection{模型测试}
-\subsubsection{测试指标细节}
-本章的模型训练均为回归问题，所以采用的测试指标为决定系数（Coefficient of Determination，R$^2$），如公式\eqref{eq:r2}所示，平均绝对误差（Mean Absolute Error，MAE），如公式\eqref{eq:mae}所示，平均百分比误差（Mean Absolute Percentage Error，MAPE），如公式\eqref{eq:mape}所示。
+模型验证首先通过可视化方法直观比较预测结果与真实值。主要采用预测值-真实值曲线对比和残差分析图两种可视化方式。预测值-真实值曲线对比将模型预测的应力-应变曲线与真实数据在同一坐标系中绘制，直观展示模型预测的准确性。残差分析图则计算每个时间点的预测值与真实值之间的差异（残差），并绘制残差随时间或应变的变化图，能够揭示模型预测中的系统性偏差。理想情况下，残差应随机分布在零线附近，不呈现明显的趋势或模式。
+
+本章的模型训练均为回归问题，因此采用的测试指标包括决定系数（Coefficient of Determination，R$^2$），如公式\eqref{eq:r2}所示，平均绝对误差（Mean Absolute Error，MAE），如公式\eqref{eq:mae}所示，以及平均百分比误差（Mean Absolute Percentage Error，MAPE），如公式\eqref{eq:mape}所示。
 \begin{equation}
   \text{R}^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2} \label{eq:r2}
 \end{equation}
@@ -172,20 +161,8 @@ L$_2$正则化损失函数的数学表达式如公式\eqref{eq:l1_loss}所示：
 \begin{equation}
   \text{MAPE} = \frac{100\%}{n} \sum_{i=1}^{n} \left| \frac{y_i - \hat{y}_i}{y_i} \right| \label{eq:mape}
 \end{equation}
-此外，加上训练时间作为训练成本指标。
+此外，加上训练时间作为训练成本指标，全面评估模型性能。
 
-\subsubsection{测试实验划分}
-Herschel-Bulkley模型使用训练后保存的模型参数，使用测试集时间进行预测，训练数据与测试数据为不同的流动指数$n$，采用已知流动指数数据预测未知流动指数数据，预测物理量为剪切应力。按照上述实验步骤分别使用DNN和GRU两种模型进行测试，绘制两个模型的测试比对曲线。
-
-Maxwell模型训练数据为交变应变数据，其应变关系符合公式\eqref{eq:sin_gamma_protocol},测试数据分为交变应变数据和公式\eqref{eq:linear_gamma_protocol}所示的稳态应变数据。采用已知交变协议数据预测未知交变协议数据，已知交变协议数据预测未知稳态协议数据，预测物理量为剪切应力。按照上述实验步骤分别使用DNN和GRU两种模型进行测试，绘制两个模型的测试比对曲线。对于GRU模型，设置不同的序列时间步进行训练，探究模型的最佳时间步。
-\begin{equation}
-  \gamma=\gamma_0cos(\omega t+\phi) \label{eq:sin_gamma_protocol}
-\end{equation}
-\begin{equation}
-  \gamma=\dot{\gamma}t \label{eq:linear_gamma_protocol}
-\end{equation}
-
-Doi-Edwards模型与Maxwell模型的实验流程一致，采用已知交变协议数据预测未知交变协议数据，已知交变协议数据预测未知线性协议数据，预测物理量为xy方向剪切应力$\sigma_{12}$和第一法向应力差$N_1$。第一法向应力差的公式为$N_1=\sigma_{11}-\sigma_{12} $，其中$\sigma_{11}$和$\sigma_{22}$ 分别表示xx方向和yy方向的应力。按照上述实验步骤分别使用DNN和GRU两种模型进行测试，绘制两个模型的测试比对曲线。对于GRU模型，设置不同的序列时间步进行训练，探究模型的最佳时间步。
 
 \section{结果与讨论}
 \subsection{Herschel-Bulkley模型建模}
@@ -216,7 +193,7 @@ Doi-Edwards模型与Maxwell模型的实验流程一致，采用已知交变协�
 本节通过后向欧拉法对简单 Maxwell 模型进行了数值模拟，生成了模拟数据，并绘制了应力-应变曲线（Lissajous 曲线），结果如图 \ref{maxwell_moni} 所示。图 \ref{maxwell_moni} 展示了不同应变协议下的模拟结果。对于正弦交变应变，Lissajous 曲线呈现出标准的闭合椭圆形状，这与 Maxwell 模型的理论预期一致，表明模型在周期性应变下的响应具有良好的稳定性和可预测性。对于线性应变，Lissajous 曲线在应变较小时表现出应力的快速增加，随后随着应变的继续增加，应力逐渐趋于一个稳定值，这一现象同样符合 Maxwell 模型的理论预期，反映了材料在持续应变下的应力松弛特性。综合看来，后向欧拉法模拟的数据符合预期，可以用于后续训练。
 
 
-\subsubsection{交变协议预测交变协议效果验证}
+\subsubsection{交变预测交变效果验证}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/Maxwell_sin_test.pdf}
@@ -241,7 +218,7 @@ Doi-Edwards模型与Maxwell模型的实验流程一致，采用已知交变协�
 综合各项分析数据来看，当训练数据和测试数据为同类型应变变化过程（都为交变应变）时，GRU算法可以更好的学习到Maxwell模型数据的内在特征，包括周期性响应，黏弹性，时间依赖性响应。从定性与定量分析结果看，GRU算法的预测泛化效果在此项任务上明显优于DNN，在计算资源足够时，GRU算法相比DNN性能更佳。
 
 
-\subsubsection{交变协议预测线性协议效果验证}
+\subsubsection{交变预测稳态效果验证}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/maxwell_linear_test.pdf}
@@ -302,7 +279,7 @@ Doi-Edwards模型与Maxwell模型的实验流程一致，采用已知交变协�
 之后本节分别对两种不同算法在$\sigma_{12}$和$N_1$上的预测效果做了定量分析，指标图如图\ref{doi-edwards-sin-metric}所示。在R$^2$指标上，GRU在$\sigma_{12}$和$N_1$的预测指标均优于DNN，而同种算法下$\sigma_{12}$的R$^2$值要高于$N_1$，显示$\sigma_{12}$的预测效果更好。在MAE指标上，DNN的$\sigma_{12}$和$N_1$的MAE值均远高于GRU，说明GRU的预测误差远小于DNN。MAPE指标与MAE指标的对比基本一致，都是GRU的预测误差小于DNN。但是同种算法下$\sigma_{12}$的MAE值高于$N_1$，但是MAPE值反之，这是因为MAE值强调的是绝对值比较，受到真实数据本身尺度的影响，因此比较同种算法下$\sigma_{12}$和$N_1$的预测效果应当以去除了数据尺度影响的MAPE值来判定，而MAPE值的结论表明同种算法下$\sigma_{12}$值的预测效果相比$N_1$更好，这与R$^2$的分析和图\ref{doi-edwards-sin}的定性分析一致，这也是后续可以优化的方向之一。最后，从图\ref{doi-edwards-sin-metric}（d）来看，GRU在此项任务上的训练时间为DNN的3倍左右，符合更高成本的预期。
 
 综合各项分析数据来看，当训练数据和测试数据为同类型应变变化过程（都为交变应变）时，GRU算法可以更好的学习到Doi-Edwards模型数据的内在特征，包括周期性响应，黏弹性，时间依赖性响应。从定性与定量分析结果看，GRU算法的预测泛化效果在此项任务上明显优于DNN，在计算资源足够时，GRU算法相比DNN性能更佳，而在同种算法下$\sigma_{12}$的预测效果优于$N_1$。
-\subsubsection{交变协议预测线性协议效果验证}
+\subsubsection{交变预测稳态协议效果验证}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/doi-edwards-linear.pdf}
@@ -332,8 +309,8 @@ Doi-Edwards模型与Maxwell模型的实验流程一致，采用已知交变协�
   \includegraphics[width=0.8\textwidth]{Fig/doi-edwards-timesteps-metrics.pdf}
   \FigureBicaption{\label{doi-edwards-timesteps-metrics}GRU算法和DNN算法在Doi-Edwards模型不同时间步长下的预测指标对比图：（a）GRU和DNN在不同时间步下的R$^2$指标图；（b）GRU和DNN在不同时间步下的MAE指标图；（c）GRU和DNN在不同时间步下的MAPE指标图；（d）GRU和DNN在不同时间步下的训练时间指标图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm under different time steps of the Doi-Edwards model: (a) R$^2$ metric plots under different time steps for GRU and DNN; (b) MAE metric plots under different time steps for GRU and DNN; (c) MAPE metric plots under different time steps for GRU and DNN; (d) Training Time metric plots under different time steps for GRU and DNN}
 \end{figure}
-
-
+\subsection{Giesekus模型建模}
+\subsection{真实材料数据建模}
 
 
 % 本章小结 
