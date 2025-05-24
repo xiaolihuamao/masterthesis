@@ -310,7 +310,116 @@ Giesekus模型的本构方程如公式\eqref{eq:giesekus}所示，迁移因子$\
   \FigureBicaption{\label{doi-edwards-timesteps-metrics}GRU算法和DNN算法在Doi-Edwards模型不同时间步长下的预测指标对比图：（a）GRU和DNN在不同时间步下的R$^2$指标图；（b）GRU和DNN在不同时间步下的MAE指标图；（c）GRU和DNN在不同时间步下的MAPE指标图；（d）GRU和DNN在不同时间步下的训练时间指标图}{Comparison schematic of the prediction performance of the GRU algorithm and the DNN algorithm under different time steps of the Doi-Edwards model: (a) R$^2$ metric plots under different time steps for GRU and DNN; (b) MAE metric plots under different time steps for GRU and DNN; (c) MAPE metric plots under different time steps for GRU and DNN; (d) Training Time metric plots under different time steps for GRU and DNN}
 \end{figure}
 \subsection{Giesekus模型建模}
-\subsection{真实材料数据建模}
+\subsubsection{振荡剪切预测振荡剪切}
+本节通过数值模拟不同应变幅值和频率的Giesekus模型振荡剪切数据，将其输入PI-GRU模型进行训练，并评估模型对未知振荡剪切数据的预测能力。图\ref{pigru-giesekus-sin}展示了PI-GRU、MLP和GRU模型（不含物理约束损失）在测试集上的预测结果与真实数据对比，图\ref{pigru-giesekus-sin-metrics}则展示了相应的评价指标。
+\begin{figure}
+  \centering
+  \includegraphics[width=0.9\textwidth]{Fig/pigru-giesekus-sin.pdf}
+  \FigureBicaption  {\label{pigru-giesekus-sin}Giesekus数值模拟振荡剪切数据（LAOS）测试集上PI-GRU、MLP和GRU模型的预测结果与真实数据对比，这里训练数据与测试数据均为大振幅振荡剪切数据：(a)剪切应力$\sigma_{12}$真实值与模型预测值Lissajous曲线；(b)剪切应力$\sigma_{12}$真实值与模型预测值的时间-应力曲线；(c)剪切应力$\sigma_{12}$真实值与模型预测值残差图；(d)第一法向应力差N$_1$真实值与模型预测值Lissajous曲线；(e)第一法向应力差N$_1$真实值与模型预测值的时间-应力曲线；(f)第一法向应力差N$_1$真实值与模型预测值残差图}{Comparison schematic of the prediction results of the PI-GRU, MLP, and GRU models on the Giesekus numerical simulation oscillatory shear data test set: (a) Lissajous curve of the true value and predicted value of the shear stress $\sigma_{12}$ for the GRU model; (b) time-stress curve of the true value and predicted value of the shear stress $\sigma_{12}$ for the GRU model; (c) residual plot of the true value and predicted value of the shear stress $\sigma_{12}$ for the GRU model; (d) Lissajous curve of the true value and predicted value of the first normal stress difference N$_1$ for the GRU model; (e) time-stress curve of the true value and predicted value of the first normal stress difference N$_1$ for the GRU model; (f) residual plot of the true value and predicted value of the first normal stress difference N$_1$ for the GRU model}
+\end{figure}
+本节中PI-GRU模型采用上对流Maxwell模型（UCM）作为物理约束，其表达式如公式\ref{eq:ucm}所示。UCM可视为Giesekus模型的简化形式，省略了流动指数$\alpha$项，因此理论上UCM只能部分捕捉Giesekus模型的特征。
+\begin{equation}
+  \boldsymbol{\sigma} + \lambda \stackrel{\triangledown}{\boldsymbol{\sigma}} = \eta \dot{\boldsymbol{\gamma}} \label{eq:ucm}
+\end{equation}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.9\textwidth]{Fig/pigru-giesekus-sin-metrics.pdf}
+  \FigureBicaption{\label{pigru-giesekus-sin-metrics}Giesekus数值模拟振荡剪切数据测试集上PI-GRU、MLP和GRU模型的评价指标：（a）R$^2$值；（b）MAE值；（c）MAPE值；（c）训练时间}{Comparison schematic of the evaluation metrics of the PI-GRU, MLP, and GRU models on the Giesekus numerical simulation oscillatory shear data test set: (a) R$^2$ value; (b) MAE value; (c) MAPE value; (d) training time}
+\end{figure}
+结果表明，作为前馈神经网络的MLP模型在预测剪切应力（$\sigma_{12}$）和第一法向应力差（$N_1$）时表现最差，这符合前馈神经网络难以有效捕捉长序列时间依赖关系的预期。
+
+GRU模型在处理时间依赖关系方面表现出色，图\ref{pigru-giesekus-sin}（a,b）中其预测曲线与真实值高度吻合，明显优于MLP模型。图\ref{pigru-giesekus-sin}c的残差分析进一步证实MLP的残差呈现明显的趋势性偏差，而GRU的残差则均匀分布在零线附近，表明其具有更强的特征学习能力。图\ref{pigru-giesekus-sin-metrics}（a,b,c）
+
+值得指出的是，在剪切应力预测任务中，引入UCM物理约束的PI-GRU模型（MAPE=1.81\%）相比GRU模型（MAPE=2.68\%）提升不显著。然而，在第一法向应力差$N_1$的预测中，PI-GRU模型（MAPE=4.03\%）明显优于GRU（MAPE=15.44\%）和MLP（MAPE=76.81\%）。
+
+第一法向应力差预测难度高于剪切应力的原因在于$N_1$是应力张量对角元素的差值（$\sigma_{11}-\sigma_{22}$），其计算涉及多个应力分量，误差容易累积。其次，$N_1$对材料非线性响应更敏感，在大应变下变化更为剧烈，需要模型具备更强的非线性特征提取能力。UCM模型虽然简化，但仍包含了应力张量的上对流导数项，能够部分捕捉材料在剪切流动中的非线性行为，特别是法向应力差的产生机制。这种物理约束引导模型学习符合流变学基本原理的特征表示，从而在预测具有挑战性的$N_1$时表现出更强的泛化能力。
+
+综上所述，将传统MLP结构升级为具有记忆能力的GRU结构，并结合物理约束损失函数，能够显著增强模型捕捉黏弹性材料时间依赖特性的能力。这种结构优化使得模型在处理复杂非线性流变学数据时表现出优越的预测精度，特别是在法向应力差等难以预测的参数上。值得注意的是，PI-GRU模型由于其循环神经网络的内在特性，计算复杂度较高，导致训练时间（图\ref{pigru-giesekus-sin-metrics}d所示）显著长于MLP结构，这一现象在本研究的所有实验任务中均有体现。尽管如此，本任务中1275秒的训练时间仍处于可接受范围内。PI-GRU模型为复杂流变学本构关系的高效建模提供了新思路，原本需要大量不同振荡条件的实验数据才能描述的本构关系，或许可以使用有限的数据建立模型，再去泛化到未知实验条件的数据，从而减少实验成本并加速材料开发过程。
+\subsubsection{振荡剪切预测稳态剪切}
+当训练集与测试集都为正弦振荡剪切时，这种同分布测试无法有效验证模型是否真正建立了Giesekus模型的本构关系映射。Giesekus模型的核心特征在于其非线性应力响应特性，包括剪切稀化等特性。因此，本研究做了振荡剪切预测稳态剪切的实验来探究PI-GRU模型是否能够正确预测稳态剪切下的应力应变关系，真正重现Giesekus本构方程。图\ref{pigru-giesekus-linear}展示了PI-GRU模型在测试集上的预测结果与真实数据对比。
+\begin{figure}
+  \centering
+  \includegraphics[width=0.9\textwidth]{Fig/pigru-giesekus-linear.pdf}
+  \FigureBicaption{\label{pigru-giesekus-linear}Giesekus数值模拟稳态剪切数据测试集上PI-GRU、MLP和GRU模型的预测结果与真实数据对比，这里训练数据为大振幅振荡剪切（LAOS）数据，测试数据为稳态剪切数据：(a)剪切应力$\sigma_{12}$真实值与模型预测值的时间-应力曲线；(b)剪切应力$\sigma_{12}$真实值与模型预测值残差图；(c)R$^2$值；(d)MAE值；(e)MAPE值}{Comparison schematic of the prediction results of the PI-GRU, MLP, and GRU models on the Giesekus numerical simulation steady-state shear data test set: (a) time-stress curve of the true value and predicted value of the shear stress $\sigma_{12}$ for the GRU model; (b) residual plot of the true value and predicted value of the shear stress $\sigma_{12}$ for the GRU model; (c) R$^2$ value; (d) MAE value; (e) MAPE value}
+  \label{pigru-giesekus-linear}
+\end{figure}
+
+可以看到面对不同应变协议的Giesekus测试数据，GRU和PI-GRU的预测效果明显优于MLP，从预测曲线（图\ref{pigru-giesekus-linear}a）和残差分析(图\ref{pigru-giesekus-linear}b)以及定量评估指标（图\ref{pigru-giesekus-linear}（c-e））来看，MLP完全无法从振荡剪切数据泛化稳态剪切数据，R$^2$值甚至出现了负数，这说明纯数据驱动的MLP模型无法理解Giesekus模型中的非线性特征。将神经网络结构改为GRU后，预测效果得到明显改善（R$^2$=0.989，MAE=0.0086，MAPE=2.62\%）。
+PI-GRU模型表现出最佳的预测泛化效果，R$^2$值为0.993(>0.99)，MAE指标再降低至0.0085，MAPE指标仅为2.07\%，这表明PI-GRU模型能够很好学习到Giesekus模型中的非线性特征，并能够从振荡剪切数据泛化到稳态剪切数据。图\ref{pigru-giesekus-linear}a显示Giesekus模型在稳态剪切下首先表现为弹性主导的应力增长响应，之后应力衰减对应剪切稀化现象，最后黏性主导下呈现平台，PI-GRU模型能够从振荡剪切数据中正确识别出这些Giesekus模型的特征，将相关的时间依赖性特征与非线性特征嵌入到模型的参数中，最后在稳态剪切下预测出与真实数据高度吻合的应力应变曲线。
+
+这是一个有趣的发现，一般认为振荡剪切与稳态剪切在非线性区间是有差异的，前者通过动态加载揭示材料的弹性记忆、高阶谐波响应及非对称性，后者则侧重稳态流动下的黏性行为。然而，本研究结果表明，PI-GRU模型在振荡剪切数据上训练后，能够较准确预测稳态剪切下的应力应变关系，这意味着PI-GRU有着构建完备统一本构关系的能力，同时相对易获取的振荡剪切数据可以低成本去构建各种复杂工况，例如注塑成型、挤出成型大剪切形变下的本构关系。在此基础上，这套方法或可大幅缩短实验周期，指导黏弹性材料的配方优化与工艺参数选择，显著降低工业试错成本。
+
+\subsubsection{线性预测非线性}
+在流变学本构方程的研究中，非线性本构方程的数学建模和参数拟合难度往往远远大于线性本构方程，在实际的流变学测试中，能够获取非线性数据的大振幅剪切实验（LAOS）实验成本也远远高于小振幅剪切实验（SAOS）。因此，如果能够从线性的SAOS数据出发，探究出非线性区间的全部或部分本构关系，对是流变学家非常乐于见到的。本研究通过构建PI-GRU模型，做了这样的尝试：训练数据全部采用SAOS数据，测试数据全部采用LAOS数据，探究PI-GRU模型是否能够从线性区间的SAOS数据泛化到非线性区间的LAOS数据。
+\begin{figure}
+  \centering
+  \includegraphics[width=0.9\textwidth]{Fig/giesekus-saos2laos.pdf}
+  \FigureBicaption{\label{giesekus-saos2laos}Giesekus数值模拟线性SAOS数据预测非线性LAOS数据测试集上PI-GRU、MLP和GRU模型的预测结果与真实数据对比，这里训练数据为SAOS数据，测试数据为LAOS数据：(a)剪切应力$\sigma_{12}$真实值与模型预测值的Lissajous曲线；(b)剪切应力$\sigma_{12}$真实值与模型预测值的时间-应力曲线；(c)剪切应力$\sigma_{12}$真实值与模型预测值残差图；(d)R$^2$值；(e)MAE值；(f)MAPE值；(g)训练时间}{Comparison schematic of the prediction results of the PI-GRU, MLP, and GRU models on the Giesekus numerical simulation linear SAOS data prediction nonlinear LAOS data test set: (a) Lissajous curve of the true value and predicted value of the shear stress $\sigma_{12}$ for the GRU model; (b) time-stress curve of the true value and predicted value of the shear stress $\sigma_{12}$ for the GRU model; (c) residual plot of the true value and predicted value of the shear stress $\sigma_{12}$ for the GRU model; (d) R$^2$ value; (e) MAE value; (f) MAPE value; (g) training time}
+  \label{giesekus-saos2laos}
+\end{figure}
+
+这里还是选取了MLP，GRU和PI-GRU模型进行对比，所使用的训练集全部都是SAOS数据，最终图\ref{giesekus-saos2laos}绘制的是LAOS测试集的对比图，可以发现MLP在预测LAOS数据时，预测曲线与真实曲线偏差较大，各指标表现较差(R$^2$<0,MAE=0.25,MAPE=112.82\%)，GRU和PI-GRU模型在预测LAOS数据时，预测效果相对MLP得到一定提升，图\ref{giesekus-saos2laos}(a-c)可以定性看出不同模型之间的预测效果是：PI-GRU>GRU>MLP。
+在定量指标方面，GRU的MAPE值为39.72\%，相比MLP的112.82\%降低了73.1\%，可以说得到了本质的优化，而PI-GRU模型在GRU的基础上，进一步引入了物理约束，MAPE值为33.04\%，相比GRU仅仅降低了6.68\%，说明物理约束对模型在此项任务上的提升有限。这里的结果可能是因为，训练数据中数据都是线性区间数据，非线性特征较少，深度学习方法很难从几乎没有的特征中学到未知领域的知识，引入物理约束后，这种物理约束的先验信息一定程度上拓展了模型的想象能力，但受限于训练数据中确实缺少非线性特征，物理约束的先验信息无法有效指导模型学习到非线性特征，从而导致预测效果提升有限。
+
+综合来看，PI-GRU模型在物理约束和GRU结构的加持下，可以在一定程度上通过线性SAOS数据预测非线性的LAOS数据，尽管预测的百分比误差没有上文中的振荡剪切预测稳态剪切任务中那么小，但仍然表明PI-GRU模型的应用潜力。由于线性区间的SAOS数据是较容易获取的，因此未来也许可以考虑先通过大量的SAOS数据预训练一个基础模型，再通过有限的LAOS数据进行迁移学习，从而提升模型的泛化能力，不失为一个降本增效的策略。
+
+\subsection{真实实验数据建模}
+上一节中，我们验证了PI-GRU模型在模拟数据的泛化预测效果，然而模拟的数据往往噪声较小，且受到人为的精确控制，而真实实验数据往往噪声较大，且受到实验条件的影响，真实的黏弹性材料中往往存在更为复杂的非线性特征，例如多松弛谱等现象，因此本节将探究PI-GRU模型在真实实验数据上的泛化能力，即PI-GRU模型是否真正在真实的材料科研中起到作用。
+\begin{figure}
+  \centering
+  \includegraphics[width=0.9\textwidth]{Fig/real-data-differstrain.pdf}
+  \FigureBicaption{\label{real-data-differstrain}ABE弹性体数据测试集上XGBoost、MLP、PI-MLP和PI-GRU模型的预测结果与真实数据对比，（a-b）为SAO测试集，训练数据与测试数据均为SAOS数据，而（c-d）为LAOS测试集，训练数据为SAOS数据和LAOS数据，测试数据为LAOS数据：(a)SAOS测试集剪切应力$\sigma_{12}$真实值与模型预测值的Lissajous曲线；(b)SAOS测试集剪切应力$\sigma_{12}$真实值与模型预测值的残差图；(c)LAOS测试集剪切应力$\sigma_{12}$真实值与模型预测值的Lissajous曲线；(d)LAOS测试集剪切应力$\sigma_{12}$真实值与模型预测值的残差图}{Comparison schematic of the prediction results of the XGBoost, MLP, PI-MLP, and PI-GRU models on the ABE elastomer data test set: (a-b) SAOS test set, both training and test data are SAOS data, and (c-d) LAOS test set, training data are SAOS data and LAOS data, test data are LAOS data: (a) Lissajous curve of the true value and predicted value of the shear stress $\sigma_{12}$ for the SAOS test set; (b) residual plot of the true value and predicted value of the shear stress $\sigma_{12}$ for the SAOS test set; (c) Lissajous curve of the true value and predicted value of the shear stress $\sigma_{12}$ for the LAOS test set; (d) residual plot of the true value and predicted value of the shear stress $\sigma_{12}$ for the LAOS test set}
+  \label{real-data-differstrain}
+\end{figure}
+本研究选取的实验材料为一类具有黏弹性的ABE弹性体材料，具体材料情况在999节中详细介绍。
+\subsubsection{SAOS数据预测}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.9\textwidth]{Fig/real-data-differstrain-saos-metrics.pdf}
+  \FigureBicaption{\label{real-data-differstrain-saos-metrics}ABE弹性体数据SAOS测试集上XGBoost、MLP、PI-MLP和PI-GRU模型的预测指标对比：（a）R$^2$值；（b）MAE值；（c）MAPE值；（d）训练时间}{Comparison schematic of the prediction metrics of the XGBoost, MLP, PI-MLP, and PI-GRU models on the ABE elastomer data SAOS test set: (a) R$^2$ value; (b) MAE value; (c) MAPE value; (d) training time}
+\end{figure}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.9\textwidth]{Fig/real-data-differstrain-laos-metrics.pdf}
+  \FigureBicaption{\label{real-data-differstrain-laos-metrics}ABE弹性体数据LAOS测试集上XGBoost、MLP、PI-MLP和PI-GRU模型的预测指标对比：（a）R$^2$值；（b）MAE值；（c）MAPE值；（d）训练时间}{Comparison schematic of the prediction metrics of the XGBoost, MLP, PI-MLP, and PI-GRU models on the ABE elastomer data LAOS test set: (a) R$^2$ value; (b) MAE value; (c) MAPE value; (d) training time}
+\end{figure}
+图\ref{real-data-differstrain}（a,b）和图\ref{real-data-differstrain-saos-metrics}展示了PI-GRU模型在真实数据集的SAOS数据上的预测结果，这里对比了XGBoost模型\cite{Goodfellow-et-al-2016}，MLP模型，PI-MLP模型(增加物理约束，但使用MLP结构)和PI-GRU模型。
+这里使用的物理约束为UCM模型，其表达式如公式\ref{eq:ucm}所示。
+
+从真实-预测值曲线（图\ref{real-data-differstrain}a）和残差图（图\ref{real-data-differstrain}b）可以定性看出不同模型之间的预测效果是：PI-GRU>PI-MLP>MLP>XGBoost。从定量指标来看，纯数据驱动的XGBoost模型和MLP模型在预测真实数据时表现较差，MAPE指标均高于40\%，在物理约束的加持下，PI-MLP模型和PI-GRU模型在预测真实数据时表现较好，MAPE指标均低于20\%，其中PI-GRU模型在预测真实数据时表现最佳为3.33\%。而训练时间上，PI-GRU模型由于其循环神经网络结构特性，训练时间最高为1070 s。
+本节的研究表明，PI-GRU模型在真实的SAOS数据上可以取得较好的预测效果，通过学习不同振幅的SAOS数据，模型可以学习到材料线性黏弹性特征，并泛化到未知应变协议的数据，这意味着只需有限的的流变学实验，便可以得到一个较为准确的某种材料的线性黏弹本构关系，从而为材料的设计和优化提供理论指导。
+\subsubsection{LAOS数据预测}
+
+在进一步的研究中，图\ref{real-data-differstrain}(c,d)和图\ref{real-data-differstrain-laos-metrics}展示了PI-GRU模型在真实数据集的LAOS数据上的预测结果，由于LAOS数据的测量难度和时间都高于SAOS且需要的样品量更多，这里的训练数据同时包含SAOS和LAOS数据，这里对比了MLP模型，PI-MLP模型和PI-GRU模型，其中PI-GRU模型预测的曲线与真实曲线最为吻合，图\ref{real-data-differstrain-laos-metrics}的预测相关指标显示PI-GRU在这项任务上的R$^2$为0.991，MAE值为622，MAPE值为4.32\%，均领先其他算法模型。
+
+PI-GRU模型的优越性能源于其门控机制与黏弹性材料应力响应机制高度契合，可选择性保留或遗忘历史信息，而物理约束的引入使其遵循流变学原理，避免纯数据驱动方法的物理不一致性。通过SAOS与LAOS数据协同训练，模型可学习材料从线性到非线性区域的连续转变特性，构建完整响应图景，实现不同应变幅度和频率下的精准预测。这种基于"多尺度"学习的方法，在SAOS数据易获取、LAOS数据难获取的实际条件下，能高效建立黏弹性材料非线性本构关系，显著降低高分子加工领域的实验成本与时间，为材料开发和工艺优化提供高效数据支持。
+
+\subsubsection{不同本构约束}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.9\textwidth]{Fig/real-data-differcons.pdf}
+  \FigureBicaption{\label{real-data-differcons}ABE弹性体数据LAOS测试集使用不同本构方程作为物理约束的PI-GRU模型的预测效果对比，这里DD指的是没有物理约束的纯数据驱动模型，M代表的是Maxwell模型，SLS为标准线性固体模型，方程如\ref{eq:sls}所示，FSLS为分数阶线性固体模型，方程如\ref{eq:fsls}所示：(a)剪切应力$\sigma_{12}$真实值与模型预测值的Lissajous曲线；(b)剪切应力$\sigma_{12}$真实值与模型预测值的残差图}{Comparison schematic of the prediction results of the PI-GRU model with different constitutive equations as physical constraints on the ABE elastomer data LAOS test set. Here DD refers to a pure data-driven model without physical constraints, M represents the Maxwell model, SLS is the standard linear solid model as shown in equation \ref{eq:sls}, and FSLS is the fractional-order linear solid model as shown in equation \ref{eq:fsls}: (a) Lissajous curve of the true value and predicted value of the shear stress $\sigma_{12}$; (b) residual plot of the true value and predicted value of the shear stress $\sigma_{12}$}
+\end{figure}
+本研究使用的PI-GRU模型一个很重要的组件就是物理方程的约束，而PI-GRU作为物理信息机器学习（PIML）的一种，存在一个研究者都颇为关心的问题，即如何在一个具体的科学问题中从浩繁的物理方程中选择一个最适配的物理方程。为了了解PI-GRU模型对于本构方程的依赖性，本研究探究了不同本构方程作为物理约束下的建模预测效果。图\ref{real-data-differcons}和图\ref{real-data-differcons-metrics}展示了不同本构方程作为物理约束的PI-GRU的预测效果，其中纯数据驱动（DD）组的效果最差，这里本质上使用的GRU模型，与上文的结果不同，在真实的数据集上，单纯的GRU模型预测非线性区间的LAOS数据表现不佳，MAPE值高达36.4\%，这里考虑是真实场景下材料流变性质的复杂性超过有限参数的数值模拟数据。而引入物理约束后，模型的预测效果则得到较大提升，本节的工作中，M代表的是Maxwell模型，SLS为标准线性固体模型，方程如所示，FSLS为分数阶线性固体模型，方程如所示。
+\begin{align}
+  \sigma(t) + \lambda_{1} \frac{d \sigma(t)}{d t}            & = G \left( \gamma(t) + \lambda_2 \frac{d \gamma(t)}{d t} \right) (SLS) \label{eq:sls}             \\
+  \sigma(t) + \lambda_1 \frac{d^\alpha \sigma(t)}{dt^\alpha} & = G \left( \gamma(t) + \lambda_2 \frac{d^\beta \gamma(t)}{dt^\beta} \right)(FSLS) \label{eq:fsls}
+\end{align}
+
+研究中使用的ABE弹性体是一类黏弹性固体材料，Maxwell模型在实践中多用于高分子流体的线性区间拟合，SLS模型则多用于黏弹性固体的线性区间拟合，FSLS模型通过分数阶导数的记忆性和幂律特性，突破了整数阶模型的指数衰减限制，兼容材料的长期记忆、宽弛豫时间分布和幂律响应等非线性特征\cite{ricarteTutorialReviewLinear2024,ewoldtDesigningComplexFluids2022}。这几个本构模型中理论上FSLS模型最能描述ABE弹性体的本构关系，而应用到PI-GRU的模型中，结果表明三种不同适配场景的本构方程作为物理约束情况下，最终的泛化预测效果非常接近，且没有呈现预期的梯度变化趋势。具体而言，在R$^2$指标上Maxwell模型约束的模型表现最优，在MAE指标上SLS模型略胜一筹，而在MAPE指标上Maxwell模型又占优势，但这些差异在统计学意义上并不显著。这一现象表明，PI-GRU模型在ABE弹性体流变数据建模过程中表现出一定程度的本构方程无关性，即使是理论上更适合流体而非固体的Maxwell方程作为物理约束，模型也能取得令人满意的预测效果。
+
+PI-GRU的本构无关性可能源于物理信息与GRU网络结构之间的协同增强作用。图\ref{real-data-differstrain}的结果清晰地表明PI-GRU相比PI-MLP具有显著的预测优势，而图\ref{real-data-differcons}的结果则证实PI-GRU相比纯数据驱动的GRU模型有着本质的提升，这两组对比共同证明了物理约束和门控循环单元结构在提升预测性能方面均发挥着关键作用。物理约束为模型提供了一个基础的理论框架，使得模型不必严格符合特定材料的全部特性，只需满足黏弹性材料的基本数学假设；而GRU结构则通过其记忆机制有效捕捉了材料响应中的时间依赖性和非线性特征。这种设计理念与Mahmoudabadbozchelou和Jamali提出的MFNN或PINN模型有相似之处\cite{mahmoudabadbozchelouDatadrivenPhysicsinformedConstitutive2021}，但PI-GRU模型通过其特殊的神经网络架构，有效地捕捉了时间域流变数据中的历史依赖性特征，在模型设计上更为贴近真实的黏弹性材料。
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.9\textwidth]{Fig/real-data-differcons-metrics.pdf}
+  \FigureBicaption{\label{real-data-differcons-metrics}ABE弹性体数据LAOS测试集使用不同本构方程作为物理约束的PI-GRU模型的预测指标对比：（a）R$^2$值；（b）MAE值；（c）MAPE值；（d）训练时间}{Comparison schematic of the prediction metrics of the PI-GRU model with different constitutive equations as physical constraints on the ABE elastomer data LAOS test set: (a) R$^2$ value; (b) MAE value; (c) MAPE value; (d) training time}
+\end{figure}
+Lennon等人提出的RUDE框架采用了Oldroyd形式的微分方程作为基础框架，Oldroyd形式的微分方程事实上已经包含时间依赖性，仅通过神经网络训练框架无法拟合的非线性部分，因此RUDE不需要事先确定精确的本构方程\cite{lennonScientificMachineLearning2023a}。相比之下，我们的PI-GRU模型将物理约束作为一个大致约束，依靠GRU的门控单元结构来学习材料的时间依赖性，本质上是将RUDE的设计以非解析方程的形式融入到模型中。
+
+这一发现对于实际应用具有重要意义，它表明在使用PI-GRU模型进行黏弹性材料建模时，研究者可以选择相对简单的物理约束方程，而不必过分关注物理方程与材料特性的精确匹配度，这大大简化了模型的设计和应用过程。同时，这也为未来开发更通用的黏弹性材料建模框架提供了新的思路，即通过合理的神经网络结构设计，可以在一定程度上弥补物理模型的不足，实现更广泛的适用性。
 
 
 % 本章小结 
