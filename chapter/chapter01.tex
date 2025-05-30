@@ -17,7 +17,7 @@
 \begin{equation}
   \sigma = G \gamma  \label{eq:hookean_solid}
 \end{equation}
-而对于液体，其对外力的响应则完全不同。液体无法储存能量以恢复形状，而是通过内部的粘性阻力来耗散能量，并持续流动以适应外力。这种行为可以用牛顿流体的本构方程来描述，即剪切应力与剪切速率成正比，如公式\eqref{eq:newton_fluid}所示。其中，$\eta$为粘性系数，用于描述液体在运动过程中耗散能量的能力。粘性系数越大，液体越容易耗散能量，反之亦然。牛顿流体是理想化的粘性流体模型，适用于描述水、空气等液体在运动过程中耗散能量的行为\cite{ricarteTutorialReviewLinear2024}。
+而对于液体，其对外力的响应则完全不同。液体无法储存能量以恢复形状，而是通过内部的黏性阻力来耗散能量，并持续流动以适应外力。这种行为可以用牛顿流体的本构方程来描述，即剪切应力与剪切速率成正比，如公式\eqref{eq:newton_fluid}所示。其中，$\eta$为黏性系数，用于描述液体在运动过程中耗散能量的能力。黏性系数越大，液体越容易耗散能量，反之亦然。牛顿流体是理想化的黏性流体模型，适用于描述水、空气等液体在运动过程中耗散能量的行为\cite{ricarteTutorialReviewLinear2024}。
 \begin{equation}
   \sigma = \eta \dot{\gamma}  \label{eq:newton_fluid}
 \end{equation}
@@ -27,11 +27,11 @@
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{Fig/solid_liquid.pdf}
-  \FigureBicaption{\label{differ_fluid_intro}（A）施加的应变曲线以及对应的剪切应力（B）理想弹性固体（C）理想粘性液体（D）粘弹性样品\cite{ricarteTutorialReviewLinear2024}}{(A) Applied strain profile and resulting shear stress (B) Ideal elastic solid (C)Ideal viscous liquid (D) Viscoelastic samples\cite{ricarteTutorialReviewLinear2024}}
+  \FigureBicaption{\label{differ_fluid_intro}（A）施加的应变曲线以及对应的剪切应力（B）理想弹性固体（C）理想黏性液体（D）黏弹性样品\cite{ricarteTutorialReviewLinear2024}}{(A) Applied strain profile and resulting shear stress (B) Ideal elastic solid (C)Ideal viscous liquid (D) Viscoelastic samples\cite{ricarteTutorialReviewLinear2024}}
 \end{figure}
-图\ref{differ_fluid_intro}概述了两种不同类型的粘弹性材料的简单剪切行为。对于粘弹性固体和液体，阶跃应变会引起瞬时弹性响应，从而产生$\sigma$峰值。然而，应力不是保持不变或立即降至零，而是逐渐降低。它在很长一段时间内接近粘弹性固体的有限平台值，而粘弹性液体则完全衰减到零\cite{ricarteTutorialReviewLinear2024}。
+图\ref{differ_fluid_intro}概述了两种不同类型的黏弹性材料的简单剪切行为。对于黏弹性固体和液体，阶跃应变会引起瞬时弹性响应，从而产生$\sigma$峰值。然而，应力不是保持不变或立即降至零，而是逐渐降低。它在很长一段时间内接近黏弹性固体的有限平台值，而黏弹性液体则完全衰减到零\cite{ricarteTutorialReviewLinear2024}。
 
-线性本构理论中最经典的是Maxwell模型\cite{maxwell1867iv}，如图\ref{maxwell_intro}所示，Maxwell模型将材料的弹性行为和粘性行为结合起来，它用一个弹簧（弹性元件）和一个粘壶（粘性元件）串联表示黏弹性关系。Maxwell模型的微分形式如公式\eqref{eq:maxwell_model_dt}所示，其中$\tau$表示松弛时间，等于$\eta/G$。将两边积分得到Maxwell模型的积分形式如公式\eqref{eq:maxwell_model_int}所示。
+线性本构理论中最经典的是Maxwell模型\cite{maxwell1867iv}，如图\ref{maxwell_intro}所示，Maxwell模型将材料的弹性行为和黏性行为结合起来，它用一个弹簧（弹性元件）和一个黏壶（黏性元件）串联表示黏弹性关系。Maxwell模型的微分形式如公式\eqref{eq:maxwell_model_dt}所示，其中$\tau$表示松弛时间，等于$\eta/G$。将两边积分得到Maxwell模型的积分形式如公式\eqref{eq:maxwell_model_int}所示。
 \begin{gather}
   \frac{d\sigma}{dt} + \frac{\sigma}{\tau}  = G \frac{d\gamma}{dt} \label{eq:maxwell_model_dt}
 \end{gather}
@@ -53,7 +53,7 @@
   G(t) = \sum_{i=1}^{n} G_i e^{-\frac{t}{\tau_i}} \label{eq:generalized_maxwell_model_G}
 \end{equation}
 
-Maxwell模型通过将黏弹性抽象为黏性元件和弹性元件串联来得到本构方程。如果将弹簧和粘壶进行并联，则得到Kelvin-Voigt模型的本构方程,即公式\eqref{eq:kelvin_voigt_model}\cite{voigt1892ueber}。
+Maxwell模型通过将黏弹性抽象为黏性元件和弹性元件串联来得到本构方程。如果将弹簧和黏壶进行并联，则得到Kelvin-Voigt模型的本构方程,即公式\eqref{eq:kelvin_voigt_model}\cite{voigt1892ueber}。
 \begin{equation}
   \sigma(t) = G \gamma(t) + \eta \frac{d\gamma(t)}{dt} \label{eq:kelvin_voigt_model}
 \end{equation}
@@ -65,7 +65,7 @@ Maxwell模型通过将黏弹性抽象为黏性元件和弹性元件串联来得�
 
 如果将传统的整数阶导数模型改为分数阶导数，能够更加准确描述材料的记忆效应。例如Bagley和Torvik等在20世纪80年代提出的分数阶Maxwell模型，是对传统Maxwell模型的推广\cite{bagley1986fractional}。无论是什么形式的线性本构方程，均满足一个基本假设：材料的响应是线性的，即多个应变历史的叠加效应等于各自效应的线性相加，当公式\eqref{eq:generalized_maxwell_model}中的松弛模量G表示为公式\eqref{eq:generalized_maxwell_model_G}时是Maxwell模型的形式，事实上当G为一个抽象的松弛函数时，公式\eqref{eq:generalized_maxwell_model}抽象为更一般的线性本构方程，被称为玻尔兹曼叠加原理（BSP），玻尔兹曼叠加原理广泛应用于描述线性黏弹性材料的行为，例如应力松弛、蠕变、动态力学响应等\cite{boltzmannZurTheorieElastischen1878}。
 \subsection{非线性本构方程}
-线性本构方程只能用于描述只能描述简单的材料行为，例如弹性变形、小应变下的黏弹性行为\cite{fedorowiczElasticPerfectlyPlastic2024,lingComparisonReviewClassical2023,ricarteTutorialReviewLinear2024}。适用于材料在小变形范围内的线性响应，而非线性本构方程可以用来描述更为复杂的行为例如塑性变形、硬化或软化、各向异性、大变形、剪切稀化、剪切增稠等行为。绝大部分高分子材料具有较复杂的非线性关系。Binham认为当剪应力低于屈服应力时，屈服性流体表现为刚性固体；当剪应力超过屈服应力时，流体开始流动，且流动行为类似于牛顿流体\cite{binghaminvestigation}。Herschel-Bulkley模型在此基础之上引入了剪切稀化和剪切增稠的表示，如公式\eqref{eq:herschel}，Herschel-Bulkley模型是描述非线性本构方程的一套公式\cite{herschel1926konsistenzmessungen}。
+线性本构方程只能用于描述简单的材料行为，例如弹性变形、小应变下的黏弹性行为\cite{fedorowiczElasticPerfectlyPlastic2024,lingComparisonReviewClassical2023,ricarteTutorialReviewLinear2024}。适用于材料在小变形范围内的线性响应，而非线性本构方程可以用来描述更为复杂的行为例如塑性变形、硬化或软化、各向异性、大变形、剪切稀化、剪切增稠等行为。绝大部分高分子材料具有较复杂的非线性关系。Binham认为当剪应力低于屈服应力时，屈服性流体表现为刚性固体，当剪应力超过屈服应力时，流体开始流动，且流动行为类似于牛顿流体\cite{binghaminvestigation}。Herschel-Bulkley模型在此基础之上引入了剪切稀化和剪切增稠的表示，如公式\eqref{eq:herschel}，Herschel-Bulkley模型是描述非线性本构方程的一套公式\cite{herschel1926konsistenzmessungen}。
 \begin{equation}
   \sigma=\sigma_0+K\dot{\gamma}^n \label{eq:herschel}
 \end{equation}
@@ -82,7 +82,7 @@ Herschel-Bulkley类模型不涉及弹性流体，主要用于解决屈服应力�
   \boldsymbol{\sigma} + \lambda_1 \frac{\mathcal{D}\boldsymbol{\sigma}}{\mathcal{D}t} = \eta \left( \dot{\boldsymbol{\gamma}} + \lambda_2 \frac{\mathcal{D}\dot{\boldsymbol{\gamma}}}{\mathcal{D}t} \right) \label{eq:oldroyd_b}
 \end{equation}
 
-Giesekus模型(公式\eqref{eq:giesekus})在Oldroyd-B模型基础上，增加了一个非线性项,通过非线性系数$\alpha$来表示非线性行为\cite{giesekus1982simple}。Giesekus模型常用于描述高聚物溶液、熔体以及其他粘弹性流体的流变行为。这些流体通常表现出剪切稀化和弹性效应。尤其是在中等至高剪切速率范围内。其模型参数（如迁移因子α）可以调节剪切稀化的强度和拐点形状，具有较高的灵活性\cite{PENG2021104571,kim2024viscosity}。Giesekus模型在高Weissenberg数（Wi）条件下仍能保持数值稳定性，适用于强弹性效应的流动场景。通过引入对数构象重构等方法，可以进一步提高其在高Wi条件下的计算稳定性\cite{fattal2004constitutive}。
+Giesekus模型(公式\eqref{eq:giesekus})在Oldroyd-B模型基础上，增加了一个非线性项,通过非线性系数$\alpha$来表示非线性行为\cite{giesekus1982simple}。Giesekus模型常用于描述高聚物溶液、熔体以及其他黏弹性流体的流变行为。这些流体通常表现出剪切稀化和弹性效应。尤其是在中等至高剪切速率范围内。其模型参数（如迁移因子α）可以调节剪切稀化的强度和拐点形状，具有较高的灵活性\cite{PENG2021104571,kim2024viscosity}。Giesekus模型在高Weissenberg数（Wi）条件下仍能保持数值稳定性，适用于强弹性效应的流动场景。通过引入对数构象重构等方法，可以进一步提高其在高Wi条件下的计算稳定性\cite{fattal2004constitutive}。
 \begin{equation}
   \boldsymbol{\sigma} + \lambda_1 \frac{\mathcal{D}\boldsymbol{\sigma}}{\mathcal{D}t} + \alpha \frac{\lambda_1}{\eta} \boldsymbol{\sigma} \cdot \boldsymbol{\sigma} = \eta \left( \dot{\boldsymbol{\gamma}} + \lambda_2 \frac{\mathcal{D}\dot{\boldsymbol{\gamma}}}{\mathcal{D}t} \right) \label{eq:giesekus}
 \end{equation}
@@ -118,11 +118,11 @@ Doi和Edwards尝试从分子角度构建本构方程，在管子模型的基础�
 \subsection{传统的本构方程的构建方法}
 传统本构方程尤其是Oldroyd-B、Doi-Edwards等复杂的非线性模型具有较多的待定参数，通过方程来描述材料的应力-应变关系及其对时间、温度和形变历史的依赖性。其构建方法是实验观测、理论推导和数值模拟的结合，具体可以分为以下几个步骤。
 
-首先，实验观测是构建本构方程的基础。通过流变学实验（如剪切流变、拉伸流变等），研究者可以获取材料在不同形变条件下的应力响应数据。这些实验数据为理论模型的构建提供了关键依据。例如，通过动态力学分析（DMA）测量材料的储存模量和损耗模量，可以确定其粘弹性特性；通过应力松弛和蠕变实验，可以推断材料的记忆效应和时间依赖性。实验数据的精确性和全面性直接决定了本构方程的适用性和预测能力\cite{alvesNumericalMethodsViscoelastic2021,stadlerWhatAreTypical2014}。
+首先，实验观测是构建本构方程的基础。通过流变学实验（如剪切流变、拉伸流变等），研究者可以获取材料在不同形变条件下的应力响应数据。这些实验数据为理论模型的构建提供了关键依据。例如，通过动态力学分析（DMA）测量材料的储存模量和损耗模量，可以确定其黏弹性特性；通过应力松弛和蠕变实验，可以推断材料的记忆效应和时间依赖性。实验数据的精确性和全面性直接决定了本构方程的适用性和预测能力\cite{alvesNumericalMethodsViscoelastic2021,stadlerWhatAreTypical2014}。
 
 其次，对于非线性材料，则需要引入更复杂的本构关系，这里主要还是基于线性黏弹性方程，通过各类引入非线性关系的方法来进行非线性关系推导，理论推导的关键在于如何将微观结构信息（如高分子链的缠结、颗粒的相互作用等）与宏观力学行为联系起来。而对于理论推导的结果，每一个非线性项或参数应当从数学角度进行证明\cite{zhai2024global}。近年来，数学研究者对Doi-Edwards模型的适定性进行了深入研究。Chupin等人通过Schauder不动点定理和Galerkin近似方法，证明Doi-Edwards 模型在二维情况下的全局解存在性和唯一性\cite{hassager2010constitutive}。这一结果为模型的数学基础提供了严格的理论支持。
 
-数值模拟在本构方程的构建和验证中发挥着关键作用。有限元分析（FEA）、有限差分法（FDM）和有限体积法（FVM）等数值方法能够将本构方程应用于复杂几何和边界条件下的力学问题，从而模拟材料的应力分布、形变行为和流动特性\cite{alvesNumericalMethodsViscoelastic2021}。分子动力学模拟（MD）是另一种重要的数值工具，能够从分子尺度模拟材料的力学行为，为宏观本构方程的构建提供微观依据。例如，通过粗粒度分子动力学模拟（CGMD），研究者可以研究高分子链的缠结动力学，验证管子模型的假设\cite{li2023coupling,sgouros2017slip}。由于聚合物液体具有单体、中观和宏观流尺度的多尺度特征，因此关联不同层次的多尺度模拟（MSS）能够更准确地再现其流动特性\cite{satoRecentDevelopmentsMultiscale2024}。近年来，基于分子动力学的多尺度模拟方法显著推进了复杂流体本构关系的构建。Webb等人提出基于图论的系统粗粒化方法，通过拓扑约简实现分子结构特征的有效保留，为建立跨尺度本构方程提供了数学基础\cite{webb2018graph}。在此框架下，Behbahani开发了原子模拟-粗粒化-滑移弹簧的分层耦合算法，成功预测了聚乙烯熔体的非线性粘弹性响应\cite{behbahani2021dynamics}。Morii提出的拉格朗日多尺度框架实现了从分子涨落到连续介质流动的全域耦合，在高弹性数工况下展现出优于传统欧拉方法的数值稳定性\cite{morii2021lagrangian}。
+数值模拟在本构方程的构建和验证中发挥着关键作用。有限元分析（FEA）、有限差分法（FDM）和有限体积法（FVM）等数值方法能够将本构方程应用于复杂几何和边界条件下的力学问题，从而模拟材料的应力分布、形变行为和流动特性\cite{alvesNumericalMethodsViscoelastic2021}。分子动力学模拟（MD）是另一种重要的数值工具，能够从分子尺度模拟材料的力学行为，为宏观本构方程的构建提供微观依据。例如，通过粗粒度分子动力学模拟（CGMD），研究者可以研究高分子链的缠结动力学，验证管子模型的假设\cite{li2023coupling,sgouros2017slip}。由于聚合物液体具有单体、中观和宏观流尺度的多尺度特征，因此关联不同层次的多尺度模拟（MSS）能够更准确地再现其流动特性\cite{satoRecentDevelopmentsMultiscale2024}。近年来，基于分子动力学的多尺度模拟方法显著推进了复杂流体本构关系的构建。Webb等人提出基于图论的系统粗粒化方法，通过拓扑约简实现分子结构特征的有效保留，为建立跨尺度本构方程提供了数学基础\cite{webb2018graph}。在此框架下，Behbahani开发了原子模拟-粗粒化-滑移弹簧的分层耦合算法，成功预测了聚乙烯熔体的非线性黏弹性响应\cite{behbahani2021dynamics}。Morii提出的拉格朗日多尺度框架实现了从分子涨落到连续介质流动的全域耦合，在高弹性数工况下展现出优于传统欧拉方法的数值稳定性\cite{morii2021lagrangian}。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/duochidumoni.png}
@@ -144,7 +144,7 @@ Doi和Edwards尝试从分子角度构建本构方程，在管子模型的基础�
 \subsubsection{引言}
 传统机器学习或者是目前最前沿的深度学习研究，最初都集中于计算机科学、人工智能领域，但是近年来在物理学领域，机器学习与物理学问题的研究结合也日益密切\cite{choudhary2022recent}。在量子物理中，机器学习被用于量子态重构、量子电路优化和量子相变识别，显著提高了量子系统的分析和计算效率\cite{biamonte2017quantum}。在凝聚态物理领域，机器学习通过预测材料性质和分类相图，加速了新材料的发现和设计\cite{choudhary2022recent}。在天体物理中，机器学习被用于引力波探测和宇宙微波背景辐射分析，揭示了宇宙的起源和结构\cite{bufano2023machine}。在流体动力学中，机器学习通过数据驱动的方法直接从流体数据中学习湍流动力学，显著提高了湍流模型的精度和计算效率\cite{bruntonMachineLearningFluid2020}。此外，机器学习中的符号回归技术能够从实验数据中自动发现物理定律，为探索未知物理规律提供了新工具\cite{udrescuAIFeynmanPhysicsinspired2020}，在多尺度物理系统中，机器学习被用于气候模拟和生物信息学建模，预测复杂动态和处理多重空间和时间尺度的混沌系统。
 
-在流变学领域，机器学习也被广泛应用。传统的流变学研究方法如上一章所述，首先通过实验获取数据，再通过数学物理方程解释数据。流变学家总是期待于对每个流变学体系建立一个可表示的数学方程，尽管这个方程可能完全无法求出解析解也极难获取稳定精确的数值解。这本质上是一个由因推果的过程，而数据驱动的机器学习方法则从真实的结果出发，构建一个完全匹配的数学方程，这个方程的形式与参数都不确定，但是可以泛化本构现象，即通过含有大量参数的非方程化的计算机模型代替具体形式的本构方程来解决流变学本构问题\cite{colenMachineLearningActivenematic2021,bahiuddinReviewModelingSchemes2024,mangalDatadrivenTechniquesRheology2025}。
+在流变学领域，机器学习也被广泛应用。传统的流变学研究方法如上一章所述，首先通过实验获取数据，再通过数学物理方程解释数据。流变学家总是致力于对每个流变学体系建立一个可表示的数学方程，尽管这个方程可能完全无法求出解析解也极难获取稳定精确的数值解。这本质上是一个从原因推导结果的过程，而数据驱动的机器学习方法则从真实的结果出发，构建一个完全匹配的数学方程，这个方程的形式与参数都不确定，但是可以泛化本构现象，即通过含有大量参数的非方程化的计算机模型代替具体形式的本构方程来解决流变学本构问题\cite{colenMachineLearningActivenematic2021,bahiuddinReviewModelingSchemes2024,mangalDatadrivenTechniquesRheology2025}。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/datadrivenintro.jpg}
@@ -152,13 +152,13 @@ Doi和Edwards尝试从分子角度构建本构方程，在管子模型的基础�
 \end{figure}
 
 \subsubsection{流变特性预测}
-机器学习应用于流变学本构关系研究的其中一个应用是流变特性的预测。人工神经网络（ANN）已被用于自动监测合成油基泥浆的各种流变特性,使用泥浆密度和沼泽漏斗作为输入,预测值与实际测量值非常接近，平均绝对误差小于 9.66\%\cite{alsabaaMachineLearningModel2022}。混合机器学习模型结合了ANN和SVM准确预测了纳米基水基钻井液的流变性和过滤特性。四种不同的模型——多元线性回归（MLR）、SVM、回归决策树（CART）和ANN被一起使用，以根据溶液特性预测聚合物溶液的粘度，有助于提高石油采收率\cite{shakeel2023application}。此外，机器学习模型可以与微流体或其他设备集成，用于复杂流体的原位粘度测量。例如，Mustafa等设计了一种微流体传感设备，利用流固耦合和ML算法来测量复杂流体的粘度\cite{mustafaMachineLearningBased2023}。他们采用SVM和KNN算法，分别实现了89.7\%和98.9\%的平均准确率。Ponick等利用卷积神经网络（CNN）通过立体相机图像预测Bingham流体的流变特性\cite{Ponick2022}。Chen等人通过将群贡献（GC）方法与人工神经网络 （ANN） 相结合，以预测离子液体 （IL） -水混合物的粘度\cite{CHEN2022118546}，取得比单一ANN结构更好的预测效果。Zhang等人开发了一种深度半监督的基于即时学习的高斯过程回归 （DSSJITGPR） 用于门尼粘度估计\cite{polym14051018}。它将即时学习、半监督学习和深度学习集成到一个统一的建模框架中。DSSJITGPR的有效性和优越性已通过工业橡胶混炼过程的Mooney粘度预测结果得到验证。
+机器学习应用于流变学本构关系研究的其中一个应用是流变特性的预测。人工神经网络（ANN）已被用于自动监测合成油基泥浆的各种流变特性,使用泥浆密度和沼泽漏斗作为输入,预测值与实际测量值非常接近，平均绝对误差小于 9.66\%\cite{alsabaaMachineLearningModel2022}。混合机器学习模型结合了ANN和SVM准确预测了纳米基水基钻井液的流变性和过滤特性。四种不同的模型——多元线性回归（MLR）、SVM、回归决策树（CART）和ANN被一起使用，以根据溶液特性预测聚合物溶液的黏度，有助于提高石油采收率\cite{shakeel2023application}。此外，机器学习模型可以与微流体或其他设备集成，用于复杂流体的原位黏度测量。例如，Mustafa等设计了一种微流体传感设备，利用流固耦合和ML算法来测量复杂流体的黏度\cite{mustafaMachineLearningBased2023}。他们采用SVM和KNN算法，分别实现了89.7\%和98.9\%的平均准确率。Ponick等利用卷积神经网络（CNN）通过立体相机图像预测Bingham流体的流变特性\cite{Ponick2022}。Chen等人通过将群贡献（GC）方法与人工神经网络 （ANN） 相结合，以预测离子液体 （IL） -水混合物的黏度\cite{CHEN2022118546}，取得比单一ANN结构更好的预测效果。Zhang等人开发了一种深度半监督的基于即时学习的高斯过程回归 （DSSJITGPR） 用于门尼黏度估计\cite{polym14051018}。它将即时学习、半监督学习和深度学习集成到一个统一的建模框架中。DSSJITGPR的有效性和优越性已通过工业橡胶混炼过程的Mooney黏度预测结果得到验证。
 
 \subsubsection{材料表征和工艺设计优化}
 机器学习在流变学本构关系研究中的应用不仅限于材料表征和工艺设计/优化，还通过直接引入材料制备和表征中的各种参数作为特征，显著简化了传统本构方程中针对特定材料体系拟合不同参数的复杂性。与传统统计方法相比，机器学习算法能够更高效地对这些复杂关系进行建模，其中主成分分析和深度神经网络等技术在管理和减少材料表征中常见的高维数据方面发挥了重要作用，从而实现了更高效的分析和解释。这些方法已广泛应用于3D打印混凝土、纤维增强混凝土、聚合物纳米复合材料、生物墨水、食品材料和高分子科学等领域。Zhang和Shao的研究进一步探讨了基于图像的机器学习技术在材料科学中的应用，以应对各种挑战和任务，由于这些方法的通用性和可转移性，它们同样适用于流变学表征\cite{zhang2022image}。机器学习模型还彻底改变了高通量表征，为数据分析、预测和优化提供了强大的工具。例如，Zhang等人开发了一种自主高通量系统，采用支持向量机（SVM）、随机森林（RF）和极端梯度提升（XGB）分类器等监督式机器学习算法，快速表征水凝胶的流变特性，所有模型在水凝胶相分类中均表现出色\cite{zhangRapidAutonomousHighthroughput2023}。Verheyen等人则利用基于树的集成算法（如随机森林和梯度提升）将数据驱动建模与颗粒水凝胶基质系统的实验优化相结合，这些技术因其在处理分类或回归任务、非线性关系、高维数据和混合数据类型方面的灵活性而被选用\cite{verheyenIntegratedDatadrivenModeling2023}。Martineau等人开发了一种基于高斯过程（GP）建模的管道，用于识别细菌嵌入的丝水凝胶的凝胶化状态，通过比较人类专家和机器学习引导算法的性能，发现两者结合最能加速发现过程\cite{martineauEngineeringGelationKinetics2022}。此外，随机森林和多元线性回归（MLR）等技术已被用作回归工具，将从大振幅振荡剪切（LAOS）实验中获得的流变特性与人类感官感知（如涂抹性）相关联，从而改进化妆品行业的配方设计。Lee等人的研究表明，由于流变测量和铺展性之间的非线性关系，随机森林模型的性能优于多元线性回归模型\cite{lee2022predictive}。
 
 \subsubsection{流变学计算模拟}
-机器学习为流变学的计算模拟提供助力，计算平台已经成为流变学研究的重要支柱，广泛应用于从聚合物动力学到颗粒系统的详细模拟，为复杂流体在不同条件下的行为提供了深刻的物理见解。然而，这些技术的主要瓶颈在于模拟与实验条件相关的时间和长度尺度的能力。由于大规模模拟中的大部分计算资源消耗在重复的数学运算上，而这些运算可以通过数据驱动技术高效学习，因此将机器学习与模拟相结合能够显著提升效率和精度。例如，Lu等人基于卷积神经网络的仿真模型在颗粒流模拟中实现了显著的加速，同时保持了较高的精度\cite{lu2021machine}。高斯过程回归则被Seryo等人用于从微观聚合物模拟中推断本构关系，并将这些关系应用于宏观流动仿真，从而调整流体中的应力分布以反映微观动力学\cite{seryoLearningConstitutiveRelation2020}。类似的方法还被应用于缠结良好的聚合物熔体，通过机器学习的本构关系优化模拟效果。此外，Bai等人介绍了一种数据驱动的平滑粒子流体动力学方法，该方法利用实验数据提高了牛顿流体和非牛顿流体的建模精度，即使在数据集较小的情况下也能准确预测幂律流体的速度曲线，同时显著优化计算时间\cite{baiDatadrivenSmoothedParticle2021}。多尺度建模通过在不同尺度之间交换信息来捕捉材料的复杂行为，例如Li等人基于生成对抗网络的方法实现了从粗粒度到原子级别的结构回溯映射\cite{liBackmappingCoarsegrainedMacromolecules2020}。主动学习作为一种高效的机器学习范式，通过选择性地标记信息量最大的数据点，以最少的数据优化学习过程，例如在多尺度建模中，Zhao等人基于高斯过程回归的主动学习策略将所需的模拟次数大幅减少，显著提高了研究复杂材料行为的效率\cite{zhaoActiveLearningConstitutive2018}。这些技术的结合不仅提升了模拟的精度和效率，还为流变学研究提供了更强大的工具。
+机器学习为流变学的计算模拟提供助力，计算平台已经成为流变学研究的重要支柱，广泛应用于从聚合物动力学到颗粒系统的详细模拟，为复杂流体在不同条件下的行为提供了深刻的物理见解。然而，这些技术的主要瓶颈在于模拟与实验条件相关的时间和长度尺度的能力。由于大规模模拟中的大部分计算资源消耗在重复的数学运算上，而这些运算可以通过数据驱动技术高效学习，因此将机器学习与模拟相结合能够显著提升效率和精度。例如，Lu等人基于卷积神经网络的仿真模型在颗粒流模拟中实现了显著的加速，同时保持了较高的精度\cite{lu2021machine}。高斯过程回归则被Seryo等人用于从微观聚合物模拟中推断本构关系，并将这些关系应用于宏观流动仿真，从而调整流体中的应力分布以反映微观动力学\cite{seryoLearningConstitutiveRelation2020}。类似的方法还被应用于缠结良好的聚合物熔体，通过机器学习的本构关系优化模拟效果。此外，Bai等人介绍了一种数据驱动的平滑粒子流体动力学方法，该方法利用实验数据提高了牛顿流体和非牛顿流体的建模精度，即使在数据集较小的情况下也能准确预测幂律流体的速度曲线，同时显著优化计算时间\cite{baiDatadrivenSmoothedParticle2021}。多尺度建模通过在不同尺度之间交换信息来捕捉材料的复杂行为，例如Li等人基于生成对抗网络的方法实现了从粗粒度到原子级别的结构回溯映射\cite{liBackmappingCoarsegrainedMacromolecules2020}。主动学习作为一种高效的机器学习范式，通过选择性地标记信息量最大的数据点，以最少的数据优化学习过程，例如在多尺度建模中，Zhao等人基于高斯过程回归的主动学习策略将所需的模拟次数大幅减少，显著提高了研究复杂材料行为的效率\cite{zhaoActiveLearningConstitutive2018}。这些技术的结合不仅提升了模拟的精度和效率，还为流变学研究提供了更有效的工具。
 
 \subsubsection{小结}
 无论其架构或算法如何设计，以数据为中心的机器学习模型严重依赖丰富的训练数据来确保预测的可靠性和准确性。此外，材料特性通常对成分和加工条件的细微变化表现出高度敏感性，这可能导致材料行为的显著变化。因此，数据收集过程必须足够全面和细致，以捕捉这种复杂性，从而确保以数据为中心的模型能够做出准确的预测。例如，对于具有整体Herschel-Bulkley类型行为的屈服应力流体，如果算法仅暴露在大变形率或小变形率下的数据中，它将无法对观察域之外的一般行为做出可靠预测\cite{mangalDatadrivenTechniquesRheology2025,saadatRheologistsGuidelineDatadriven2023,reyesLearningUnknownPhysics2021}。更重要的是，这些模型完全依赖于数据相关性和统计规律，而忽略了基础科学理论的支持，例如黏弹性材料的时间依赖性和应变依赖性等关键物理特性。纯数据驱动方法往往忽视了这些物理细节，导致模型在实际应用中可能失效。因此，在开发算法时，我们应当引入物理约束，将黏弹性的时间依赖性等基本物理规律纳入模型框架，以弥补数据驱动方法的不足，从而提升模型的预测能力和泛化性能。
@@ -167,7 +167,7 @@ Doi和Edwards尝试从分子角度构建本构方程，在管子模型的基础�
 近年来，多种方法被提出并广泛应用于将基本物理规则和领域知识整合到机器学习框架中，这些方法在众多领域展现了深远的影响。这类模型的总体框架通常被称为物理信息机器学习（PIML）。PIML的一个开创性范例是“物理信息神经网络”（PINN），它代表了科学计算和应用数学领域的重大突破\cite{karniadakisPhysicsinformedMachineLearning2021,raissiPhysicsinformedNeuralNetworks2019}。PINN将机器学习算法与从系统观察、经验以及物理或数学理解中获得的先验知识无缝结合，通过将这些先验知识直接嵌入模型架构中，显著减少了对大规模训练数据集的依赖，从而能够利用更少的观测数据解决复杂的物理问题。
 
 \subsection{物理信息神经网络研究现状}
-近年来，物理信息神经网络（PINN）在流变学建模领域取得了重要进展，有效克服了传统方法依赖简化假设和难以处理复杂材料特性的局限。Mahmoudabadbozchelou等人提出的流变学信息神经网络（RhINN）框架，能够处理触变性弹性粘塑性（TEVP）模型等多种本构模型\cite{mahmoudabadbozchelouRheologyInformedNeuralNetworks2021}。该框架以时间t和剪切速率为输入，剪应力$\sigma$和结构参数$\lambda$为输出，通过最小化包含方程残差和初始条件差异的损失函数来训练网络参数。在逆问题求解中，RhINN可同时学习网络参数和流变参数，其预测结果与真实数据高度吻合，展现了良好的鲁棒性。Dabiri等人进一步将RhINN扩展至分数阶微分方程，提升了其在复杂本构模型参数识别中的应用价值\cite{dabiri2023}。在相关研究中，Zhang等人开发的RheologyNet成功应用于胶凝材料触变特性评估，其预测结果与有限元分析高度一致\cite{zhangRheologyNetPhysicsinformedNeural2023}。Nagrani等人则利用PINN研究了导热硅脂的流变行为，通过实验数据确定了流变参数\cite{nagrani2023}。基于物理的机器学习方法还可从间接观测中学习未知流变模型，例如通过三维流场数据推断广义牛顿流体的稳态剪切粘度，这一方法在聚合物熔体和颗粒悬浮液研究中取得了显著成果。此外，PINN在稀薄气体流动预测中也展现出应用潜力\cite{tucnyLearningViscosityFunctions2024}。Howard等人将悬浮平衡模型与神经网络结合，成功预测了单分散悬浮液的颗粒应力，但在双分散系统中的应用仍存在局限。这些研究充分展示了物理信息神经网络在流变学领域的广泛应用前景\cite{howardMachineLearningMethods2023}。
+近年来，物理信息神经网络（PINN）在流变学建模领域取得了重要进展，有效克服了传统方法依赖简化假设和难以处理复杂材料特性的局限。Mahmoudabadbozchelou等人提出的流变学信息神经网络（RhINN）框架，能够处理触变性弹性黏塑性（TEVP）模型等多种本构模型\cite{mahmoudabadbozchelouRheologyInformedNeuralNetworks2021}。该框架以时间t和剪切速率为输入，剪应力$\sigma$和结构参数$\lambda$为输出，通过最小化包含方程残差和初始条件差异的损失函数来训练网络参数。在逆问题求解中，RhINN可同时学习网络参数和流变参数，其预测结果与真实数据高度吻合，展现了良好的鲁棒性。Dabiri等人进一步将RhINN扩展至分数阶微分方程，提升了其在复杂本构模型参数识别中的应用价值\cite{dabiri2023}。在相关研究中，Zhang等人开发的RheologyNet成功应用于胶凝材料触变特性评估，其预测结果与有限元分析高度一致\cite{zhangRheologyNetPhysicsinformedNeural2023}。Nagrani等人则利用PINN研究了导热硅脂的流变行为，通过实验数据确定了流变参数\cite{nagrani2023}。基于物理的机器学习方法还可从间接观测中学习未知流变模型，例如通过三维流场数据推断广义牛顿流体的稳态剪切黏度，这一方法在聚合物熔体和颗粒悬浮液研究中取得了显著成果。此外，PINN在稀薄气体流动预测中也展现出应用潜力\cite{tucnyLearningViscosityFunctions2024}。Howard等人将悬浮平衡模型与神经网络结合，成功预测了单分散悬浮液的颗粒应力，但在双分散系统中的应用仍存在局限。这些研究充分展示了物理信息神经网络在流变学领域的广泛应用前景\cite{howardMachineLearningMethods2023}。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/MFNN.png}
@@ -187,9 +187,9 @@ Doi和Edwards尝试从分子角度构建本构方程，在管子模型的基础�
   \includegraphics[width=0.8\textwidth]{Fig/pnas.2304669120fig01.jpg}
   \FigureBicaption{\label{lennon} （A） RUDE 训练循环示意图（B–D）基于Giesekus模型合成LAOS数据训练的RUDE评估结果，黑色圆圈：测试数据；红色线条：训练后的RUDE；蓝色线条：未训练的 RUDE（B） 中间频率下的剪切应力响应（C） 训练频率下的法向应力（D） 稳态剪切流启动时的剪切应力响应\cite{lennonScientificMachineLearning2023a}}{(A) Schematic depiction of a RUDE within the training loop (B–D) Evaluation of a RUDE trained on synthetic LAOS data for the Giesekus model,Black circles: test data; red lines: trained RUDE; blue lines: untrained RUDE (B) Shear stress response at an intermediate frequency (C) Normal stress at a training frequency (D) Shear stress during startup of steady shear flow\cite{lennonScientificMachineLearning2023a}}
 \end{figure}
-机器学习技术的另一个重要应用在于发现闭式本构关系，这些关系从数学上描述了应力和变形之间的关联。这一过程通常通过分析实验数据并结合非线性动力学稀疏识别（SINDy）和符号回归等技术来实现\cite{Sato2025}。在这些方法中，通常采用多步骤流程：首先从广泛的潜在函数列表中筛选出最重要的候选函数，然后精确恢复这些函数的参数，以最简洁的形式描述动力学系统。例如，SINDy方法被直接扩展到流变学应用中，开发了一种称为Rheo-SINDy的稀疏识别方法，用于从已知方程库生成的流变学数据中恢复本构方程。然而，现有方法在处理不完整、稀缺或噪声数据时面临挑战，特别是需要数值微分来计算导数以构建控制方程\cite{mahmoudabadbozchelouUnbiasedConstructionConstitutive2024}。这一问题可以通过结合自动微分功能的物理信息神经网络（PINN）来解决，从而避免数值微分的需求。这种组合方法被称为PINN-SR（具有稀疏回归的PINN），已成功应用于从模型弹性粘塑性流体的实验数据中提取精确的本构关系。
+机器学习技术的另一个重要应用在于发现闭式本构关系，这些关系从数学上描述了应力和变形之间的关联。这一过程通常通过分析实验数据并结合非线性动力学稀疏识别（SINDy）和符号回归等技术来实现\cite{Sato2025}。在这些方法中，通常采用多步骤流程：首先从广泛的潜在函数列表中筛选出最重要的候选函数，然后精确恢复这些函数的参数，以最简洁的形式描述动力学系统。例如，SINDy方法被直接扩展到流变学应用中，开发了一种称为Rheo-SINDy的稀疏识别方法，用于从已知方程库生成的流变学数据中恢复本构方程。然而，现有方法在处理不完整、稀缺或噪声数据时面临挑战，特别是需要数值微分来计算导数以构建控制方程\cite{mahmoudabadbozchelouUnbiasedConstructionConstitutive2024}。这一问题可以通过结合自动微分功能的物理信息神经网络（PINN）来解决，从而避免数值微分的需求。这种组合方法被称为PINN-SR（具有稀疏回归的PINN），已成功应用于从模型弹性黏塑性流体的实验数据中提取精确的本构关系。
 
-尽管目前大多数机器学习技术（无论是数据驱动还是物理信息）都集中在单个标量分量（如剪切应力、微观结构参数或粘度）作为流变学特征，并与粘度流动和体材料函数预测相关，但真正可推广的流变学机器学习技术必须具备张量性质，并避免客观性问题。Lennon等人提出的RUDE框架优雅地解决了这些基本约束，构建了包含物理信息的可学习模型，同时对特定实验协议或流动运动学的细节保持不可知\cite{lennonScientificMachineLearning2023a}。在该框架中，广义粘弹性模型中的未知非线性项被表示为张量基函数的线性组合，这些函数强制执行对称性和框架不变性等物理约束，而张量基函数的系数则通过神经网络输出建模。RUDE框架的一个显著优势在于，其预测不仅能够推广到观测域之外，还可以扩展到应力张量的其他分量，从而实现完全解析的流动预测。这种能力使得RUDE在流变学应用中展现出强大的泛化能力和实用性。
+尽管目前大多数机器学习技术（无论是数据驱动还是物理信息）都集中在单个标量分量（如剪切应力、微观结构参数或黏度）作为流变学特征，并与黏度流动和体材料函数预测相关，但真正可推广的流变学机器学习技术必须具备张量性质，并避免客观性问题。Lennon等人提出的RUDE框架优雅地解决了这些基本约束，构建了包含物理信息的可学习模型，同时对特定实验协议或流动运动学的细节保持不可知\cite{lennonScientificMachineLearning2023a}。在该框架中，广义黏弹性模型中的未知非线性项被表示为张量基函数的线性组合，这些函数强制执行对称性和框架不变性等物理约束，而张量基函数的系数则通过神经网络输出建模。RUDE框架的一个显著优势在于，其预测不仅能够推广到观测域之外，还可以扩展到应力张量的其他分量，从而实现完全解析的流动预测。这种能力使得RUDE在流变学应用中展现出强大的泛化能力和实用性。
 \subsection{其他物理信息深度学习模型}
 近年来，深度神经算子作为一种新的机器学习模型被提出，用于隐式学习物理现象的解算子\cite{luLearningNonlinearOperators2021}。与使用有限维向量空间的标准神经网络不同，神经算子学习函数空间之间的映射。典型的架构包括DeepONet和傅里叶神经算子（FNO）及其变体。DeepONet由两个子网络组成：分支网络和中继网络，分别提取输入函数和输入坐标的潜在表示，并通过点积合并输出。FNO通过在傅里叶空间中参数化积分核来实现高效的架构。神经算子可以作为隐藏控制方程的隐式解算子，使其成为理解复杂物理系统的强大工具。它们可以与物理场和其他域约束结合，以获得高保真解和良好的泛化能力。
 
