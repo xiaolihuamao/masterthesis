@@ -1,5 +1,5 @@
-%\documentclass[unicode,master]{scutthesis} % 草稿封面，硕士则添加选项master，博士则去掉。使用正式封面时注释该行
-\documentclass[unicode,master,pdfcover]{scutthesis} %   % 论文正式封面，pdfcover为可选项，终稿再添加，使用草稿封面时注释该行
+\documentclass[unicode,master]{scutthesis} % 草稿封面，硕士则添加选项master，博士则去掉。使用正式封面时注释该行
+% \documentclass[unicode,master,pdfcover]{scutthesis} %   % 论文正式封面，pdfcover为可选项，终稿再添加，使用草稿封面时注释该行
 \usepackage{array,longtable,graphicx} 
 \usepackage{anyfontsize} %消除字体警告
 \usepackage{enumitem}
@@ -8,15 +8,18 @@
 \usepackage{multicol} % 导言区引入
 \usepackage{siunitx} % 单位排版
 \usepackage{bm} % 添加bm包支持\bm命令
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%——by MCH
 %编译范围
 % \includeonly{chapter/chapter04}
 %参考文献设置
-\usepackage[backend=biber,style=gb7714-2015,gbalign=gb7714-2015,gbpub=false,gbnamefmt = lowercase]{biblatex}% 可试着设style=gb7714-2015
+\usepackage[backend=biber,style=gb7714-2015,gbalign=gb7714-2015,gbpub=false,gbnamefmt = lowercase,gbpunctin=false]{biblatex}% 可试着设style=gb7714-2015
 \addbibresource[location=local]{biblibrary/jichuliubian.bib} 
 \addbibresource[location=local]{biblibrary/shuzhimoni.bib} 
 \addbibresource[location=local]{biblibrary/deepbengou.bib}
 \addbibresource[location=local]{biblibrary/deeplearning.bib}
+\DefineBibliographyStrings{english}{in={}}
+\DefineBibliographyStrings{english}{incn={}}
 % % 自定义相关引用格式，去掉 “In: Springer US.”
 % \renewbibmacro{in:}{%
 %   \printtext{\bibstring{}}%
@@ -61,6 +64,7 @@
 \renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
 \fancyhead[RE]{}
 \fancyhead[RO]{}
+
 \fancyhead[LE]{}
 \fancyhead[LO]{}
 \fancyhead[CO]{\headfont{\leftmark}}
