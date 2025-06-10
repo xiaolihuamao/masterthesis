@@ -17,9 +17,9 @@
 %   \end{tabularx}
 % \end{table}
 \section{引言}
-近年来，深度学习在流变学本构建模研究中得到广泛应用。例如Lennon、Mahmoudabadbozchelou等人的研究工作，虽然具体方法各有不同，但在模型选择上基本都采用了多层感知机模型（MLP）\cite{lennonScientificMachineLearning2023a,mahmoudabadbozchelouDatadrivenPhysicsinformedConstitutive2021}。MLP是一种经典的前馈人工神经网络，由输入层、多个隐藏层及输出层的全连接层堆叠而成，通过非线性激活函数实现复杂函数逼近。当MLP的隐藏层数达到一定值时，它被视为深度神经网络（DNN）。传统的前馈性质DNN模型虽具备一定的非线性行为捕捉能力，但在处理具有时间依赖性的数据时，其性能往往受到限制。Lennon和Mahmoudabadbozchelou的工作使用DNN模型，难以有效捕捉黏弹性材料中的长程应变历史依赖性。本章研究在前人基础上，采用物理信息门控循环单元（PI-GRU）进行本构建模，旨在解决DNN模型在处理时间序列数据时性能受限的问题。PI-GRU模型创新性地结合了物理约束和GRU的循环神经网络架构，通过在损失函数中引入物理方程残差作为惩罚项，同时利用GRU的循环结构处理时序数据。该模型包含输入层感知机、GRU循环层和输出层感知机三部分组成，输入为应变张量分量、应变速率张量分量和时间等参数，输出为预测的应力张量。
+近年来，深度学习在流变学本构建模研究中得到广泛应用。例如Lennon、Mahmoudabadbozchelou等人的研究工作，虽然具体方法各有不同，但在模型选择上基本都采用了多层感知机模型（Multilayer Perceptron, MLP）\cite{lennonScientificMachineLearning2023a,mahmoudabadbozchelouDatadrivenPhysicsinformedConstitutive2021}。MLP是一种经典的前馈人工神经网络，由输入层、多个隐藏层及输出层的全连接层堆叠而成，通过非线性激活函数实现复杂函数逼近。当MLP的隐藏层数达到一定值时，它被视为深度神经网络（Deep Neural Network, DNN）。传统的前馈性质DNN模型虽具备一定的非线性行为捕捉能力，但在处理具有时间依赖性的数据时，其性能往往受到限制。Lennon和Mahmoudabadbozchelou的工作使用DNN模型，难以有效捕捉黏弹性材料中的长程应变历史依赖性。本章研究在前人基础上，采用物理信息门控循环单元（Physics-Informed Gated Recurrent Unit, PI-GRU）进行本构建模，旨在解决DNN模型在处理时间序列数据时性能受限的问题。PI-GRU模型创新性地结合了物理约束和GRU的循环神经网络架构，通过在损失函数中引入物理方程残差作为惩罚项，同时利用GRU的循环结构处理时序数据。该模型包含输入层感知机、GRU循环层和输出层感知机三部分组成，输入为应变张量分量、应变速率张量分量和时间等参数，输出为预测的应力张量。
 
-本章研究首先通过数值模拟方法构建了多种经典本构方程的应力应变数据，包括Herschel-Bulkley模型、Maxwell模型、Doi-Edwards模型。这些模型在流变学领域具有重要的理论和应用价值，能够描述不同类型的流变行为。随后，本章详细设计了GRU模型的结构、参数初始化及训练优化策略，并使用数值模拟生成的应力应变数据进行训练和参数优化，使模型能够准确拟合训练数据。为了验证GRU模型在探索未知流变学本构方程方面的能力，本章将训练好的GRU模型应用于未经训练的测试集数据，并通过与传统DNN等基准模型的对比，验证了GRU模型在处理时间序列数据方面的优势。在此基础上，本章进一步研究了更复杂的非线性本构关系，通过数值模拟方法生成Giesekus模型数据，并引入物理信息约束，构建PI-GRU模型进行建模。通过与其他基准模型的对比，验证了PI-GRU模型在复杂非线性本构关系建模中的有效性。最后，本章使用一类黏弹性聚合物的真实流变学实验数据进行PI-GRU训练和测试，进一步验证了该模型在真实工况下的适用性和优越性。
+本章研究首先通过数值模拟方法构建了多种经典本构方程的应力应变数据，包括Herschel-Bulkley模型、Maxwell模型、Doi-Edwards模型。这些模型在流变学领域具有重要的理论和应用价值，能够描述不同材料的流变行为。随后，本章详细设计了GRU模型的结构、参数初始化及训练优化策略，并使用数值模拟生成的应力应变数据进行训练和参数优化，使模型能够准确拟合训练数据。为了验证GRU模型在探索未知流变学本构方程方面的能力，本章将训练好的GRU模型应用于未经训练的测试集数据，并通过与传统DNN等基准模型的对比，验证了GRU模型在处理时间序列数据方面的优势。在此基础上，本章进一步研究了更复杂的非线性本构关系，通过数值模拟方法生成Giesekus模型数据，并引入物理信息约束，构建PI-GRU模型进行建模。通过与其他基准模型的对比，验证了PI-GRU模型在复杂非线性本构关系建模中的有效性。最后，本章使用一类黏弹性聚合物的真实流变学实验数据进行PI-GRU训练和测试，进一步验证了该模型在真实工况下的适用性和优越性。
 \section{深度学习模型设计}
 本章针对Herschel-Bulkley模型、Maxwell模型、Doi-Edwards模型使用GRU模型进行建模，其基本架构在第二章已经详细介绍。
 本章针对Giesekus模型和真实实验数据使用的算法模型为PI-GRU模型，PI-GRU与基本的GRU神经网络模型架构类似，但不同的是，PI-GRU循环神经网络模型在GRU的基础上，加入了物理约束损失，用于约束模型的预测结果符合基本的本构物理规律，增强模型的泛化能力。
@@ -70,10 +70,18 @@ $\mathcal{L}_{\text{dae}}$损失则是为了保证预测的应力张量满足基
 \section{实验设计}
 \subsection{数据获取}
 \subsubsection{Herschel-Bulkley模型模拟数据}
-Herschel-Bulkley模型的本构方程如公式\eqref{eq:herschel}所示，其中剪切应力$\sigma$与剪切率$\dot{\gamma}$之间存在函数关系。该模型包含流变参数$K$、流动指数$n$及屈服应力$\sigma_0$。在模拟过程中，本章设置$\sigma_0$为1.0 Pa，$K$为1，而$n$则取值为0.2、0.6、1.0、1.4及1.8。剪切率$\dot{\gamma}$范围设定为[0,100]，并以0.01的时间步长进行离散采样。
+Herschel-Bulkley模型的本构方程如公式\eqref{eq:herschel3}所示。
+\begin{equation}
+  \sigma=\sigma_0+K\dot{\gamma}^n \label{eq:herschel3}
+\end{equation}
+该模型包含流变参数$K$、流动指数$n$及屈服应力$\sigma_0$。在模拟过程中，本章设置$\sigma_0$为1.0 Pa，$K$为1，而$n$则取值为0.2、0.6、1.0、1.4及1.8。剪切率$\dot{\gamma}$范围设定为[0,100]，并以0.01的时间步长进行离散采样。
 
 \subsubsection{Maxwell模型模拟数据}
-Maxwell模型的微分本构方程如公式\eqref{eq:maxwell_model_dt}所示。该模型包含松弛时间$\tau=\eta/G$，其中$\eta$表示黏性系数，$G$为剪切模量。本章设置$\eta$为0.1 Pa·s，$G$为1.0 Pa。采用后向欧拉法来离散化微分方程，具体推导如下：
+Maxwell模型的微分本构方程如公式\eqref{eq:maxwell_model_dt3}所示。
+\begin{gather}
+  \frac{d\sigma}{dt} + \frac{\sigma}{\tau}  = G \frac{d\gamma}{dt} \label{eq:maxwell_model_dt3}
+\end{gather}
+该模型包含松弛时间$\tau=\eta/G$，其中$\eta$表示黏性系数，$G$为剪切模量。本章设置$\eta$为0.1 Pa·s，$G$为1.0 Pa。采用后向欧拉法来离散化微分方程，具体推导如下：
 
 首先将微分离散化，设$d\sigma=\sigma_i - \sigma_{i-1}$，$dt=\Delta t$，$d\gamma=\gamma_i - \gamma_{i-1}$，则原方程可以化简为公式\eqref{eq:maxwell_euler_back_1}，
 \begin{equation}
@@ -124,9 +132,12 @@ Giesekus模型的本构方程如公式\eqref{eq:giesekus}所示，迁移因子$\
 \end{equation}
 随后设置迁移因子$\alpha$为0.8,其余松弛时间参数（$\lambda_1$、$\lambda_2$）为1.0，使用Python的scipy.integrate.solve\_ivp函数对Giesekus模型的微分方程组进行求解计算，生成3*3应力张量矩阵，如公式\eqref{eq:sigma_bmatrix}所示。本章提取$\sigma_{12}$、$\sigma_{11}$、$\sigma_{22}$分量作为模拟实验数据。
 
-分别按照上述方法模拟小振幅振荡剪切（SAOS）数据和大振幅振荡剪切（LAOS）数据。
+分别按照上述方法模拟小振幅振荡剪切（Small Amplitude Oscillatory Shear, SAOS）数据和大振幅振荡剪切（Large Amplitude Oscillatory Shear, LAOS）数据。
 \subsubsection{真实实验数据}
-首先通过原子转移自由基聚合（ATRP）和开环异位聚合（ROMP）设计合成了由聚甲基丙烯酸（亲水单元）和聚甲基丙烯酸叔丁酯（疏水单元）组成的两亲性刷状聚合物（ABPs）。随后将ABPs与甲氧基丙烯酸酯按特定比例混合，在紫外光照射下聚合并经过浸泡、干燥处理，最终得到均匀的两亲性刷掺杂的弹性体（ABE弹性体）。
+本文使用的真实实验数据
+\todo{问下老师}
+
+首先通过原子转移自由基聚合和开环异位聚合设计合成了由聚甲基丙烯酸（亲水单元）和聚甲基丙烯酸叔丁酯（疏水单元）组成的两亲性刷状聚合物（ABPs）。随后将ABPs与甲氧基丙烯酸酯按特定比例混合，在紫外光照射下聚合并经过浸泡、干燥处理，最终得到均匀的两亲性刷掺杂的弹性体（ABE弹性体）。
 
 通过安东帕型流变仪在25℃下测量具有0.8mm厚度的材料的振荡剪切试验。将样品置于8mm直径的平行板下，在1\%到300\%的应变范围内以10rad/s的固定频率对样品进行应变扫描，获取ABE弹性体的SAOS和LAOS数据。
 \subsection{模型训练}
