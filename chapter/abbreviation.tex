@@ -1,12 +1,84 @@
 \chapter{英文缩略词}
-【本节论文规范为可选，如果你的论文没有相关内容那么去除这一节；如果有，则删除这一行注释。】
-\begin{table}
-	\centering{}%
-	\begin{tabular}{ccc}
-		SCUT & South China University of Technology & 华南理工大学\tabularnewline
-		     &                                      & \tabularnewline
-		     &                                      & \tabularnewline
-		     &                                      & \tabularnewline
-		     &                                      & \tabularnewline
-	\end{tabular}
-\end{table}
+\begin{longtable}{lll}
+	\\
+	\multicolumn{3}{p{\textwidth}}{\small 注：部分本构方程名称保持英文原名，以保持其学术准确性和可追溯性。}                                        \\
+	\hline
+	缩写       & 英文全称                                               & 中文全称                                           \\
+	\hline
+	\endfirsthead
+	\hline
+	缩写       & 英文全称                                               & 中文全称                                           \\
+	\hline
+	\endhead
+	\hline
+	\endfoot
+	% 机器学习基础算法
+	DT       & Decision Tree                                      & 决策树\tabularnewline
+	RF       & Random Forest                                      & 随机森林\tabularnewline
+	SVM      & Support Vector Machine                             & 支持向量机\tabularnewline
+	KNN      & K-Nearest Neighbors                                & K 近邻算法\tabularnewline
+	MLR      & Multiple Linear Regression                         & 多元线性回归\tabularnewline
+	CART     & Classification and Regression Tree                 & 分类和回归树\tabularnewline
+	XGB      & Extreme Gradient Boosting                          & 极端梯度提升\tabularnewline
+
+	% 神经网络相关
+	ANN      & Artificial Neural Network                          & 人工神经网络\tabularnewline
+	CNN      & Convolutional Neural Network                       & 卷积神经网络\tabularnewline
+	RNN      & Recurrent Neural Network                           & 循环神经网络\tabularnewline
+	LSTM     & Long Short-Term Memory                             & 长短期记忆网络\tabularnewline
+	GRU      & Gated Recurrent Unit                               & 门控循环单元\tabularnewline
+	MLP      & Multi-Layer Perceptron                             & 多层感知器\tabularnewline
+	DNN      & Deep Neural Network                                & 深度神经网络\tabularnewline
+
+	% 生成模型
+	GAN      & Generative Adversarial Network                     & 生成对抗网络\tabularnewline
+	VAE      & Variational Autoencoder                            & 变分自编码器\tabularnewline
+	CVAE     & Conditional Variational Autoencoder                & 条件变分自编码器\tabularnewline
+
+	% 物理信息学习
+	PIML     & Physics-Informed Machine Learning                  & 物理信息机器学习\tabularnewline
+	PINN     & Physics-Informed Neural Network                    & 物理信息神经网络\tabularnewline
+	RhINN    & Rheology-Informed Neural Network                   & 流变学信息神经网络\tabularnewline
+	PI-GRU   & Physics-Informed Gated Recurrent Unit              & 物理信息门控循环单元\tabularnewline
+	PINN-HP  & PINN-Hadamard Product                              & 哈达玛积特征融合后的PINN\tabularnewline
+	PINN-AFF & PINN-Attention Feature Fusion                      & 注意力特征融合后的PINN\tabularnewline
+
+	% 算子学习
+	DeepONet & Deep Operator Network                              & 深度算子网络\tabularnewline
+	FNO      & Fourier Neural Operator                            & 傅里叶神经算子\tabularnewline
+	IFNO     & Implicit Fourier Neural Operator                   & 隐式傅里叶神经算子\tabularnewline
+	MOR      & Model Operator Regression                          & 模型算子回归\tabularnewline
+
+	% 本构方程与流变学模型
+	PTT      & Phan-Thien-Tanner Model                            & Phan-Thien-Tanner 模型\tabularnewline
+	FENE-P   & Finite Extensible Nonlinear Elastic-Peterlin Model & 有限拉伸非线性弹性-彼得林模型\tabularnewline
+	K-BKZ    & Kay-Bernstein-Kearsley-Zapas Model                 & Kay-Bernstein-Kearsley-Zapas 模型\tabularnewline
+	TEVP     & Thixotropic Elasto-Viscoplastic Model              & 触变性弹性黏塑性模型\tabularnewline
+	UCM      & Upper Convected Maxwell Model                      & 上对流Maxwell模型\tabularnewline
+	SLS      & Standard Linear Solid Model                        & 标准线性固体模型\tabularnewline
+	FSL      & Fractional Standard Linear Solid Model             & 分数阶标准线性固体模型\tabularnewline
+
+	% 流变学实验与测量
+	SAOS     & Small Amplitude Oscillation Shear                  & 小振幅振荡剪切\tabularnewline
+	LAOS     & Large Amplitude Oscillation Shear                  & 大振幅振荡剪切\tabularnewline
+
+	% 评价指标
+	R$^2$    & Coefficient of Determination                       & 决定系数\tabularnewline
+	MAE      & Mean Absolute Error                                & 平均绝对误差\tabularnewline
+	MAPE     & Mean Absolute Percentage Error                     & 平均绝对百分比误差\tabularnewline
+	MSE      & Mean Squared Error                                 & 均方误差\tabularnewline
+
+	% 材料与化学相关
+	ABPs     & Amphiphilic Brush Polymers                         & 两亲性刷状聚合物\tabularnewline
+	ABE      & Amphiphilic Brush-doped Elastomer                  & 两亲性刷掺杂的弹性体\tabularnewline
+	PBA      & Poly(n-butyl acrylate)                             & 聚丙烯酸正丁酯\tabularnewline
+	PFGs     & Polymer Fluid Gels                                 & 聚合物流体凝胶\tabularnewline
+	DP       & Degree of Polymerization                           & 聚合度\tabularnewline
+	PDI      & Polydispersity Index                               & 聚合物多分散指数\tabularnewline
+	GC       & Group Contribution                                 & 群贡献\tabularnewline
+
+	% 其他
+	SINDy    & Sparse Identification of Nonlinear Dynamics        & 非线性动力学稀疏识别\tabularnewline
+	RUDEs    & Rheological Universal Differential Equations       & 流变学通用微分方程\tabularnewline
+	MFNN     & Multi-fidelity Neural Network                      & 多保真神经网络\tabularnewline
+\end{longtable}
