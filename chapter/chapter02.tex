@@ -171,7 +171,7 @@ $用于最大化潜在变量分布的重构似然。为了使 VAE 的训练过�
 
 VAE能够生成与训练数据类似的样本，例如人脸、文字等。在标签数据稀缺的情况下，VAE可以利用无标签数据学习数据的潜在结构，从而增强模型的泛化能力。凭借这一特性，VAE在图像生成、数据增强、无监督学习等多个领域展现出广泛的应用潜力，已成为生成模型领域的重要研究方向。
 \subsection{条件变分自编码器}
-条件变分自编码器CVAE的概念最早由Sohn等人提出\cite{SohnLee2015ConditionalVAE}。CVAE是VAE的扩展，它在VAE的基础之上引入了条件变量，使得生成的样本可以根据特定条件进行控制。CVAE 的核心思想是将条件变量$y$作为输入的一部分，与输入数据$x$一起编码到潜在变量$z$中，然后通过解码器生成样本。CVAE的目标是最大化条件似然$p(x|y) = \int p(x|z,y) p(z|y) dz$。
+条件变分自编码器CVAE的概念最早由Sohn等人提出\cite{SohnLee2015ConditionalVAE}。CVAE是VAE的扩展，它在VAE的基础之上引入了条件变量，使得生成的样本可以根据特定条件进行控制。CVAE 的核心思想是将条件变量$y$作为输入的一部分，与输入数据$x$一起编码到潜在变量$z$中，然后通过解码器生成样本。CVAE的目标是最大化条件似然$p(x|y) = \int p(x|z,y) p(z|y) dz$，损失函数公式为式\ref{eq:cvae}。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/CVAE示意图.drawio.pdf}

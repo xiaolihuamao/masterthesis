@@ -58,12 +58,12 @@ Huber损失函数通过参数$\delta$实现对异常值敏感度的动态调节�
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/huangjin.png}
-  \FigureBicaption{\label{huangjin-illustration}Huang等人制备的PFGs示意图}{Schematic illustration of the PFGs prepared by Huang et al}
+  \FigureBicaption{\label{huangjin-illustration}Huang等人制备的PFGs示意图\cite{huangUltrahighEnergydissipationElastomers2021}}{Schematic illustration of the PFGs prepared by Huang et al\cite{huangUltrahighEnergydissipationElastomers2021}}
 \end{figure}
 在实验过程中，Huang等人对不同分子量的PBA流体，注入不同分子量PBA制备的PFGs，分别进行了流变学实验，得到了对应材料特定频率下的储存模量、损耗模量和损耗角正切等数据。本章采用他们的实验数据进行具体的深度学习建模。
 
 \subsubsection{实验数据分类}
-首先本章对真实实验数据进行分类，第一类为单PBA流体数据，为不同分子量的PBA流体的流变学数据，特征包括：聚合度（Degree of Polymerization, DP）、数均分子量（Mn）、分散指数（Polymer Dispersity Index, PDI）、频率（$\omega$），标签包括：储存模量（$\mathrm{G^{\prime}}$）、损耗模量（$\mathrm{G^{\prime\prime}}$）和损耗角正切（tan$\delta$），第二类为单分子量PBA注入制备的PFGs数据，特征和标签和第一类单PBA流体数据一致，第三类为多分子量PBA注入制备的PFGs数据，特征包括：不同分子量的PBA特征和组分信息（Mn$_i$、PDI$_i$、DP$_i$、$\phi_i$，$i=1,2,3$）、频率（$\omega$），标签包括：储存模量（$\mathrm{G^{\prime}}$）、损耗模量（$\mathrm{G^{\prime\prime}}$）和损耗角正切（tan$\delta$）。第三类数据的组分信息见表\ref{pba-com-groups}所示。
+首先本章对真实实验数据进行分类，第一类为单PBA流体数据，为不同分子量的PBA流体的流变学数据，特征包括：聚合度（Degree of Polymerization, DP）、数均分子量（Mn）、分散指数（Polymer Dispersity Index, PDI）、频率（$\omega$），标签包括：储存模量（$\mathrm{G^{\prime}}$）、损耗模量（$\mathrm{G^{\prime\prime}}$）和损耗角正切（tan$\delta$），第二类为单分子量PBA注入制备的PFGs数据，特征和标签和第一类单PBA流体数据一致，第三类为多分子量PBA注入制备的PFGs数据，特征包括：不同分子量的PBA特征和组分信息（Mn$_i$、PDI$_i$、DP$_i$、$\phi_i$，$i=1,2,3$）、$\omega$，标签包括：$\mathrm{G^{\prime}}$、$\mathrm{G^{\prime\prime}}$和tan$\delta$。第三类数据的组分信息见表\ref{pba-com-groups}所示。
 \begin{table}
   \TableBicaption{\label{pba-com-groups}多分子量PBA流体制备PFGs的配比参数表}{Formulation Parameters of Multi-MW PBA Fluids for PFGs}
   \centering
@@ -171,7 +171,7 @@ Huber损失函数通过参数$\delta$实现对异常值敏感度的动态调节�
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pfgs-LF.pdf}
-  \FigureBicaption{\label{pfgs-LF}}{不同PBA流体组合制备的PFGs的频率-流变学性质参数数据低保真拟合结果：（a）不同DP值的PBA流体制备的PFGs的频率-储存模量（$\omega$-$\mathrm{G^{\prime}}$）数据拟合结果；（b）不同PBA流体组合制备的PFGs的频率-损耗模量（$\omega$-$\mathrm{G^{\prime\prime}}$）数据拟合结果；（c）不同PBA流体组合制备的PFGs的频率-损耗角正切（$\omega$-tan$\delta$）数据拟合结果}{Low-fidelity fitting results of frequency-rheological property parameter data of PFGs prepared by different PBA fluid combinations: (a) Fitting results of frequency-storage modulus ($\omega$-$\mathrm{G^{\prime}}$) data of PFGs prepared by PBA fluids with different DP values; (b) Fitting results of frequency-loss modulus ($\omega$-$\mathrm{G^{\prime\prime}}$) data of PFGs prepared by different PBA fluid combinations; (c) Fitting results of frequency-loss tangent ($\omega$-tan$\delta$) data of PFGs prepared by different PBA fluid combinations}
+  \FigureBicaption{\label{pfgs-LF}不同PBA流体组合制备的PFGs的频率-流变学性质参数数据低保真拟合结果：（a）不同DP值的PBA流体制备的PFGs的频率-储存模量（$\omega$-$\mathrm{G^{\prime}}$）数据拟合结果；（b）不同PBA流体组合制备的PFGs的频率-损耗模量（$\omega$-$\mathrm{G^{\prime\prime}}$）数据拟合结果；（c）不同PBA流体组合制备的PFGs的频率-损耗角正切（$\omega$-tan$\delta$）数据拟合结果}{Low-fidelity fitting results of frequency-rheological property parameter data of PFGs prepared by different PBA fluid combinations: (a) Fitting results of frequency-storage modulus ($\omega$-$\mathrm{G^{\prime}}$) data of PFGs prepared by PBA fluids with different DP values; (b) Fitting results of frequency-loss modulus ($\omega$-$\mathrm{G^{\prime\prime}}$) data of PFGs prepared by different PBA fluid combinations; (c) Fitting results of frequency-loss tangent ($\omega$-tan$\delta$) data of PFGs prepared by different PBA fluid combinations}
 \end{figure}
 本节采用Python的scipy.optimize库实现最小二乘法拟合，以公式\eqref{eq:doi-edwards-g1}和\eqref{eq:doi-edwards-g2}作为理论模型函数。首先对不同DP的PBA流体进行系统拟合，分析其频率-储存模量（$\omega$-$\mathrm{G^{\prime}}$）、频率-损耗模量（$\omega$-$\mathrm{G^{\prime\prime}}$）及频率-损耗角正切（$\omega$-tan$\delta$）数据，拟合结果如图\ref{pba-LF}所示。从拟合曲线可观察到，模型对不同PBA流体的流变学特性表现出良好的拟合质量，曲线与实验数据点高度吻合。表\ref{LF-metrics-table}量化展示了低保真数据的回归拟合指标，其中$g_1$、$g_2$、$g_3$分别对应不同PBA流体的$\omega$-$\mathrm{G^{\prime}}$、$\omega$-$\mathrm{G^{\prime\prime}}$和$\omega$-tan$\delta$拟合结果。三组拟合的决定系数R$^2$均超过0.95，表明模型解释了数据变异性的95\%以上，拟合效果优异。
 $g_1$组的MAPE为19.72\%，$g_2$组为15.89\%，$g_3$组为12.45\%，根据流变学数据分析的统计学标准，MAPE值小于20\%被认为处于可接受误差范围内，三组数据均满足此标准，适合用于后续深度学习模型的训练与验证。
@@ -199,7 +199,7 @@ $g_1$组的MAPE为19.72\%，$g_2$组为15.89\%，$g_3$组为12.45\%，根据流�
 
 % 单PBA流体本构建模
 \subsection{单PBA流体本构建模}
-本节首先对不同分子量的单PBA流体进行深度学习本构建模，分别预测储存模量（$\mathrm{G^{\prime}}$）、损耗模量（$\mathrm{G^{\prime\prime}}$）和损耗角正切（tan$\delta$）。图\ref{pba-g1}展示了$\mathrm{G^{\prime}}$的预测结果，其中图\ref{pba-g1}（a）为真实值-预测值对比曲线。从图中可观察到，PINN模型的预测曲线相较于DNN模型更贴近真实数据点，表现出更优的拟合效果。图\ref{pba-g1}（b）的残差分析显示，PINN预测值的残差分布更为集中于零值附近，且极值范围明显小于DNN模型。这些观察结果定性表明PINN在该任务上具有更强的泛化预测能力。
+本节首先对不同分子量的单PBA流体进行深度学习本构建模，分别预测$\mathrm{G^{\prime}}$、$\mathrm{G^{\prime\prime}}$和tan$\delta$。图\ref{pba-g1}展示了$\mathrm{G^{\prime}}$的预测结果，其中图\ref{pba-g1}（a）为真实值-预测值对比曲线。从图中可观察到，PINN模型的预测曲线相较于DNN模型更贴近真实数据点，表现出更优的拟合效果。图\ref{pba-g1}（b）的残差分析显示，PINN预测值的残差分布更为集中于零值附近，且极值范围明显小于DNN模型。这些观察结果定性表明PINN在该任务上具有更强的泛化预测能力。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pba-g1.pdf}
@@ -212,8 +212,6 @@ $g_1$组的MAPE为19.72\%，$g_2$组为15.89\%，$g_3$组为12.45\%，根据流�
   \includegraphics[width=0.8\textwidth]{Fig/pba-g2.pdf}
   \FigureBicaption{\label{pba-g2}不同分子量PBA流体的$\mathrm{G^{\prime\prime}}$预测结果对比（PINN vs. DNN）：（a）真实值-预测值对比曲线；（b）残差分布图}{Comparative prediction results of $\mathrm{G^{\prime\prime}}$ for PBA fluids with different molecular weights (PINN vs. DNN): (a) True-predicted value comparison curves; (b) Residual distribution plot}
 \end{figure}
-
-图\ref{pba-lossf}展示了tan$\delta$的预测结果，图\ref{pba-lossf}（a）为真实值-预测值对比曲线。观察发现，PINN模型的预测轨迹与实验数据点吻合度高，展现出优异的轨迹跟踪特性。残差分布图（图\ref{pba-lossf}(b)）显示，尽管两种模型的预测残差均呈现负偏差为主的分布特征，但PINN模型的残差绝对值和极值均显著小于DNN模型，表明其预测精度更高。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/pba-lossf.pdf}
@@ -224,6 +222,8 @@ $g_1$组的MAPE为19.72\%，$g_2$组为15.89\%，$g_3$组为12.45\%，根据流�
   \includegraphics[width=0.8\textwidth]{Fig/pba-metrics.pdf}
   \FigureBicaption{\label{pba-metrics}不同分子量PBA流体模型性能指标对比（PINN vs. DNN）：（a）决定系数R$^2$；（b）平均绝对误差MAE；（c）平均绝对百分比误差MAPE；（d）训练时间}{Performance metrics comparison for PBA fluids modeling (PINN vs. DNN): (a) Coefficient of determination R$^2$; (b) Mean absolute error MAE; (c) Mean absolute percentage error MAPE; (d) Training time}
 \end{figure}
+图\ref{pba-lossf}展示了tan$\delta$的预测结果，图\ref{pba-lossf}（a）为真实值-预测值对比曲线。观察发现，PINN模型的预测轨迹与实验数据点吻合度高，展现出优异的轨迹跟踪特性。残差分布图（图\ref{pba-lossf}(b)）显示，尽管两种模型的预测残差均呈现负偏差为主的分布特征，但PINN模型的残差绝对值和极值均显著小于DNN模型，表明其预测精度更高。
+
 为定量评估PBA流体模量数据的建模效果，本节计算了测试集上的R$^2$、MAE、MAPE及训练时间。图\ref{pba-metrics}展示了两种模型在三项预测任务上的性能指标对比。结果表明，PINN模型在$\mathrm{G^{\prime}}$、$\mathrm{G^{\prime\prime}}$和tan$\delta$三个任务上的R$^2$值均略高于DNN模型，表明其对数据变异性的解释能力更强。在误差指标方面，PINN模型的MAE值在所有任务中均显著低于DNN模型，而MAPE值均控制在10\%以下，处于高精度预测范围。相比之下，DNN模型的MAPE值均超过10\%，预测精度较低。然而，PINN模型的训练时间约为DNN模型的$2\sim3$倍，这是由于物理约束引入的额外计算复杂度所致。
 
 这些结果证实，PINN通过将物理守恒方程嵌入为正则化约束，有效抑制了纯数据驱动模型易发生的过拟合现象。残差分布的紧致性和对称性改善进一步验证了物理先验知识对模型泛化能力的显著提升。综合可视化分析与统计指标可知，在本研究涉及的偏微分方程反演任务中，PINN框架通过融合物理机理与数据特征的双重驱动机制，实现了比传统数据驱动范式更优的泛化预测性能。
@@ -264,6 +264,8 @@ $g_1$组的MAPE为19.72\%，$g_2$组为15.89\%，$g_3$组为12.45\%，根据流�
 
 % CVAE组分预测
 \subsection{CVAE组分预测的多模态解分析}
+
+本节探索了使用CVAE模型从材料的流变学性质反向预测其组分配比的可行性。基于训练完成的生成模型，我们输入目标流变学参数[$\omega$，$\mathrm{G^{\prime}}$，$\mathrm{G^{\prime\prime}}$，tan$\delta$]，生成100组多模态解，并对生成结果进行系统的残差分析。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/reverse-redisual-Mn.pdf}
@@ -275,8 +277,6 @@ $g_1$组的MAPE为19.72\%，$g_2$组为15.89\%，$g_3$组为12.45\%，根据流�
   \includegraphics[width=0.8\textwidth]{Fig/reverse-redisual-phi.pdf}
   \FigureBicaption{\label{reverse-redisual-phi}CVAE生成的100组多模态解中不同组分含量$\phi_1$、$\phi_2$、$\phi_3$的残差分布：（a）$\phi_1$残差分布；（b）$\phi_2$残差分布；（c）$\phi_3$残差分布}{Residual distributions of 100 multimodal solutions generated by CVAE for different component contents $\phi_1$, $\phi_2$, $\phi_3$: (a) Residual distribution of $\phi_1$; (b) Residual distribution of $\phi_2$; (c) Residual distribution of $\phi_3$}
 \end{figure}
-本节探索了使用CVAE模型从材料的流变学性质反向预测其组分配比的可行性。基于训练完成的生成模型，我们输入目标流变学参数[$\omega$，$\mathrm{G^{\prime}}$，$\mathrm{G^{\prime\prime}}$，tan$\delta$]，生成100组多模态解，并对生成结果进行系统的残差分析。
-
 图\ref{reverse-redisual-Mn}展示了分子量参数Mn的残差分布。结果表明，三种分子量组分Mn$_1$、Mn$_2$、Mn$_3$的残差均呈现正态分布特征，最大偏差约为10\%，处于可接受范围内。残差大小依次为Mn$_1$>Mn$_2$>Mn$_3$。图\ref{reverse-redisual-phi}则显示了组分含量参数$\phi$的残差分布。$\phi_1$、$\phi_2$、$\phi_3$同样呈现正态分布特征，最大偏差约为20\%，残差大小顺序为$\phi_1$>$\phi_2$>$\phi_3$。
 
 值得注意的是，在测试集中Mn$_1$<Mn$_2$<Mn$_3$，$\phi_1$<$\phi_2$<$\phi_3$，由此观察到残差大小与参数实际值呈现负相关关系 - 即参数绝对值越小，其预测误差反而越大。这一现象揭示了模型在预测较小数值参数时的精度局限性，实际应用时，可以通过调整量纲一定程度缓解这一问题。
@@ -300,13 +300,13 @@ $g_1$组的MAPE为19.72\%，$g_2$组为15.89\%，$g_3$组为12.45\%，根据流�
 综合以上分析，CVAE模型在从流变学性质反向预测组分配比的任务中展现出了良好性能。通过多维度评估可得出以下结论：首先，模型生成的组分配比数据整体呈现正态分布特征，预测结果分布集中且稳定，异常值少；其次，预测误差随参数数值增大而减小，这一特征在分子量和组分含量两类参数中均有体现，可能源于数据标准化过程中较小数值参数更易受到舍入和归一化误差影响；第三，从MAPE指标来看，分子量参数的预测精度普遍优于组分含量参数，但两类参数的预测误差均控制在可接受范围内（最大MAPE为8.27\%）。这些结果表明，CVAE模型能够有效实现从材料性质到材料制备参数的反向设计，为高分子材料配方开发提供了一种可靠的数据驱动方法。
 
 \subsection{正逆向联合建模分析}
+
+上一节通过分析CVAE生成的100组组分数据与真实组分数据的误差来评估CVAE模型的生成效果，但这种分析方法存在明显的局限性。首先，组分数据与频率-损耗角正切曲线之间存在多对一的映射关系，即理论上可能存在多种不同的组分配比，所制备的材料却具有相同或近似的频率-损耗角正切曲线。这种多解性是高分子材料设计中的普遍现象，源于不同分子量组分之间复杂的相互作用机制。其次，组分配比的微小变化可能导致材料性能的显著差异，这种非线性关系使得仅通过比较组分数据误差来评估模型效果是不够全面和准确的。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/prediction_results.pdf}
   \FigureBicaption{\label{cvae2pinn}100组CVAE生成的多模态解输入PINN模型后的预测值曲线}{Prediction curves of 100 multimodal solutions generated by CVAE after input into PINN model}
 \end{figure}
-上一节通过分析CVAE生成的100组组分数据与真实组分数据的误差来评估CVAE模型的生成效果，但这种分析方法存在明显的局限性。首先，组分数据与频率-损耗角正切曲线之间存在多对一的映射关系，即理论上可能存在多种不同的组分配比，所制备的材料却具有相同或近似的频率-损耗角正切曲线。这种多解性是高分子材料设计中的普遍现象，源于不同分子量组分之间复杂的相互作用机制。其次，组分配比的微小变化可能导致材料性能的显著差异，这种非线性关系使得仅通过比较组分数据误差来评估模型效果是不够全面和准确的。
-
 从实验验证的角度考量，最理想的分析方法应该是按照生成的组分配比分别制备材料样品，通过DMA频率扫描实验测试其损耗角正切，并与目标曲线进行对比。然而，考虑到实验成本和时间效率，这种方法在实际操作中往往难以实现。为了在保证验证可靠性的同时提高效率，本节采用了一种替代方案：将CVAE模型生成的100组组分特征输入到已训练好的PINN模型中，通过PINN的预测结果来评估CVAE生成结果的质量。这种方法虽不能完全替代实验验证，但能在计算效率和验证可靠性之间取得较好的平衡。
 
 图\ref{cvae2pinn}展示了这100组特征输入PINN后得到的频率-损耗角正切曲线，其中Test线代表原始真实特征对应的预测曲线。从图中可以观察到，这100组预测特征绘制的曲线形成了一个连续的曲线带，具有以下特点：首先，曲线带的整体趋势与Test线高度一致，表明生成的组分特征能够准确捕捉材料的主要流变学特性；其次，Test线位于曲线带的中心区域，说明生成结果的分布合理且具有代表性；最后，曲线带的宽度随频率变化呈现不均匀特征，这反映了在不同频率区间，组分配比对材料性能的影响程度各异。这种曲线带的分布特征有力地验证了CVAE模型在材料组分反演任务中的有效性和可靠性。
