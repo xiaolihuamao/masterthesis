@@ -69,7 +69,7 @@ Kelvin-Voigt模型和Maxwell模型的构建方法是线性本构方程构建的�
 
 如果将传统的整数阶导数模型改为分数阶导数，能够更加准确描述材料的记忆效应。例如Bagley和Torvik等在20世纪80年代提出的分数阶Maxwell模型，是对传统Maxwell模型的推广\cite{bagley1986fractional}。无论是什么形式的线性本构方程，均满足一个基本假设：材料的响应是线性的，即多个应变历史的叠加效应等于各自效应的线性相加，这就是玻尔兹曼叠加原理\cite{boltzmannZurTheorieElastischen1878}。玻尔兹曼叠加原理的数学形式与公式\eqref{eq:generalized_maxwell_model}一致。玻尔兹曼叠加原理广泛应用于描述线性黏弹性材料的行为，例如应力松弛、蠕变、动态力学响应等\cite{boltzmannZurTheorieElastischen1878}。
 \subsection{非线性本构方程}
-线性本构方程只能用于描述小形变的材料行为，例如弹性变形、小应变下的黏弹性行为\cite{fedorowiczElasticPerfectlyPlastic2024,lingComparisonReviewClassical2023,ricarteTutorialReviewLinear2024}，适用于材料在小变形范围内的线性响应，而非线性本构方程可以用来描述更为复杂的行为例如塑性变形、硬化或软化、各向异性、大变形、剪切稀化、剪切增稠等行为。绝大部分高分子材料具有较复杂的非线性关系。Bingham认为当剪应力低于屈服应力时，屈服性流体表现为刚性固体，当剪应力超过屈服应力时，流体开始流动，且流动行为类似于牛顿流体\cite{binghaminvestigation}。Herschel-Bulkley模型在此基础之上引入了剪切稀化和剪切增稠的表示，如公式\eqref{eq:herschel}所示，Herschel-Bulkley模型是描述非线性本构方程的一类公式\cite{herschel1926konsistenzmessungen}。
+线性本构方程只能用于描述小形变的材料行为，例如弹性变形、小应变下的黏弹性行为\cite{fedorowiczElasticPerfectlyPlastic2024,lingComparisonReviewClassical2023,ricarteTutorialReviewLinear2024}，适用于材料在小变形范围内的线性响应，而非线性本构方程可以用来描述更为复杂的行为例如塑性变形、硬化或软化、各向异性、大变形、剪切稀化、拉伸增稠等行为。绝大部分高分子材料具有较复杂的非线性关系。Bingham认为当剪应力低于屈服应力时，屈服性流体表现为刚性固体，当剪应力超过屈服应力时，流体开始流动，且流动行为类似于牛顿流体\cite{binghaminvestigation}。Herschel-Bulkley模型在此基础之上引入了剪切稀化和剪切增稠的表示，如公式\eqref{eq:herschel}所示，Herschel-Bulkley模型是描述非线性本构方程的一类公式\cite{herschel1926konsistenzmessungen}。
 \begin{equation}
   \sigma=\sigma_0+K\dot{\gamma}^n \label{eq:herschel}
 \end{equation}
