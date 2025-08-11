@@ -121,10 +121,13 @@ PINN的核心在于其损失函数的精确构建。与传统前馈神经网络�
 \begin{align}
   \mathcal{L}_{data} = \frac{1}{N_d} \sum_{i=1}^{N_d} \left( u(x_i, t_i) - u_i \right)^2 \label{eq:mse}
 \end{align}
-物理损失则确保神经网络的预测结果满足基本物理定律，通常通过计算物理方程的残差实现。以纳维-斯托克斯方程为例，其物理损失可表示为公式\eqref{eq:physicsloss}。本质上，物理损失反映了神经网络预测值在满足物理方程时的残差大小，残差越小，表明预测结果越符合物理规律。
+物理损失则确保神经网络的预测结果满足基本物理定律，通常通过计算物理方程的残差实现。以纳维-斯托克斯方程为例，其物理损失可表示为公式\eqref{eq:physicsloss}。本质上，物理损失反映了神经网络预测值在满足物理方程时的残差大小，残差越小，表明预测结果越符合物理规律。下面对公式中的各项进行简要说明：
+
 \begin{align}
   \mathcal{L}_{physics} = \frac{1}{N_p} \sum_{j=1}^{N_p} \left( \frac{\partial u}{\partial t} + (\mathbf{u} \cdot \nabla) \mathbf{u} - \nu \nabla^2 \mathbf{u} - \nabla p + \mathbf{f} \right)^2 \bigg|_{(x_j, t_j)} \label{eq:physicsloss}
 \end{align}
+
+其中，$\frac{\partial u}{\partial t}$ 表示速度场对时间的偏导数，反映流体随时间的变化；$(\mathbf{u} \cdot \nabla) \mathbf{u}$ 是对流项，描述流体粒子自身的运动对速度的影响；$-\nu \nabla^2 \mathbf{u}$ 是粘性扩散项，$\nu$为动力粘度系数，$\nabla^2$为拉普拉斯算子，反映流体的内摩擦作用；$-\nabla p$ 表示压力梯度力；$\mathbf{f}$ 为外部体力（如重力等）。该损失函数对每个物理采样点$(x_j, t_j)$计算上述方程的残差平方，最后取平均，残差越小，说明神经网络预测结果越符合物理方程约束。
 \subsection{前沿发展与优化方向}
 公式\eqref{eq:pinnloss}中的权重参数$\lambda$控制物理损失与数据损失之间的相对重要性。当$\lambda$较大时，模型更倾向于满足物理约束；反之则更注重数据拟合。初期PINN研究常忽略此权重调节，使最终损失函数易受数据规模影响。特别是在多保真度建模中，若使用高保真数据计算数据损失，低保真数据计算物理残差，则当低保真数据量远大于高保真数据时，权重参数的精确设定变得尤为关键，以避免梯度消失或主导问题\cite{luDeepXDEDeepLearning2021}。
 
