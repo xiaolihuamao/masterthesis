@@ -87,6 +87,8 @@ Huber损失函数通过参数$\delta$实现对异常值敏感度的动态调节�
     \Xhline{1.5pt}
   \end{tabularx}
 \end{table}
+本章实验所用数据集规模约为900组。每组数据均包含完整的输入特征（如分子量、分散指数、组分比例、频率等）和对应的流变学响应（储存模量、损耗模量、损耗角正切）。在频率分布上，实验数据覆盖了$0.01 \sim 6.31\times 10^7$~rad/s的宽频带，能够反映材料在不同流变学工况下的性能变化。
+
 \subsubsection{低保真数据生成}
 分类后，本章使用Doi-Edwards模型来进行低保真数据拟合。首先假设实验数据可以使用Doi-Edwards模型描述。Doi-Edwards模型的频率域公式可以通过时间域公式进行傅里叶变换得到公式\eqref{eq:doi-edwards-g1}和公式\eqref{eq:doi-edwards-g2}
 \begin{align}

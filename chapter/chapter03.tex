@@ -76,7 +76,7 @@ Herschel-Bulkley模型的本构方程如公式\eqref{eq:herschel3}所示。
 \begin{equation}
   \sigma=\sigma_0+K\dot{\gamma}^n \label{eq:herschel3}
 \end{equation}
-该模型包含流变参数$K$、流动指数$n$及屈服应力$\sigma_0$。在模拟过程中，本章设置$\sigma_0$为1.0 Pa，$K$为1，而$n$则取值为0.2、0.6、1.0、1.4及1.8。剪切率$\dot{\gamma}$范围设定为[0,100]，并以0.01的时间步长进行离散采样。
+该模型包含流变参数$K$、流动指数$n$及屈服应力$\sigma_0$。在模拟过程中，本章设置$\sigma_0$为1.0 Pa，$K$为1，而$n$则取值为0.2、0.6、1.0、1.4及1.8。剪切率$\dot{\gamma}$范围设定为[0,100]，并以0.01的时间步长进行离散采样。总体数据集规模为50000组。
 
 \subsubsection{Maxwell模型模拟数据}
 Maxwell模型的微分本构方程如公式\eqref{eq:maxwell_model_dt3}所示。
@@ -93,7 +93,7 @@ Maxwell模型的微分本构方程如公式\eqref{eq:maxwell_model_dt3}所示。
 \begin{equation}
   \sigma_i = \frac{\sigma_{i-1} + G (\gamma_i - \gamma_{i-1})}{1 + \frac{\Delta t}{\tau}} \label{eq:maxwell_euler_back_2}
 \end{equation}
-根据公式\eqref{eq:maxwell_euler_back_2}，本章首先使用NumPy库生成不同应变变化协议的应变数据，时间步为0.01 s，每个协议模拟2000个数据点，并存为NumPy数组，随后通过迭代法计算单个应变数据对应的应力数据，并存为NumPy数组。
+根据公式\eqref{eq:maxwell_euler_back_2}，本章首先使用NumPy库生成不同应变变化协议的应变数据，时间步为0.01 s，每个协议模拟2000个数据点，并存为NumPy数组，随后通过迭代法计算单个应变数据对应的应力数据，并存为NumPy数组。总体数据集规模为10000组。
 
 \subsubsection{Doi-Edwards模型模拟数据}
 Doi-Edwards模型的本构方程如公式\eqref{eq:doi_edwards_moni_sigma}所示。该方程为积分形式的本构方程，本章首先对该方程进行处理，将取向张量函数$\mathbf{Q}(t^{\prime},t)$写为球坐标形式，即公式\eqref{eq:doi_edwards_moni_q}。
@@ -111,8 +111,7 @@ Doi-Edwards模型的本构方程如公式\eqref{eq:doi_edwards_moni_sigma}所示
     0      & 0 & 1
   \end{bmatrix} \label{eq:doi_edwards_f_inverse}
 \end{equation}
-公式\eqref{eq:doi_edwards_moni_g}为松弛模量函数，本章使用NumPy库生成不同的应变协议的NumPy数组，单个协议时间区间为[0,4$\pi$]，总数据点为2000个，生成形式为3$\times$3的张量矩阵，代入公式\eqref{eq:doi_edwards_moni_q}计算$\mathbf{Q}$值数组。设置$G_0$为1.0 Pa，$\lambda$为1.0 s，$i=1$，根据公式\eqref{eq:doi_edwards_moni_sigma}计算应变张量，使用的积分工具为Python的scipy.integrate库，生成形式为3$\times$3的张量矩阵，如公式\eqref{eq:sigma_bmatrix}所示。本章提取$
-  \sigma_{12}$、$\sigma_{11}$、$\sigma_{22}$分量作为模拟实验数据，与对应的应变分量数据一起通过Pandas库存入Excel文件，便于后续的模型训练。
+公式\eqref{eq:doi_edwards_moni_g}为松弛模量函数，本章使用NumPy库生成不同的应变协议的NumPy数组，单个协议时间区间为[0,4$\pi$]，总数据点为2000个，生成形式为3$\times$3的张量矩阵，代入公式\eqref{eq:doi_edwards_moni_q}计算$\mathbf{Q}$值数组。设置$G_0$为1.0 Pa，$\lambda$为1.0 s，$i=1$，根据公式\eqref{eq:doi_edwards_moni_sigma}计算应变张量，使用的积分工具为Python的scipy.integrate库，生成形式为3$\times$3的张量矩阵，如公式\eqref{eq:sigma_bmatrix}所示。本章提取$\sigma_{12}$、$\sigma_{11}$、$\sigma_{22}$分量作为模拟实验数据，与对应的应变分量数据一起通过Pandas库存入Excel文件，便于后续的模型训练。这一部分数据总体数据集规模为10000组。
 
 
 \begin{equation}
@@ -138,13 +137,13 @@ Giesekus模型的本构方程如公式\eqref{eq:giesekus3}所示，迁移因子$
 \end{equation}
 随后设置迁移因子$\alpha$为0.8,其余松弛时间参数（$\lambda_1$、$\lambda_2$）为1.0，使用Python的scipy.integrate.solve\_ivp函数对Giesekus模型的微分方程组进行求解计算，生成3*3应力张量矩阵，如公式\eqref{eq:sigma_bmatrix}所示。本章提取$\sigma_{12}$、$\sigma_{11}$、$\sigma_{22}$分量作为模拟实验数据。
 
-分别按照上述方法模拟小振幅振荡剪切（Small Amplitude Oscillatory Shear, SAOS）数据和大振幅振荡剪切（Large Amplitude Oscillatory Shear, LAOS）数据。
+分别按照上述方法模拟小振幅振荡剪切（Small Amplitude Oscillatory Shear, SAOS）数据和大振幅振荡剪切（Large Amplitude Oscillatory Shear, LAOS）数据。总体数据集规模为10000组。
 \subsubsection{真实实验数据}
 本章使用的真实实验数据来源于华南理工大学前沿软物质学院孙桃林研究员课题组的实验工作，具体材料的制备及数据采集过程如下：
 
 首先通过原子转移自由基聚合和开环异位聚合设计合成了由聚甲基丙烯酸（亲水单元）和聚甲基丙烯酸叔丁酯（疏水单元）组成的两亲性刷状聚合物（Amphiphilic Brush Polymers, ABPs）。随后将ABPs与甲氧基丙烯酸酯按特定比例混合，在紫外光照射下聚合并经过浸泡、干燥处理，最终得到均匀的两亲性刷掺杂的弹性体（Amphiphilic Brush-doped Elastomer, ABE）。
 
-通过安东帕型流变仪在25 ℃下测量具有0.8 mm厚度的材料的振荡剪切试验。将样品置于8 mm直径的平行板下，在1\%到300\%的应变范围内以10 rad/s的固定频率对样品进行应变扫描，获取ABE的SAOS和LAOS数据。
+通过安东帕型流变仪在25 ℃下测量具有0.8 mm厚度的材料的振荡剪切试验。将样品置于8 mm直径的平行板下，在1\%到300\%的应变范围内以10 rad/s的固定频率对样品进行应变扫描，获取ABE的SAOS和LAOS数据。总体数据集规模约为14000组。
 \subsection{模型训练}
 \subsubsection{数据集划分}
 首先本章对模拟生成的数据进行数据集划分，将数据集分为训练集、验证集和测试集。其中每种本构模型数据集和真实数据数据集分别选取一组待预测数据作为测试集，其余数据按照9:1比例划分为训练集和验证集。
@@ -241,7 +240,7 @@ Giesekus模型的本构方程如公式\eqref{eq:giesekus3}所示，迁移因子$
 
 图\ref{maxwell_linear}（b）的残差分析展示了两种算法的预测质量差异。在应变小于0.5的区域，GRU和DNN都存在系统性偏差，但是GRU的残差距离零线更近，说明GRU的预测效果更好。在应变大于0.5的区域，GRU的残差图的离散程度更小，说明GRU的预测效果更好。
 
-图\ref{maxwell_linear}（c-e）的定量指标进一步证实了上述观察结果。GRU模型获得了显著优于DNN的预测指标：较高的R$^2$值表明预测值与真实值之间存在极强的相关性；明显较低的MAE值和MAPE值定量证明了GRU在预测精度上的巨大优势。虽然GRU的训练时间比DNN更长，但考虑到预测精度的显著提升，这种计算成本的增加是完全值得的。
+图\ref{maxwell_linear}（c-e）的定量指标进一步证实了上述观察结果。GRU模型获得了显著优于DNN的预测指标：较高的R$^2$值表明预测值与真实值之间存在极强的相关性；明显较低的MAE值和MAPE值定量证明了GRU在预测精度上的巨大优势。虽然GRU的训练时间比DNN更长（这里的训练时间与图\ref{maxwell_sin}的训练时间一致），但考虑到预测精度的显著提升，这种计算成本的增加是完全值得的。
 
 综合分析表明，当训练数据与测试数据为不同类型应变变化过程时，GRU算法表现出了显著的优势。这种优势主要源于GRU的循环神经网络结构能够有效捕捉Maxwell模型中材料响应的时间依赖性特征，包括应力松弛、记忆效应行为。即使仅通过学习振荡剪切应变数据，GRU也能较为准确地预测稳态剪切应变下的材料行为，展现出优异的跨工况预测能力。这种泛化能力的优势充分说明了GRU在处理复杂流变学问题时的潜力。
 \subsubsection{不同时间步的预测效果对比}
@@ -300,18 +299,19 @@ Doi-Edwards模型是描述黏弹性材料的一种经典模型，不仅可以描
 图\ref{doi-edwards-linear}（a）展示了两种算法预测模型在测试集上的结果对比。可以看到GRU的预测曲线与真实值曲线更为接近，无明显偏差区间，而DNN的预测曲线与真实曲线存在明显偏差。在应变加载初始和结束阶段，DNN预测值偏大，而在中间阶段（$2\sim6$ s）则偏小，整体拟合效果较差。
 
 图\ref{doi-edwards-linear}（b）的残差图显示，DNN的残差分布不均匀，呈现出明显的曲线趋势，表明其未能充分捕捉数据特征。相比之下，GRU的残差呈现无序分布，均匀分布在零刻度线两侧，且残差值普遍小于DNN。这表明GRU能更好地捕捉训练数据特征，预测偏差更小。
-
-图\ref{doi-edwards-linear}（c-e）展示了两种算法模型的预测性能指标。GRU的R$^2$值达到0.979，而DNN仅为0.882；GRU的MAE值为0.006，远低于DNN的0.044；GRU的MAPE值为1.03\%，而DNN高达95.09\%。这些数据表明GRU在该预测任务中的泛化能力显著优于DNN。
-
-从整体分析数据来看，当训练数据与测试数据涉及不同类型的应变变化过程时，GRU在学习Doi-Edwards模型数据的内在特性方面有显著优势。这主要归因于GRU能够高效地从振荡剪切数据中提取关键的时间依赖特征，并将其成功应用于稳态应变的预测之中，这里与上一节中Maxwell模型的结论一致。
-
-\subsubsection{不同时间步的预测效果对比}
-为了探究在Doi-Edwards模型上GRU的最佳时间步，本节研究了不同时间步下训练的模型在测试集上的预测效果，如图\ref{doi-edwards-timesteps-metrics}所示。
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{Fig/doi-edwards-timesteps-metrics.pdf}
   \FigureBicaption{\label{doi-edwards-timesteps-metrics}GRU和DNN在Doi-Edwards模型不同时间步长下的预测指标对比图：（a）R$^2$值；（b）MAE值；（c）MAPE值；（d）训练时间}{Comparison of prediction metrics between GRU and DNN under different time steps of the Doi-Edwards model: (a) R$^2$ value; (b) MAE value; (c) MAPE value; (d) Training time}
 \end{figure}
+图\ref{doi-edwards-linear}（c-e）展示了两种算法模型的预测性能指标。GRU的R$^2$值达到0.979，而DNN仅为0.882；GRU的MAE值为0.006，远低于DNN的0.044；GRU的MAPE值为1.03\%，而DNN高达95.09\%。这些数据表明GRU在该预测任务中的泛化能力显著优于DNN。
+
+从整体分析数据来看，当训练数据与测试数据涉及不同类型的应变变化过程时，GRU在学习Doi-Edwards模型数据的内在特性方面有显著优势。这主要归因于GRU能够高效地从振荡剪切数据中提取关键的时间依赖特征，并将其成功应用于稳态应变的预测之中，这里与上一节中Maxwell模型的结论一致。
+
+\subsubsection{不同时间步的预测效果对比}
+
+为了探究在Doi-Edwards模型上GRU的最佳时间步，本节研究了不同时间步下训练的模型在测试集上的预测效果，如图\ref{doi-edwards-timesteps-metrics}所示。
+
 由图可见，预测模型R$^2$值在时间步小于40时随着时间步的增加而增加，在时间步大于40后反而略有下降。MAE值和MAPE值在时间步小于40时随时间步的增加而减少，时间步为40的值只有不到时间步为20的值的十分之一，显著下降，而时间步大于40后，MAE值和MAPE值则趋于稳定。这说明对于本项任务，时间步为40左右时，恰好可以开始获得不错的预测效果，而从训练成本来看，训练时间是随着时间步设置增加而单调增的，所以综合看来，时间步为40左右时，性价比最高。
 
 
