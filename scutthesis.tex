@@ -164,4 +164,8 @@
 %%%%%%%%%%%%%%%%%%%
 \include{chapter/pub} %成果
 \include{chapter/ack} %致谢
+% 插入外部PDF文件为新的一页，需使用pdfpages宏包（请确保导言区已\usepackage{pdfpages}）
+% \cleardoublepage
+\includepdf[pages=-]{cover_file/pingyu.pdf} % 将"yourfile.pdf"替换为你的PDF文件名，pages=-表示插入全部页面
+
 \end{document}
